@@ -9,6 +9,5 @@ import java.util.List;
 
 @Repository
 public interface AdminRepository extends JpaRepository<UserEntity, Long> {
-    @Query(value = "SELECT * FROM USERS",nativeQuery = true)
-    List<UserEntity> findalll();
+
 }

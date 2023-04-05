@@ -16,13 +16,12 @@ public class AdminService {
     }
 
     public void deleteUserById(Long id) {
-//
+        if(!adminRepository.existsById(id)){
+           // I'll add it later
+        }
         adminRepository.deleteById(id);
     }
 
-    public List<UserEntity> findAll(){
-        return adminRepository.findalll();
-    }
 
 
 }
