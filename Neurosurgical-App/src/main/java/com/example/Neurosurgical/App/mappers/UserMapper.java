@@ -7,7 +7,7 @@ public class UserMapper {
     public static UserDto toDto(UserEntity user){
 
         return UserDto.builder()
-                .emailFac(user.getEmailFac())
+                .emailFac(user.getEmailFaculty())
                 .emailPersonal(user.getEmailPersonal())
                 .lastName(user.getLastName())
                 .firstName(user.getFirstName())

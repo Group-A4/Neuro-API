@@ -15,6 +15,7 @@ import javax.persistence.Column;
 @Table(name = "users")
 @Builder
 public class UserEntity extends BaseEntity {
+
     @Column(name="password")
     private String password;
 
@@ -24,8 +25,8 @@ public class UserEntity extends BaseEntity {
     @Column(name="first_name")
     private String firstName;
 
-    @Column(name="email_faculta")
-    private String emailFac;
+    @Column(name="email_faculty")
+    private String emailFaculty;
 
     @Column(name="email_personal")
     private String emailPersonal;

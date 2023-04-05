@@ -7,7 +7,6 @@ import com.example.Neurosurgical.App.mappers.UserMapper;
 import com.example.Neurosurgical.App.model.dto.UserDto;
 import com.example.Neurosurgical.App.model.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jmx.export.notification.UnableToSendNotificationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,7 +52,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public void createUser(UserEntity user) throws UserAlreadyExistsException {
 
-        if(userDao.findByFacMail(user.getEmailFac()) != null)throw  new UserAlreadyExistsException("email in use.");
+        if(userDao.findByFacMail(user.getEmailFaculty()) != null)throw  new UserAlreadyExistsException("email in use.");
         userDao.save(user);
     }
 
