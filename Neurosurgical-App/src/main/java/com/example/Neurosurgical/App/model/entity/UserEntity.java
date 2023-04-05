@@ -15,13 +15,6 @@ import javax.persistence.Column;
 @Table(name = "users")
 @Builder
 public class UserEntity extends BaseEntity {
-//    @Column(name = "last_name")
-//    private String last_name ;
-//
-//
-//    @Column(name = "First_name")
-//    private String First_name;
-
     @Column(name="password")
     private String password;
 
