@@ -29,7 +29,7 @@ public class AdminController {
     {
         adminService.deleteUserById(id);
     }
-    @GetMapping(value = "/students" ,produces = "application/json")
+    @GetMapping(value = "/users" ,produces = "application/json")
     public List<UserEntity> getAll(){
 
         return adminService.findAll();
