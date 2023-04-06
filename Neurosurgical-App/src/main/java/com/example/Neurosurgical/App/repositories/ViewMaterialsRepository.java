@@ -17,6 +17,6 @@ public interface ViewMaterialsRepository extends JpaRepository<MaterialEntity, L
 
     List<MaterialEntity> findAll()
     {
-        @Query(value = "SELECT * FROM USERS",nativeQuery = true);
+        @Query(value = "SELECT * FROM Materials",nativeQuery = true);
     }
 }
