@@ -1,6 +1,6 @@
 package com.example.Neurosurgical.App.services;
 
-import com.example.Neurosurgical.App.dao.UserDao;
+import com.example.Neurosurgical.App.repository.UserDao;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.mappers.UserMapper;

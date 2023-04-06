@@ -1,7 +1,6 @@
-package com.example.Neurosurgical.App.dao;
+package com.example.Neurosurgical.App.repository;
 
 import com.example.Neurosurgical.App.model.entity.StudentEntity;
-import com.example.Neurosurgical.App.model.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
