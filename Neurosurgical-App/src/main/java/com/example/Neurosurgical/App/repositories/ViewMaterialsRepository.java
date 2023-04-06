@@ -10,13 +10,7 @@ import java.util.List;
 @Repository
 public interface ViewMaterialsRepository extends JpaRepository<MaterialEntity, Long>{
 
-    MaterialEntity findById(Long id)
-    {
-        @Query(value = "SELECT * FROM MATERIALS WHERE ID=" + id + ";",nativeQuery = true);
-    }
+    @Query(value = "SELECT * FROM Materials",nativeQuery = true)
+    List<MaterialEntity> findAll();
 
-    List<MaterialEntity> findAll()
-    {
-        @Query(value = "SELECT * FROM Materials",nativeQuery = true);
-    }
 }

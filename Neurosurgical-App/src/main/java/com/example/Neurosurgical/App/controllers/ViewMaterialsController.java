@@ -17,11 +17,11 @@ public class ViewMaterialsController {
         this.viewMaterialsService = viewMaterialsService;
     }
     @GetMapping(value = "/materials" ,produces = "application/json")
-    public List<MaterialsEntity> getAll(){
+    public List<MaterialEntity> getAll(){
 
-        return ViewMaterialsService.findAll();
+        return viewMaterialsService.findAll();
     }
-    public MaterialEnity findByID(Long id)
+    public MaterialEntity findByID(Long id)
     {
         return viewMaterialsService.findByID(id);
     }
