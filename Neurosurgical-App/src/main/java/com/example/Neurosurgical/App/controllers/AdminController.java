@@ -26,7 +26,6 @@ public class AdminController {
     }
     @GetMapping(value = "/users" ,produces = "application/json")
     public List<UserEntity> getAll(){
-
         return adminService.findAll();
     }
 
