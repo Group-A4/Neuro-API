@@ -3,7 +3,6 @@ package com.example.Neurosurgical.App.mappers;
 import com.example.Neurosurgical.App.models.dtos.UserStudentDTO;
 import com.example.Neurosurgical.App.models.entities.StudentEntity;
 import com.example.Neurosurgical.App.models.entities.UserEntity;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service

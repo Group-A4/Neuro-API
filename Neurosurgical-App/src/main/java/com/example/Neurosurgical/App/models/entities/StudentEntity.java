@@ -8,8 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.security.Timestamp;
+import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor
@@ -31,5 +30,5 @@ public class StudentEntity {
     private Integer semester;
 
     @Column(name = "birth_date")
-    private Timestamp birth_date;
+    private LocalDate birth_date;
 }

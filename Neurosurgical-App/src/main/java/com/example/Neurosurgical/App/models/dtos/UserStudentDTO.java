@@ -1,12 +1,12 @@
 package com.example.Neurosurgical.App.models.dtos;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
-import java.sql.Timestamp;
+
+import java.time.LocalDate;
 
 @Component
 @NoArgsConstructor
@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 @Getter
 public class UserStudentDTO {
     private Long id;
+    private String password;
     private String lastName;
     private String firstName;
     private String emailFaculty;
@@ -23,5 +24,6 @@ public class UserStudentDTO {
     private String code;
     private int year;
     private int semester;
-    private Timestamp birthDate;
+    private LocalDate birthDate;
+
 }

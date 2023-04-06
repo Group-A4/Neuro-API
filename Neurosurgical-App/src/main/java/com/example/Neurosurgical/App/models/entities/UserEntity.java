@@ -3,6 +3,7 @@ package com.example.Neurosurgical.App.models.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import javax.persistence.Column;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -13,6 +14,7 @@ import javax.persistence.Column;
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
     private Long id;
     @Column(name="password")
     private String password;
@@ -31,6 +33,5 @@ public class UserEntity {
 
     @Column(name="role")
     private Integer role;
-
 
 }

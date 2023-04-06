@@ -1,8 +1,9 @@
 package com.example.Neurosurgical.App.controllers;
 
-
 import com.example.Neurosurgical.App.exceptions.CannotRemoveLastAdminException;
 import com.example.Neurosurgical.App.exceptions.UserNotFoundException;
+import com.example.Neurosurgical.App.models.dtos.UserAdminDTO;
+import com.example.Neurosurgical.App.models.dtos.UserProfessorDTO;
 import com.example.Neurosurgical.App.models.dtos.UserStudentDTO;
 import com.example.Neurosurgical.App.models.entities.UserEntity;
 import com.example.Neurosurgical.App.services.AdminService;
@@ -41,4 +42,26 @@ public class AdminController {
 
 
 
+    @GetMapping(value = "/all/{id}" ,produces = "application/json")
+    public UserEntity getStudentById(@PathVariable Long id){
+        return adminService.findById(id);
+    }
+
+    @PostMapping(value = "/createAccount/student", produces = "application/json")
+    public void createStudent(@RequestBody UserStudentDTO userStudentDTO) {
+        adminService.createAccountStudent(userStudentDTO);
+    }
+
+    @PostMapping(value = "/createAccount/professor", produces = "application/json")
+    public void createAccountProfessor(@RequestBody UserProfessorDTO userProfessorDTO) {
+        adminService.createAccountProfessor(userProfessorDTO);
+    }
+
+    @PostMapping(value = "/createAccount/admin", produces = "application/json")
+    public void createAccountAdmin(@RequestBody UserAdminDTO userAdminDTO) {
+        adminService.createAccountAdmin(userAdminDTO);
+    }
+
+
 }
+
