@@ -14,4 +14,8 @@ public class ViewMaterialsService {
     {
         return viewMaterialsRepository.findById(id);
     }
+    public List<MaterialEntity> findAll()
+    {
+        return viewMaterialsRepository.findAll();
+    }
 }

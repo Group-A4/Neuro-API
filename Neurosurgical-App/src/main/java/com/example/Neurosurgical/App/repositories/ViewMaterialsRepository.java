@@ -12,6 +12,11 @@ public interface ViewMaterialsRepository extends JpaRepository<MaterialEntity, L
 
     MaterialEntity findById(Long id)
     {
-        @Query(value = "SELECT * FROM MATERIALS WHERE ID=" + id + ";",nativeQuery = true)
+        @Query(value = "SELECT * FROM MATERIALS WHERE ID=" + id + ";",nativeQuery = true);
+    }
+
+    List<MaterialEntity> findAll()
+    {
+        @Query(value = "SELECT * FROM USERS",nativeQuery = true);
     }
 }

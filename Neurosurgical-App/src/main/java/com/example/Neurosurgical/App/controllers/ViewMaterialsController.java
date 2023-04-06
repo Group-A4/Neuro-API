@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/materials")
 public class ViewMaterialsController {
     @Autowired
     private final ViewMaterialsService viewMaterialsService;
@@ -15,9 +16,14 @@ public class ViewMaterialsController {
     {
         this.viewMaterialsService = viewMaterialsService;
     }
+    @GetMapping(value = "/materials" ,produces = "application/json")
+    public List<MaterialsEntity> getAll(){
+
+        return ViewMaterialsService.findAll();
+    }
     public MaterialEnity findByID(Long id)
     {
-        viewMaterialsService.findByID(id);
+        return viewMaterialsService.findByID(id);
     }
 
 }
