@@ -16,7 +16,7 @@ import javax.persistence.Column;
 @Data
 @Builder
 @Table(name = "professors")
-public class ProfessorEntity extends UserEntity{
+public class ProfessorEntity {
     @Id
     private Long idUser;
 
