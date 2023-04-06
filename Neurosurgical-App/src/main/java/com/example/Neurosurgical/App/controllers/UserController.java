@@ -1,7 +1,7 @@
 package com.example.Neurosurgical.App.controllers;
 
-import com.example.Neurosurgical.App.exception.UserAlreadyExistsException;
-import com.example.Neurosurgical.App.exception.UserNotFoundException;
+import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
+import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.model.dto.UserDto;
 import com.example.Neurosurgical.App.model.entity.UserEntity;
 import com.example.Neurosurgical.App.services.UserService;
@@ -23,27 +23,27 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping(value = "" ,produces = "application/json")
+    @GetMapping(value = "", produces = "application/json")
     public List<UserDto> getAll(){
         return userService.findAll();
     }
 
-    @GetMapping(value = "/{id}" ,produces = "application/json")
+    @GetMapping(value = "/{id}", produces = "application/json")
     public Optional<UserDto> getById(@Valid @Min(0) @PathVariable Long id) throws UserNotFoundException {
         return userService.findById(id);
     }
 
-    @DeleteMapping(value = "/{id}" ,produces = "application/json")
+    @DeleteMapping(value = "/{id}", produces = "application/json")
     public void deleteUserById(@PathVariable Long id){
         userService.deleteUser(id);
     }
 
-    @PostMapping(value = "" ,produces = "application/json")
+    @PostMapping(value = "/create", produces = "application/json")
     public void createUser(@RequestBody UserEntity user) throws UserAlreadyExistsException {
         userService.createUser(user);
     }
 
-    @GetMapping(value = "/{mail}" ,produces = "application/json")
+    @GetMapping(value = "/{mail}", produces = "application/json")
     public UserDto findByMail(@PathVariable String mail) throws UserNotFoundException {
         return userService.findByFacMail(mail);
     }

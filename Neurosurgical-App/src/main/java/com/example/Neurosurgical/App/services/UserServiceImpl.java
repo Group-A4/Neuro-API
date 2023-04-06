@@ -1,8 +1,8 @@
 package com.example.Neurosurgical.App.services;
 
 import com.example.Neurosurgical.App.dao.UserDao;
-import com.example.Neurosurgical.App.exception.UserAlreadyExistsException;
-import com.example.Neurosurgical.App.exception.UserNotFoundException;
+import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
+import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.mappers.UserMapper;
 import com.example.Neurosurgical.App.model.dto.UserDto;
 import com.example.Neurosurgical.App.model.entity.UserEntity;
@@ -51,8 +51,9 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void createUser(UserEntity user) throws UserAlreadyExistsException {
+        if(userDao.findByFacMail(user.getEmailFaculty()) != null && userDao.findByPersonalMail(user.getEmailPersonal()) != null)
+            throw new UserAlreadyExistsException("email in use.");
 
-        if(userDao.findByFacMail(user.getEmailFaculty()) != null)throw  new UserAlreadyExistsException("email in use.");
         userDao.save(user);
     }
 

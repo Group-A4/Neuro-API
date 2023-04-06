@@ -31,5 +31,6 @@ public class UserEntity extends BaseEntity {
     @Column(name="email_personal")
     private String emailPersonal;
 
-
+    @Column(name="role")
+    private Integer role;
 }

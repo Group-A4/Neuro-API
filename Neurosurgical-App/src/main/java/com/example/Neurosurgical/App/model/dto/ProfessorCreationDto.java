@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.Column;
 import java.sql.Timestamp;
 
 @Component
@@ -15,7 +14,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class StudentDto {
+public class ProfessorCreationDto {
     private String lastName;
 
     private String firstName;
@@ -26,9 +25,7 @@ public class StudentDto {
 
     private String emailPersonal;
 
-    private int year;
+    private String degree;
 
-    private int semester;
-
-    private Timestamp birthDate;
+    private String password;
 }

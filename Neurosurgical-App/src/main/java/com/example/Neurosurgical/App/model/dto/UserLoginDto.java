@@ -8,10 +8,8 @@ import org.springframework.stereotype.Component;
 @Data
 @NoArgsConstructor
 public class UserLoginDto {
-
     @NotNull(message = "Email cannot be null !")
     private String emailFac;
     @NotNull(message = "Password cannot be null !")
     private String password;
-
 }
