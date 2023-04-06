@@ -17,19 +17,19 @@ import java.security.Timestamp;
 @Data
 @Builder
 @Table(name = "students")
-public class StudentEntity  {
+public class StudentEntity {
     @Id
     private Long idUser;
 
-    @Column(name="code")
+    @Column(name = "code")
     private String code;
 
-    @Column(name="year")
+    @Column(name = "year")
     private Integer year;
 
-    @Column(name="semester")
+    @Column(name = "semester")
     private Integer semester;
 
-    @Column(name="birth_date")
+    @Column(name = "birth_date")
     private Timestamp birth_date;
 }

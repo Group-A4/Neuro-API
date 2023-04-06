@@ -1,7 +1,6 @@
 package com.example.Neurosurgical.App.repositories;
 
 import com.example.Neurosurgical.App.models.entities.AdminEntity;
-import com.example.Neurosurgical.App.models.entities.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -16,3 +15,4 @@ public interface AdminRepository extends JpaRepository<AdminEntity, Long> {
     Long countAdmins();
 
 }
+
