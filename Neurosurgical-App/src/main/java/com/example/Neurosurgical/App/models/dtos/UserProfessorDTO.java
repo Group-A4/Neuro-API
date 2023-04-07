@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @Builder
 @Getter
-public class UserProfessorDTO {
+public class UserProfessorDTO implements EntityDTO {
     private Long id;
     private String lastName;
     private String firstName;

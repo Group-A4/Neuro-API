@@ -34,11 +34,20 @@ public class AdminController {
         return adminService.findUserStudentById(id);
     }
 
-    @PostMapping(value = "/updateStudent", produces = "application/json")
+    @PostMapping(value = "/updateAccount/student", produces = "application/json")
     public void updateStudent(@RequestBody UserStudentDTO userStudentDTO) {
         adminService.updateStudent(userStudentDTO);
     }
 
+    @PostMapping(value = "/updateAccount/professor", produces = "application/json")
+    public void updateStudent(@RequestBody UserProfessorDTO userProfessorDTO) {
+        adminService.updateProfessor(userProfessorDTO);
+    }
+
+    @PostMapping(value = "/updateAccount/admin", produces = "application/json")
+    public void updateStudent(@RequestBody UserAdminDTO userAdminDTO) {
+        adminService.updateAdmin(userAdminDTO);
+    }
 
 
     @GetMapping(value = "/all/{id}" ,produces = "application/json")

@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @Getter
-public class UserStudentDTO {
+public class UserStudentDTO implements EntityDTO {
     private Long id;
     private String password;
     private String lastName;

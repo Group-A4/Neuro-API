@@ -5,6 +5,7 @@ package com.example.Neurosurgical.App.services;
 import com.example.Neurosurgical.App.exceptions.CannotRemoveLastAdminException;
 import com.example.Neurosurgical.App.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.mappers.UserStudentDTOMapper;
+import com.example.Neurosurgical.App.models.dtos.EntityDTO;
 import com.example.Neurosurgical.App.models.dtos.UserAdminDTO;
 import com.example.Neurosurgical.App.models.dtos.UserProfessorDTO;
 import com.example.Neurosurgical.App.models.dtos.UserStudentDTO;
@@ -65,16 +66,70 @@ public class AdminService {
         return userRepository.findById(id);
     }
 
-    public void updateStudent(UserStudentDTO userStudentDTO) {
+    public void updateStudent(UserStudentDTO userStudentDTO) throws UserNotFoundException {
+        checkIfUserExist(userStudentDTO.getId());
+        // Update student repository and user repository
         userRepository.save(UserEntity.builder()
                 .id(userStudentDTO.getId())
-                .password(userRepository.findById(userStudentDTO.getId()).get().getPassword())
+                .password(userStudentDTO.getPassword())
                 .lastName(userStudentDTO.getLastName())
                 .firstName(userStudentDTO.getFirstName())
                 .emailFaculty(userStudentDTO.getEmailFaculty())
                 .emailPersonal(userStudentDTO.getEmailPersonal())
+                .role(userStudentDTO.getRole())
                 .build());
 
+        studentRepository.save(StudentEntity.builder()
+                .idUser(userStudentDTO.getId())
+                .code(userStudentDTO.getCode())
+                .year(userStudentDTO.getYear())
+                .semester(userStudentDTO.getSemester())
+                .birth_date(LocalDate.now())
+                .build());
+    }
+
+    public void updateProfessor(UserProfessorDTO userProfessorDTO) throws UserNotFoundException {
+        checkIfUserExist(userProfessorDTO.getId());
+
+        userRepository.save(UserEntity.builder()
+                .id(userProfessorDTO.getId())
+                .password(userProfessorDTO.getPassword())
+                .lastName(userProfessorDTO.getLastName())
+                .firstName(userProfessorDTO.getFirstName())
+                .emailFaculty(userProfessorDTO.getEmailFaculty())
+                .emailPersonal(userProfessorDTO.getEmailPersonal())
+                .role(userProfessorDTO.getRole())
+                .build());
+
+        professorRepository.save(ProfessorEntity.builder()
+                .idUser(userProfessorDTO.getId())
+                .degree(userProfessorDTO.getDegree())
+                .code(userProfessorDTO.getCode())
+                .build());
+    }
+
+    public void updateAdmin(UserAdminDTO userAdminDTO) throws UserNotFoundException {
+        checkIfUserExist(userAdminDTO.getId());
+
+        userRepository.save(UserEntity.builder()
+                .id(userAdminDTO.getId())
+                .password(userAdminDTO.getPassword())
+                .lastName(userAdminDTO.getLastName())
+                .firstName(userAdminDTO.getFirstName())
+                .emailFaculty(userAdminDTO.getEmailFaculty())
+                .emailPersonal(userAdminDTO.getEmailPersonal())
+                .role(userAdminDTO.getRole())
+                .build());
+
+        adminRepository.save(AdminEntity.builder()
+                .idUser(userAdminDTO.getId())
+                .build());
+    }
+
+    private void checkIfUserExist(Long id) throws UserNotFoundException {
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException();
+        }
     }
 
     public List<StudentEntity> findAllStudents() {return studentRepository.findAll();}
