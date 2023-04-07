@@ -28,6 +28,11 @@ public class UserController {
         return userService.findAll();
     }
 
+    @GetMapping(value = "role/{role}", produces = "application/json")
+    public List<UserDto> getAllWithRole(@Valid @Min(0) @PathVariable Integer role){
+        return userService.findAllWithRole(role);
+    }
+
     @GetMapping(value = "/{id}", produces = "application/json")
     public Optional<UserDto> getById(@Valid @Min(0) @PathVariable Long id) throws UserNotFoundException {
         return userService.findById(id);

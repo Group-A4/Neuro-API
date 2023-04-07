@@ -21,4 +21,6 @@ public interface UserDao extends JpaRepository<UserEntity,Long> {
     @Query(value = "SELECT * FROM USERS WHERE email_personal = :mail",nativeQuery = true)
     UserEntity findByPersonalMail(@Param("mail") String mail);
 
+    @Query(value = "SELECT * FROM USERS WHERE role = :p_role",nativeQuery = true)
+    List<UserEntity> findAllWithRole(@Param("p_role") Integer role);
 }

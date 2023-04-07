@@ -33,6 +33,14 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public List<UserDto> findAllWithRole(Integer role) {
+        return userDao.findAllWithRole(role)
+                .stream()
+                .map(UserMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void deleteUser(Long id) {
         userDao.deleteById(id);
     }
