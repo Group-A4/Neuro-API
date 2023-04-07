@@ -8,7 +8,7 @@ public enum UserRole {
 
     private final int value;
 
-    private UserRole(int value) {
+    UserRole(int value) {
         this.value = value;
     }
 

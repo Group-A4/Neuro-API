@@ -5,7 +5,6 @@ package com.example.Neurosurgical.App.services;
 import com.example.Neurosurgical.App.exceptions.CannotRemoveLastAdminException;
 import com.example.Neurosurgical.App.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.mappers.UserStudentDTOMapper;
-import com.example.Neurosurgical.App.models.dtos.EntityDTO;
 import com.example.Neurosurgical.App.models.dtos.UserAdminDTO;
 import com.example.Neurosurgical.App.models.dtos.UserProfessorDTO;
 import com.example.Neurosurgical.App.models.dtos.UserStudentDTO;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -47,7 +45,7 @@ public class AdminService {
             throw new UserNotFoundException();
         }
 
-        if(userRepository.findById(id).get().getRole() == UserRole.ADMIN.getValue() && adminRepository.countAdmins() == 1){
+        if(userRepository.findById(id).orElseThrow(UserNotFoundException::new).getRole() == UserRole.ADMIN.getValue() && adminRepository.countAdmins() == 1){
             throw new CannotRemoveLastAdminException();
         }
         userRepository.deleteById(id);
@@ -57,13 +55,6 @@ public class AdminService {
 
     public List<UserEntity> findAll(){
         return userRepository.findAll();
-    }
-
-    public Optional<UserEntity> findUserById(Long id) throws UserNotFoundException{
-        if (!userRepository.existsById(id)) {
-            throw new UserNotFoundException();
-        }
-        return userRepository.findById(id);
     }
 
     public void updateStudent(UserStudentDTO userStudentDTO) throws UserNotFoundException {
@@ -132,22 +123,15 @@ public class AdminService {
         }
     }
 
-    public List<StudentEntity> findAllStudents() {return studentRepository.findAll();}
-
     public UserStudentDTO findUserStudentById(Long id) throws UserNotFoundException {
-        if (!userRepository.existsById(id)) {
-            throw new UserNotFoundException();
-        }
-
-        UserEntity userEntity = userRepository.findById(id).get();
-        StudentEntity studentEntity = studentRepository.findById(id).get();
-
+        UserEntity userEntity = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        StudentEntity studentEntity = studentRepository.findById(id).orElseThrow(UserNotFoundException::new);
         return UserStudentDTOMapper.mapToDTO(userEntity, studentEntity);
     }
 
     public void createAccountStudent(UserStudentDTO userStudentDTO) {
         userRepository.save(UserEntity.builder()
-                .password(userStudentDTO.getPassword()) // <- asta vine in request si userStudentDTO ar trebui sa contina bydeafult parola
+                .password(userStudentDTO.getPassword())
                 .lastName(userStudentDTO.getLastName())
                 .firstName(userStudentDTO.getFirstName())
                 .emailFaculty(userStudentDTO.getEmailFaculty())
@@ -200,6 +184,6 @@ public class AdminService {
     }
 
     public UserEntity findById(Long id) {
-        return userRepository.findById(id).get();
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 }

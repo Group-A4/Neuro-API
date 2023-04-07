@@ -10,8 +10,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/materials")
 public class ViewMaterialsController {
-    @Autowired
+
+
     private final ViewMaterialsService viewMaterialsService;
+
+    @Autowired
     public ViewMaterialsController(ViewMaterialsService viewMaterialsService)
     {
         this.viewMaterialsService = viewMaterialsService;
@@ -21,7 +24,9 @@ public class ViewMaterialsController {
 
         return viewMaterialsService.findAll();
     }
-    public MaterialEntity findByID(Long id)
+
+    @GetMapping(value = "/materials/{id}" ,produces = "application/json")
+    public MaterialEntity findByID(@PathVariable Long id)
     {
         return viewMaterialsService.findByID(id);
     }

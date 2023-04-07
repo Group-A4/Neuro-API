@@ -9,15 +9,15 @@ import java.util.List;
 
 @Service
 public class ViewMaterialsService {
-    @Autowired
     private final ViewMaterialsRepository viewMaterialsRepository;
+    @Autowired
     public ViewMaterialsService(ViewMaterialsRepository viewMaterialsRepository)
     {
         this.viewMaterialsRepository=viewMaterialsRepository;
     }
     public MaterialEntity findByID(Long id)
     {
-        return viewMaterialsRepository.findById(id).get();
+        return viewMaterialsRepository.findById(id).orElse(null);
     }
     public List<MaterialEntity> findAll()
     {

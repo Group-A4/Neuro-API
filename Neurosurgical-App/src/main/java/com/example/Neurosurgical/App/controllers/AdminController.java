@@ -16,8 +16,12 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
 
+    private final AdminService adminService;
+
     @Autowired
-    private AdminService adminService;
+    public AdminController(AdminService adminService) {
+        this.adminService = adminService;
+    }
 
     @DeleteMapping("/delete/{id}")
     public void deleteUserById(@PathVariable Long id) throws UserNotFoundException, CannotRemoveLastAdminException
