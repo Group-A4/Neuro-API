@@ -55,7 +55,6 @@ public class ProfessorServiceImpl implements ProfessorService {
     @Override
     public void deleteProfessor(Long id) {
         professorDao.deleteById(id);
-        userDao.deleteById(id);
     }
 
     @Override
