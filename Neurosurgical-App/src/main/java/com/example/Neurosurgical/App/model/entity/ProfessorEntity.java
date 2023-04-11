@@ -20,9 +20,9 @@ public class ProfessorEntity {
     @Id
     private Long idUser;
 
-    @Column(name="code")
+    @Column(name="code", unique = true)
     private String code;
 
-    @Column(name="degree")
+    @Column(name="degree", unique = true)
     private String degree;
 }

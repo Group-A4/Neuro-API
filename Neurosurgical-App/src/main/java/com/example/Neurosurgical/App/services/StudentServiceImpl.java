@@ -1,12 +1,15 @@
 package com.example.Neurosurgical.App.services;
 
+import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.dao.StudentDao;
 import com.example.Neurosurgical.App.dao.UserDao;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.mappers.StudentMapper;
+import com.example.Neurosurgical.App.mappers.UserMapper;
 import com.example.Neurosurgical.App.model.dto.StudentCreationDto;
 import com.example.Neurosurgical.App.model.dto.StudentDto;
+import com.example.Neurosurgical.App.model.dto.UserDto;
 import com.example.Neurosurgical.App.model.entity.StudentEntity;
 import com.example.Neurosurgical.App.model.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,16 +40,11 @@ public class StudentServiceImpl implements StudentService{
         List<StudentDto> studentDtos = new ArrayList<>();
 
         for(var stud : studentEntities){
-            StudentDto studentDto = StudentMapper.toDto(stud);
             UserEntity userEntity = userEntities.stream()
                     .filter(x -> Objects.equals(x.getId(), stud.getIdUser()))
                     .findAny().get();
 
-            studentDto.setEmailFaculty(userEntity.getEmailFaculty());
-            studentDto.setEmailPersonal(userEntity.getEmailPersonal());
-            studentDto.setFirstName(userEntity.getFirstName());
-            studentDto.setLastName(userEntity.getLastName());
-            studentDtos.add(studentDto);
+            studentDtos.add(StudentMapper.toDto(userEntity, stud));
         }
 
         return studentDtos;
@@ -55,19 +53,12 @@ public class StudentServiceImpl implements StudentService{
     @Override
     public void deleteStudent(Long id){
         studentDao.deleteById(id);
+        userDao.deleteById(id);
     }
 
     @Override
     public Optional<StudentDto> findById(Long id) throws UserNotFoundException {
-        StudentDto studentDto = StudentMapper.toDto(studentDao.findById(id).get());
-        UserEntity userEntity = userDao.findById(id).get();
-
-        studentDto.setEmailFaculty(userEntity.getEmailFaculty());
-        studentDto.setEmailPersonal(userEntity.getEmailPersonal());
-        studentDto.setFirstName(userEntity.getFirstName());
-        studentDto.setLastName(userEntity.getLastName());
-
-        return Optional.of(studentDto);
+        return Optional.of(StudentMapper.toDto(userDao.findById(id).get(), studentDao.findById(id).get()));
     }
 
     @Override
@@ -79,15 +70,7 @@ public class StudentServiceImpl implements StudentService{
         if(studentDao.findByCode(studentCreationDto.getCode()) != null)
             throw new UserAlreadyExistsException("Code already in use!");
 
-        UserEntity user = UserEntity.builder()
-                .firstName(studentCreationDto.getFirstName())
-                .lastName(studentCreationDto.getLastName())
-                .emailFaculty(studentCreationDto.getEmailFaculty())
-                .emailPersonal(studentCreationDto.getEmailPersonal())
-                .password(studentCreationDto.getPassword())
-                .role(2)
-                .build();
-
+        UserEntity user = UserMapper.fromStudentCreationDtoToUserEntity(studentCreationDto);
         userDao.save(user);
 
         StudentEntity studentEntity = StudentEntity.builder()
@@ -102,16 +85,27 @@ public class StudentServiceImpl implements StudentService{
     }
 
     @Override
+    public void updateStudent(Long id, StudentDto studentDto){
+        checkIfExists(id);
+        StudentEntity studentToUpdate = StudentMapper.fromDto(studentDto);
+        studentToUpdate.setIdUser(id);
+        studentDao.save(studentToUpdate);
+
+        UserDto userToUpdate = UserMapper.fromStudentDtoToUserDto(studentDto);
+        new UserServiceImpl(userDao).updateUser(id, userToUpdate);
+    }
+
+    public void checkIfExists(Long id) {
+        if (studentDao.findById(id).isEmpty()) {
+            throw new EntityNotFoundException("Student", id);
+        }
+    }
+
+    @Override
     public Optional<StudentDto> findByCode(String code) throws UserNotFoundException {
         StudentEntity studentEntity = studentDao.findByCode(code);
         UserEntity userEntity = userDao.findById(studentEntity.getIdUser()).get();
 
-        StudentDto studentDto = StudentMapper.toDto(studentEntity);
-        studentDto.setFirstName(userEntity.getFirstName());
-        studentDto.setLastName(userEntity.getLastName());
-        studentDto.setEmailFaculty(userEntity.getEmailFaculty());
-        studentDto.setEmailPersonal(userEntity.getEmailPersonal());
-
-        return Optional.of(studentDto);
+        return Optional.of(StudentMapper.toDto(userEntity, studentEntity));
     }
 }

@@ -41,14 +41,17 @@ public class ProfessorController {
     }
 
     @DeleteMapping(value = "/{id}", produces = "application/json")
-    public void deleteUserById(@PathVariable Long id){
+    public void deleteUserById(@PathVariable @Valid @Min(0) Long id){
         professorService.deleteProfessor(id);
     }
 
     @PostMapping(value = "/create", produces = "application/json")
-    public void createProfessor(@RequestBody ProfessorCreationDto professorCreationDto) throws UserAlreadyExistsException {
+    public void createProfessor(@RequestBody @Valid ProfessorCreationDto professorCreationDto) throws UserAlreadyExistsException {
         professorService.createProfessor(professorCreationDto);
     }
 
-
+    @PutMapping("update/{id}")
+    public void updateProfessor(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid ProfessorDto professorDto) {
+        professorService.updateProfessor(id, professorDto);
+    }
 }

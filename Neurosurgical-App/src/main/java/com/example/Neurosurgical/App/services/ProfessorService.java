@@ -11,14 +11,10 @@ import java.util.Optional;
 
 @Service
 public interface ProfessorService {
-
     List<ProfessorDto> findAll();
-
     void deleteProfessor(Long id);
-
     Optional<ProfessorDto> findById(Long id) throws UserNotFoundException;
-
     void createProfessor(ProfessorCreationDto professorCreationDto) throws UserAlreadyExistsException;
-
+    void updateProfessor(Long id, ProfessorDto professorDto);
     Optional<ProfessorDto> findByCode(String code) throws UserNotFoundException;
 }

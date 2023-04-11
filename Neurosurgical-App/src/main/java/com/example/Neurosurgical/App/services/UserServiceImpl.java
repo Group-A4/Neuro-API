@@ -1,10 +1,13 @@
 package com.example.Neurosurgical.App.services;
 
+import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.dao.UserDao;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
+import com.example.Neurosurgical.App.mappers.ProfessorMapper;
 import com.example.Neurosurgical.App.mappers.UserMapper;
 import com.example.Neurosurgical.App.model.dto.UserDto;
+import com.example.Neurosurgical.App.model.entity.ProfessorEntity;
 import com.example.Neurosurgical.App.model.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,8 +18,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService{
-
-    @Autowired
     private final UserDao userDao;
 
     @Autowired
@@ -63,6 +64,24 @@ public class UserServiceImpl implements UserService{
             throw new UserAlreadyExistsException("email in use.");
 
         userDao.save(user);
+    }
+
+    @Override
+    public void updateUser(Long id, UserDto userDto){
+        checkIfExists(id);
+        UserEntity userToBeUpdated = userDao.findById(id).get();
+
+        UserEntity userToUpdate = UserMapper.fromDto(userDto);
+        userToUpdate.setId(id);
+        userToUpdate.setRole(userToBeUpdated.getRole());
+        userToUpdate.setPassword(userToBeUpdated.getPassword());
+        userDao.save(userToUpdate);
+    }
+
+    public void checkIfExists(Long id) {
+        if (userDao.findById(id).isEmpty()) {
+            throw new EntityNotFoundException("User", id);
+        }
     }
 
     @Override

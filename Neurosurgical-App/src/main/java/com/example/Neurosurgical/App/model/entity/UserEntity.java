@@ -25,10 +25,10 @@ public class UserEntity extends BaseEntity {
     @Column(name="first_name")
     private String firstName;
 
-    @Column(name="email_faculty")
+    @Column(name="email_faculty", unique = true)
     private String emailFaculty;
 
-    @Column(name="email_personal")
+    @Column(name="email_personal", unique = true)
     private String emailPersonal;
 
     @Column(name="role")

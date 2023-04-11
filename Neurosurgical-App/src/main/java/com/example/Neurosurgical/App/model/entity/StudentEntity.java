@@ -17,7 +17,7 @@ public class StudentEntity  {
     @Id
     private Long idUser;
 
-    @Column(name="code")
+    @Column(name="code", unique = true)
     private String code;
 
     @Column(name="year")
