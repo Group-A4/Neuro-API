@@ -2,8 +2,8 @@ package com.example.Neurosurgical.App.services;
 
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
-import com.example.Neurosurgical.App.model.dto.ProfessorCreationDto;
-import com.example.Neurosurgical.App.model.dto.ProfessorDto;
+import com.example.Neurosurgical.App.models.dtos.ProfessorCreationDto;
+import com.example.Neurosurgical.App.models.dtos.ProfessorDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

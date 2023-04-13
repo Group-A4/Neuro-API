@@ -1,4 +1,4 @@
-package com.example.Neurosurgical.App.model.dto;
+package com.example.Neurosurgical.App.models.dtos;
 
 
 import lombok.AllArgsConstructor;
@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.Column;
 import java.sql.Timestamp;
 
 @Component

@@ -1,4 +1,4 @@
-package com.example.Neurosurgical.App.model.dto;
+package com.example.Neurosurgical.App.models.dtos;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

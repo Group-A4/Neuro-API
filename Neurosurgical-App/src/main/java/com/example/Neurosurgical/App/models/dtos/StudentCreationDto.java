@@ -1,4 +1,4 @@
-package com.example.Neurosurgical.App.model.dto;
+package com.example.Neurosurgical.App.models.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

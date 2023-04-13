@@ -1,10 +1,8 @@
 package com.example.Neurosurgical.App.mappers;
 
-import com.example.Neurosurgical.App.model.dto.ProfessorCreationDto;
-import com.example.Neurosurgical.App.model.dto.ProfessorDto;
-import com.example.Neurosurgical.App.model.dto.StudentDto;
-import com.example.Neurosurgical.App.model.entity.ProfessorEntity;
-import com.example.Neurosurgical.App.model.entity.UserEntity;
+import com.example.Neurosurgical.App.models.dtos.ProfessorDto;
+import com.example.Neurosurgical.App.models.entities.ProfessorEntity;
+import com.example.Neurosurgical.App.models.entities.UserEntity;
 import org.springframework.stereotype.Component;
 
 @Component

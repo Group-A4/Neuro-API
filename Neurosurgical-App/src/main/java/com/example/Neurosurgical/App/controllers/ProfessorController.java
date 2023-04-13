@@ -3,8 +3,8 @@ package com.example.Neurosurgical.App.controllers;
 
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
-import com.example.Neurosurgical.App.model.dto.ProfessorCreationDto;
-import com.example.Neurosurgical.App.model.dto.ProfessorDto;
+import com.example.Neurosurgical.App.models.dtos.ProfessorCreationDto;
+import com.example.Neurosurgical.App.models.dtos.ProfessorDto;
 import com.example.Neurosurgical.App.services.ProfessorService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;

@@ -1,4 +1,4 @@
-package com.example.Neurosurgical.App.model.entity;
+package com.example.Neurosurgical.App.models.entities;
 
 
 import jakarta.persistence.Entity;

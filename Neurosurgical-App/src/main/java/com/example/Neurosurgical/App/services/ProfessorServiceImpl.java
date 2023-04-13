@@ -1,17 +1,17 @@
 package com.example.Neurosurgical.App.services;
 
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
-import com.example.Neurosurgical.App.dao.ProfessorDao;
-import com.example.Neurosurgical.App.dao.UserDao;
+import com.example.Neurosurgical.App.repositories.ProfessorRepository;
+import com.example.Neurosurgical.App.repositories.UserRepository;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.mappers.ProfessorMapper;
 import com.example.Neurosurgical.App.mappers.UserMapper;
-import com.example.Neurosurgical.App.model.dto.ProfessorCreationDto;
-import com.example.Neurosurgical.App.model.dto.ProfessorDto;
-import com.example.Neurosurgical.App.model.dto.UserDto;
-import com.example.Neurosurgical.App.model.entity.ProfessorEntity;
-import com.example.Neurosurgical.App.model.entity.UserEntity;
+import com.example.Neurosurgical.App.models.dtos.ProfessorCreationDto;
+import com.example.Neurosurgical.App.models.dtos.ProfessorDto;
+import com.example.Neurosurgical.App.models.dtos.UserDto;
+import com.example.Neurosurgical.App.models.entities.ProfessorEntity;
+import com.example.Neurosurgical.App.models.entities.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +23,11 @@ import java.util.Optional;
 
 @Service
 public class ProfessorServiceImpl implements ProfessorService {
-    private final ProfessorDao professorDao;
-    private final UserDao userDao;
+    private final ProfessorRepository professorDao;
+    private final UserRepository userDao;
 
     @Autowired
-    public ProfessorServiceImpl(ProfessorDao professorDao, UserDao userDao) {
+    public ProfessorServiceImpl(ProfessorRepository professorDao, UserRepository userDao) {
         this.professorDao = professorDao;
         this.userDao = userDao;
     }

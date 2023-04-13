@@ -1,4 +1,5 @@
-package com.example.Neurosurgical.App.model.dto;
+package com.example.Neurosurgical.App.models.dtos;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,12 +12,16 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto {
+public class ProfessorDto {
     private String lastName;
 
     private String firstName;
 
+    private String code;
+
     private String emailFaculty;
 
     private String emailPersonal;
+
+    private String degree;
 }

@@ -1,14 +1,12 @@
 package com.example.Neurosurgical.App.services;
 
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
-import com.example.Neurosurgical.App.dao.UserDao;
+import com.example.Neurosurgical.App.repositories.UserRepository;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
-import com.example.Neurosurgical.App.mappers.ProfessorMapper;
 import com.example.Neurosurgical.App.mappers.UserMapper;
-import com.example.Neurosurgical.App.model.dto.UserDto;
-import com.example.Neurosurgical.App.model.entity.ProfessorEntity;
-import com.example.Neurosurgical.App.model.entity.UserEntity;
+import com.example.Neurosurgical.App.models.dtos.UserDto;
+import com.example.Neurosurgical.App.models.entities.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +16,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService{
-    private final UserDao userDao;
+    private final UserRepository userDao;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao) {
+    public UserServiceImpl(UserRepository userDao) {
         this.userDao = userDao;
     }
 
