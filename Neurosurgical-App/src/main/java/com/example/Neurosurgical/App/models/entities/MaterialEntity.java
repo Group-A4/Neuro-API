@@ -1,8 +1,6 @@
 package com.example.Neurosurgical.App.models.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
@@ -13,11 +11,16 @@ import lombok.*;
 @Table(name = "materials")
 @Builder
 public class MaterialEntity extends BaseEntity{
+//    @ManyToOne
+//    @JoinColumn(name = "id_course")
+//    private CourseEntity course;
     @Column(name="id_course")
     private Long idCourse;
 
-    @Column(name="id_professor")
-    private Long idProfessor;
+
+    @ManyToOne
+    @JoinColumn(name = "id_professor", nullable = false)
+    private ProfessorEntity professor;
 
     @Column(name="title")
     private String title;

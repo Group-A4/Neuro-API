@@ -16,16 +16,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService{
-    private final UserRepository userDao;
+    private final UserRepository userRepository;
 
     @Autowired
     public UserServiceImpl(UserRepository userDao) {
-        this.userDao = userDao;
+        this.userRepository = userDao;
     }
 
     @Override
     public List<UserDto> findAll() {
-        return   userDao.findAll()
+        return   userRepository.findAll()
                 .stream()
                 .map(UserMapper::toDto)
                 .collect(Collectors.toList());
@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public List<UserDto> findAllWithRole(Integer role) {
-        return userDao.findAllWithRole(role)
+        return userRepository.findAllWithRole(role)
                 .stream()
                 .map(UserMapper::toDto)
                 .collect(Collectors.toList());
@@ -41,14 +41,14 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void deleteUser(Long id) {
-        userDao.deleteById(id);
+        userRepository.deleteById(id);
     }
 
     @Override
     public Optional<UserDto> findById(Long id) throws UserNotFoundException {
         Optional<UserEntity> user = null;
         try{
-            user = userDao.findById(id);
+            user = userRepository.findById(id);
         }catch (Exception e){
             throw new UserNotFoundException();
         }
@@ -58,26 +58,26 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void createUser(UserEntity user) throws UserAlreadyExistsException {
-        if(userDao.findByFacMail(user.getEmailFaculty()) != null && userDao.findByPersonalMail(user.getEmailPersonal()) != null)
+        if(userRepository.findByFacMail(user.getEmailFaculty()) != null && userRepository.findByPersonalMail(user.getEmailPersonal()) != null)
             throw new UserAlreadyExistsException("email in use.");
 
-        userDao.save(user);
+        userRepository.save(user);
     }
 
     @Override
     public void updateUser(Long id, UserDto userDto){
         checkIfExists(id);
-        UserEntity userToBeUpdated = userDao.findById(id).get();
+        UserEntity userToBeUpdated = userRepository.findById(id).get();
 
         UserEntity userToUpdate = UserMapper.fromDto(userDto);
         userToUpdate.setId(id);
         userToUpdate.setRole(userToBeUpdated.getRole());
         userToUpdate.setPassword(userToBeUpdated.getPassword());
-        userDao.save(userToUpdate);
+        userRepository.save(userToUpdate);
     }
 
     public void checkIfExists(Long id) {
-        if (userDao.findById(id).isEmpty()) {
+        if (userRepository.findById(id).isEmpty()) {
             throw new EntityNotFoundException("User", id);
         }
     }
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService{
     public UserDto findByFacMail(String mail) throws UserNotFoundException {
         UserEntity user = null;
         try{
-            user = userDao.findByFacMail(mail);
+            user = userRepository.findByFacMail(mail);
         }catch (Exception e){
             throw new UserNotFoundException();
         }

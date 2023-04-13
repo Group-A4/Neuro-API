@@ -1,17 +1,14 @@
 package com.example.Neurosurgical.App.models.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.*;
 
 import javax.persistence.Column;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
@@ -23,6 +20,19 @@ public class ProfessorEntity {
     @Column(name="code", unique = true)
     private String code;
 
-    @Column(name="degree", unique = true)
+    @Column(name="degree")
     private String degree;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "professor")
+    private List<MaterialEntity> materials;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "professor")
+    private List<DidacticEntity> teachings;
+
+    public ProfessorEntity(){
+        this.materials = new ArrayList<>();
+        this.teachings = new ArrayList<>();
+    }
 }

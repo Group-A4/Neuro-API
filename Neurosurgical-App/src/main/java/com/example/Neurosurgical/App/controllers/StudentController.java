@@ -5,6 +5,7 @@ import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsExceptio
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.models.dtos.StudentCreationDto;
 import com.example.Neurosurgical.App.models.dtos.StudentDto;
+import com.example.Neurosurgical.App.models.entities.CourseEntity;
 import com.example.Neurosurgical.App.services.StudentService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -52,5 +53,10 @@ public class StudentController {
     @PutMapping("update/{id}")
     public void updateStudent(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid StudentDto studentDto) {
         studentService.updateStudent(id, studentDto);
+    }
+
+    @GetMapping(value = "/{id}/courses", produces = "application/json")
+    public List<CourseEntity> findCoursesStudentFollows(@PathVariable @Valid @Min(0) Long id) {
+        return studentService.findCoursesStudentFollows(id);
     }
 }

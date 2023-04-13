@@ -1,14 +1,15 @@
 package com.example.Neurosurgical.App.models.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "courses")
 @Builder
@@ -28,4 +29,19 @@ public class CourseEntity extends BaseEntity{
     @Column(name="credits")
     private Integer credits;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "course")
+    private List<StudentFollowsCoursesEntity> registrations;
+
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "course")
+//    private Set<MaterialEntity> materials;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
+    private List<DidacticEntity> teachings;
+
+    public CourseEntity(){
+        this.teachings = new ArrayList<>();
+    }
 }

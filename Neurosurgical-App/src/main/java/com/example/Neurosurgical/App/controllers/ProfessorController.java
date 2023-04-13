@@ -5,6 +5,8 @@ import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsExceptio
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.models.dtos.ProfessorCreationDto;
 import com.example.Neurosurgical.App.models.dtos.ProfessorDto;
+import com.example.Neurosurgical.App.models.entities.CourseEntity;
+import com.example.Neurosurgical.App.models.entities.MaterialEntity;
 import com.example.Neurosurgical.App.services.ProfessorService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/professors")
@@ -53,5 +56,15 @@ public class ProfessorController {
     @PutMapping("update/{id}")
     public void updateProfessor(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid ProfessorDto professorDto) {
         professorService.updateProfessor(id, professorDto);
+    }
+
+    @GetMapping(value = "/{id}/materials", produces = "application/json")
+    public List<MaterialEntity> findMaterialsProfessorCreated(@PathVariable @Valid @Min(0) Long id) {
+        return professorService.findMaterialsProfessorCreated(id);
+    }
+
+    @GetMapping(value = "/{id}/courses", produces = "application/json")
+    public List<CourseEntity> findCoursesProfessorTechies(@PathVariable @Valid @Min(0) Long id) {
+        return professorService.findCoursesProfessorTechies(id);
     }
 }
