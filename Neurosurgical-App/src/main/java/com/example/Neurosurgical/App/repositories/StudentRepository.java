@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface StudentRepository extends JpaRepository<StudentEntity,Long> {
     @Query(value = "SELECT * FROM STUDENTS WHERE code = :code",nativeQuery = true)
     StudentEntity findByCode(@Param("code") String code);
+
+
 }
