@@ -48,12 +48,12 @@ public class CourseController {
     }
 
     @GetMapping(value = "/title={title}", produces = "application/json")
-    public Optional<CourseDto> findByTitle(@PathVariable @Valid String title) throws EntityNotFoundException {
+    public Optional<CourseDto> getByTitle(@PathVariable @Valid String title) throws EntityNotFoundException {
         return courseService.findByTitle(title);
     }
 
     @GetMapping(value = "/code={code}", produces = "application/json")
-    public Optional<CourseDto> findByCode(@PathVariable @Valid String code) throws EntityNotFoundException {
+    public Optional<CourseDto> getByCode(@PathVariable @Valid String code) throws EntityNotFoundException {
         return courseService.findByCode(code);
     }
     @PutMapping("/update/{id}")
@@ -61,8 +61,17 @@ public class CourseController {
         courseService.updateCourse(id, courseEntity);
     }
 
-//    @GetMapping(value = "/material={id}", produces = "application/json")
-//    public Optional<CourseDto> findByMaterial(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
-//        return courseService.findByMaterialId(id);
-//    }
+    @GetMapping(value="/material={id}", produces = "application/json")
+    public Optional<CourseDto> getByMaterialId(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
+        return courseService.findByMaterialId(id);
+    }
+    @GetMapping(value="/professor={id}", produces = "application/json")
+    public List<CourseDto> getAllByProfessorId(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
+        return courseService.findAllByProfessorId(id);
+    }
+
+    @GetMapping(value="/student={id}", produces = "application/json")
+    public List<CourseDto> getAllByStudentId(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
+        return courseService.findAllByStudentId(id);
+    }
 }

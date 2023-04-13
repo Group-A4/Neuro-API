@@ -17,4 +17,6 @@ public interface MaterialService{
     void createMaterial(MaterialEntity materialEntity) throws UserAlreadyExistsException;
     void updateMaterial(Long id, MaterialEntity materialEntity);
     Optional<MaterialDto> findByTitle(String title) throws UserNotFoundException;
+    List<MaterialDto> findAllByCourseId(Long id);
+    List<MaterialDto> findAllByTeacherId(Long id);
 }

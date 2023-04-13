@@ -7,6 +7,9 @@ import com.example.Neurosurgical.App.mappers.CourseMapper;
 import com.example.Neurosurgical.App.models.dtos.CourseDto;
 import com.example.Neurosurgical.App.models.entities.CourseEntity;
 import com.example.Neurosurgical.App.repositories.CourseRepository;
+import com.example.Neurosurgical.App.repositories.MaterialRepository;
+import com.example.Neurosurgical.App.repositories.ProfessorRepository;
+import com.example.Neurosurgical.App.repositories.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +22,16 @@ import java.util.stream.Collectors;
 public class CourseServiceImpl implements CourseService {
 
     public final CourseRepository courseRepository;
+    public final MaterialRepository materialRepository;
+    public final ProfessorRepository professorRepository;
+    public final StudentRepository studentRepository;
 
     @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository) {
+    public CourseServiceImpl(CourseRepository courseRepository, MaterialRepository materialRepository, ProfessorRepository professorRepository, StudentRepository studentRepository) {
         this.courseRepository = courseRepository;
+        this.materialRepository = materialRepository;
+        this.professorRepository = professorRepository;
+        this.studentRepository = studentRepository;
     }
 
     @Override
@@ -83,12 +92,25 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
-//    @Override
-//    public Optional<CourseDto> findByMaterial(Long id) throws UserNotFoundException {
-//        CourseEntity courseEntity = courseRepository.findByMaterial(id);
-//
-//        if(courseEntity == null) throw new EntityNotFoundException("course", id);
-//
-//        return Optional.of(CourseMapper.toDto(courseEntity));
-//    }
+    @Override
+    public Optional<CourseDto> findByMaterialId(Long id) throws UserNotFoundException {
+        CourseEntity courseEntity = materialRepository.findById(id).get().getCourse();
+        return Optional.of(CourseMapper.toDto(courseEntity));
+    }
+
+    @Override
+    public List<CourseDto> findAllByProfessorId(Long id) {
+        return professorRepository.findById(id).get().getTeachings()
+                .stream()
+                .map(teaching -> CourseMapper.toDto(teaching.getCourse()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CourseDto> findAllByStudentId(Long id) {
+        return studentRepository.findById(id).get().getEnrollments()
+                .stream()
+                .map(enrollment -> CourseMapper.toDto(enrollment.getCourse()))
+                .collect(Collectors.toList());
+    }
 }

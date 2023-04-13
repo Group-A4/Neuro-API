@@ -5,8 +5,11 @@ import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsExceptio
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.mappers.MaterialMapper;
 import com.example.Neurosurgical.App.models.dtos.MaterialDto;
+import com.example.Neurosurgical.App.models.entities.CourseEntity;
 import com.example.Neurosurgical.App.models.entities.MaterialEntity;
+import com.example.Neurosurgical.App.repositories.CourseRepository;
 import com.example.Neurosurgical.App.repositories.MaterialRepository;
+import com.example.Neurosurgical.App.repositories.ProfessorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +22,14 @@ import java.util.stream.Collectors;
 public class MaterialServiceImpl implements MaterialService {
 
     public final MaterialRepository materialRepository;
+    public final CourseRepository courseRepository;
+    public final ProfessorRepository professorRepository;
 
     @Autowired
-    public MaterialServiceImpl(MaterialRepository materialRepository) {
+    public MaterialServiceImpl(MaterialRepository materialRepository, CourseRepository courseRepository, ProfessorRepository professorRepository) {
         this.materialRepository = materialRepository;
+        this.courseRepository = courseRepository;
+        this.professorRepository = professorRepository;
     }
 
     @Override
@@ -71,6 +78,23 @@ public class MaterialServiceImpl implements MaterialService {
         if (materialRepository.findById(id).isEmpty()) {
             throw new EntityNotFoundException("Material", id);
         }
+    }
+
+    @Override
+    public List<MaterialDto> findAllByCourseId(Long id) {
+        CourseEntity courseEntity = courseRepository.findById(id).get();
+        return courseEntity.getMaterials()
+                .stream()
+                .map(MaterialMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MaterialDto> findAllByTeacherId(Long id) {
+        return professorRepository.findById(id).get().getMaterials()
+                .stream()
+                .map(MaterialMapper::toDto)
+                .collect(Collectors.toList());
     }
 }
 

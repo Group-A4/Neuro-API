@@ -19,8 +19,6 @@ public interface ProfessorService {
     void createProfessor(ProfessorCreationDto professorCreationDto) throws UserAlreadyExistsException;
     void updateProfessor(Long id, ProfessorDto professorDto);
     Optional<ProfessorDto> findByCode(String code) throws UserNotFoundException;
-//    List<MaterialEntity> findMaterialsProfessorCreated(Long id);
-//    List<CourseEntity> findCoursesProfessorTechies(Long id);
-//    Optional<ProfessorDto> findByMaterial(Long id) throws UserNotFoundException;
     List<ProfessorDto> findByCourseId(Long id) throws UserNotFoundException;
+    Optional<ProfessorDto> findByMaterialId(Long id) throws UserNotFoundException;
 }

@@ -17,6 +17,5 @@ public interface StudentService {
     void createStudent(StudentCreationDto studentCreationDto) throws UserAlreadyExistsException;
     void updateStudent(Long id, StudentDto studentDto);
     Optional<StudentDto> findByCode(String code) throws UserNotFoundException;
-//    List<CourseEntity> findCoursesStudentFollows(Long id);
     List<StudentDto> findByCourseId(Long id);
 }

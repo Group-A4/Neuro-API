@@ -110,11 +110,6 @@ public class StudentServiceImpl implements StudentService{
         return Optional.of(StudentMapper.toDto(userEntity, studentEntity));
     }
 
-//    @Override
-//    public List<CourseEntity> findCoursesStudentFollows(Long id) {
-//        return studentRepository.findById(id).get().getRegistrations().stream().map(x -> x.getCourse()).toList();
-//    }
-
     @Override
     public List<StudentDto> findByCourseId(Long id) {
         CourseEntity courseEntity = courseRepository.findById(id).get();

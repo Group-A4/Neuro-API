@@ -19,5 +19,7 @@ public interface CourseService {
     void updateCourse(Long id, CourseEntity courseEntity);
     Optional<CourseDto> findByCode(String code) throws UserNotFoundException;
     Optional<CourseDto> findByTitle(String code) throws UserNotFoundException;
-//    Optional<CourseDto> findByMaterial(Long id) throws UserNotFoundException;
+    Optional<CourseDto> findByMaterialId(Long id) throws UserNotFoundException;
+    List<CourseDto> findAllByProfessorId(Long id);
+    List<CourseDto> findAllByStudentId(Long id);
 }

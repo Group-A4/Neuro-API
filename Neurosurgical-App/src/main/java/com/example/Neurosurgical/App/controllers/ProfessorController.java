@@ -62,4 +62,9 @@ public class ProfessorController {
     public List<ProfessorDto> getByCourseId(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException {
         return professorService.findByCourseId(id);
     }
+
+    @GetMapping(value = "/material={id}", produces = "application/json")
+    public Optional<ProfessorDto> getByMaterialId(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException {
+        return professorService.findByMaterialId(id);
+    }
 }

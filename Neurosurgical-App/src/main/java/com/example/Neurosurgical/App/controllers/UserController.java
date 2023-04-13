@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/mail/{mail}", produces = "application/json")
-    public UserDto findByMail(@PathVariable @Valid String mail) throws UserNotFoundException {
+    public UserDto getByMail(@PathVariable @Valid String mail) throws UserNotFoundException {
         return userService.findByFacMail(mail);
     }
 

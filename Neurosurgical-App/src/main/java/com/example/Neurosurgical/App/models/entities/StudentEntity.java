@@ -33,5 +33,5 @@ public class StudentEntity  {
 
     @JsonIgnore
     @OneToMany(mappedBy = "student")
-    private List<StudentFollowsCoursesEntity> registrations;
+    private List<StudentFollowsCoursesEntity> enrollments;
 }
