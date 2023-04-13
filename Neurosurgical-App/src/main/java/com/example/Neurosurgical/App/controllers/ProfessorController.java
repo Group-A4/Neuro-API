@@ -58,13 +58,8 @@ public class ProfessorController {
         professorService.updateProfessor(id, professorDto);
     }
 
-    @GetMapping(value = "/{id}/materials", produces = "application/json")
-    public List<MaterialEntity> findMaterialsProfessorCreated(@PathVariable @Valid @Min(0) Long id) {
-        return professorService.findMaterialsProfessorCreated(id);
-    }
-
-    @GetMapping(value = "/{id}/courses", produces = "application/json")
-    public List<CourseEntity> findCoursesProfessorTechies(@PathVariable @Valid @Min(0) Long id) {
-        return professorService.findCoursesProfessorTechies(id);
+    @GetMapping(value = "/course={id}", produces = "application/json")
+    public List<ProfessorDto> getByCourseId(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException {
+        return professorService.findByCourseId(id);
     }
 }

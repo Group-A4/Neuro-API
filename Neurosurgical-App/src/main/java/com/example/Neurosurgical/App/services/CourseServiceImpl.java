@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 
@@ -25,11 +26,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseEntity> findAll() {
-        return courseRepository.findAll();
-//                .stream()
-//                .map(CourseMapper::toDto)
-//                .collect(Collectors.toList());
+    public List<CourseDto> findAll() {
+        return courseRepository.findAll()
+                .stream()
+                .map(CourseMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -56,7 +57,6 @@ public class CourseServiceImpl implements CourseService {
         // it changes the columns already found in the database.
         courseEntity.setId(id);
         courseRepository.save(courseEntity);
-
     }
 
     @Override
@@ -82,4 +82,13 @@ public class CourseServiceImpl implements CourseService {
             throw new EntityNotFoundException("Course", id);
         }
     }
+
+//    @Override
+//    public Optional<CourseDto> findByMaterial(Long id) throws UserNotFoundException {
+//        CourseEntity courseEntity = courseRepository.findByMaterial(id);
+//
+//        if(courseEntity == null) throw new EntityNotFoundException("course", id);
+//
+//        return Optional.of(CourseMapper.toDto(courseEntity));
+//    }
 }

@@ -11,12 +11,9 @@ import lombok.*;
 @Table(name = "materials")
 @Builder
 public class MaterialEntity extends BaseEntity{
-//    @ManyToOne
-//    @JoinColumn(name = "id_course")
-//    private CourseEntity course;
-    @Column(name="id_course")
-    private Long idCourse;
-
+    @ManyToOne
+    @JoinColumn(name = "id_course")
+    private CourseEntity course;
 
     @ManyToOne
     @JoinColumn(name = "id_professor", nullable = false)

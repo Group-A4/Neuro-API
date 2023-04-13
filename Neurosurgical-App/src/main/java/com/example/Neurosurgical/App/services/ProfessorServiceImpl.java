@@ -2,6 +2,7 @@ package com.example.Neurosurgical.App.services;
 
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.models.entities.*;
+import com.example.Neurosurgical.App.repositories.CourseRepository;
 import com.example.Neurosurgical.App.repositories.ProfessorRepository;
 import com.example.Neurosurgical.App.repositories.UserRepository;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
@@ -21,11 +22,13 @@ import java.util.*;
 public class ProfessorServiceImpl implements ProfessorService {
     private final ProfessorRepository professorRepository;
     private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
 
     @Autowired
-    public ProfessorServiceImpl(ProfessorRepository professorDao, UserRepository userDao) {
+    public ProfessorServiceImpl(ProfessorRepository professorDao, UserRepository userDao, CourseRepository courseRepository) {
         this.professorRepository = professorDao;
         this.userRepository = userDao;
+        this.courseRepository = courseRepository;
     }
 
     @Override
@@ -105,13 +108,39 @@ public class ProfessorServiceImpl implements ProfessorService {
         return Optional.of(ProfessorMapper.toDto(userEntity, professorEntity));
     }
 
-    @Override
-    public List<MaterialEntity> findMaterialsProfessorCreated(Long id) {
-        return professorRepository.findById(id).get().getMaterials();
-    }
+//    @Override
+//    public List<MaterialEntity> findMaterialsProfessorCreated(Long id) {
+//        return professorRepository.findById(id).get().getMaterials();
+//    }
+
+//    @Override
+//    public List<CourseEntity> findCoursesProfessorTechies(Long id) {
+//        return professorRepository.findById(id).get().getTeachings().stream().map(DidacticEntity::getCourse).toList();
+//    }
+
+//    @Override
+//    public Optional<ProfessorDto> findByMaterial(Long id) throws UserNotFoundException {
+//        MaterialEntity materialEntity = new MaterialServiceImpl().findById(id).get();
+//        ProfessorEntity professorEntity = professorRepository.findById(materialEntity.getIdProfessor()).get();
+//        UserEntity userEntity = userRepository.findById(professorEntity.getIdUser()).get();
+//
+//        return Optional.of(ProfessorMapper.toDto(userEntity, professorEntity));
+//    }
 
     @Override
-    public List<CourseEntity> findCoursesProfessorTechies(Long id) {
-        return professorRepository.findById(id).get().getTeachings().stream().map(DidacticEntity::getCourse).toList();
+    public List<ProfessorDto> findByCourseId(Long id) throws UserNotFoundException {
+        CourseEntity courseEntity = courseRepository.findById(id).get();
+        List<ProfessorEntity> professors = courseEntity.getTeachings().stream().map(DidacticEntity::getProfessor).toList();
+        List<UserEntity> users = userRepository.findAll();
+
+        List<ProfessorDto> professorDtos = new ArrayList<>();
+        for(var prof : professors){
+            UserEntity userEntity = users.stream()
+                    .filter(x -> Objects.equals(x.getId(), prof.getIdUser()))
+                    .findAny().get();
+            professorDtos.add(ProfessorMapper.toDto(userEntity, prof));
+        }
+
+        return professorDtos;
     }
 }

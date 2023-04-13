@@ -3,6 +3,7 @@ package com.example.Neurosurgical.App.controllers;
 
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
+import com.example.Neurosurgical.App.models.dtos.ProfessorDto;
 import com.example.Neurosurgical.App.models.dtos.StudentCreationDto;
 import com.example.Neurosurgical.App.models.dtos.StudentDto;
 import com.example.Neurosurgical.App.models.entities.CourseEntity;
@@ -55,8 +56,8 @@ public class StudentController {
         studentService.updateStudent(id, studentDto);
     }
 
-    @GetMapping(value = "/{id}/courses", produces = "application/json")
-    public List<CourseEntity> findCoursesStudentFollows(@PathVariable @Valid @Min(0) Long id) {
-        return studentService.findCoursesStudentFollows(id);
+    @GetMapping(value = "/course={id}", produces = "application/json")
+    public List<StudentDto> getByCourseId(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException {
+        return studentService.findByCourseId(id);
     }
 }

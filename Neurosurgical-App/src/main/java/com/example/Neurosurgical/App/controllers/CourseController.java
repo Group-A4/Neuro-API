@@ -4,6 +4,7 @@ package com.example.Neurosurgical.App.controllers;
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.models.dtos.CourseDto;
 import com.example.Neurosurgical.App.models.entities.CourseEntity;
+import com.example.Neurosurgical.App.models.entities.MaterialEntity;
 import com.example.Neurosurgical.App.services.CourseService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -27,7 +28,7 @@ public class CourseController {
     }
 
     @GetMapping(value = "", produces = "application/json")
-    public List<CourseEntity> getAll(){
+    public List<CourseDto> getAll(){
         return courseService.findAll();
     }
 
@@ -60,5 +61,8 @@ public class CourseController {
         courseService.updateCourse(id, courseEntity);
     }
 
-
+//    @GetMapping(value = "/material={id}", produces = "application/json")
+//    public Optional<CourseDto> findByMaterial(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
+//        return courseService.findByMaterialId(id);
+//    }
 }

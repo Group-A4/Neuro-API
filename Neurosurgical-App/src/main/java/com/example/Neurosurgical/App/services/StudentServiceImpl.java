@@ -1,7 +1,10 @@
 package com.example.Neurosurgical.App.services;
 
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
-import com.example.Neurosurgical.App.models.entities.CourseEntity;
+import com.example.Neurosurgical.App.mappers.ProfessorMapper;
+import com.example.Neurosurgical.App.models.dtos.ProfessorDto;
+import com.example.Neurosurgical.App.models.entities.*;
+import com.example.Neurosurgical.App.repositories.CourseRepository;
 import com.example.Neurosurgical.App.repositories.StudentRepository;
 import com.example.Neurosurgical.App.repositories.UserRepository;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
@@ -11,8 +14,6 @@ import com.example.Neurosurgical.App.mappers.UserMapper;
 import com.example.Neurosurgical.App.models.dtos.StudentCreationDto;
 import com.example.Neurosurgical.App.models.dtos.StudentDto;
 import com.example.Neurosurgical.App.models.dtos.UserDto;
-import com.example.Neurosurgical.App.models.entities.StudentEntity;
-import com.example.Neurosurgical.App.models.entities.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +24,13 @@ public class StudentServiceImpl implements StudentService{
 
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
 
     @Autowired
-    public StudentServiceImpl(StudentRepository studentDao, UserRepository userDao) {
+    public StudentServiceImpl(StudentRepository studentDao, UserRepository userDao, CourseRepository courseRepository) {
         this.studentRepository = studentDao;
         this.userRepository = userDao;
+        this.courseRepository = courseRepository;
     }
 
     @Override
@@ -107,8 +110,26 @@ public class StudentServiceImpl implements StudentService{
         return Optional.of(StudentMapper.toDto(userEntity, studentEntity));
     }
 
+//    @Override
+//    public List<CourseEntity> findCoursesStudentFollows(Long id) {
+//        return studentRepository.findById(id).get().getRegistrations().stream().map(x -> x.getCourse()).toList();
+//    }
+
     @Override
-    public List<CourseEntity> findCoursesStudentFollows(Long id) {
-        return studentRepository.findById(id).get().getRegistrations().stream().map(x -> x.getCourse()).toList();
+    public List<StudentDto> findByCourseId(Long id) {
+        CourseEntity courseEntity = courseRepository.findById(id).get();
+        List<StudentEntity> studentEntities = courseEntity.getRegistrations().stream().map(x -> x.getStudent()).toList();
+        List<UserEntity> users = userRepository.findAll();
+
+        List<StudentDto> studentDtos = new ArrayList<>();
+        for(var stud : studentEntities){
+            UserEntity userEntity = users.stream()
+                    .filter(x -> Objects.equals(x.getId(), stud.getIdUser()))
+                    .findAny().get();
+
+            studentDtos.add(StudentMapper.toDto(userEntity, stud));
+        }
+
+        return studentDtos;
     }
 }

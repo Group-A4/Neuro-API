@@ -33,9 +33,9 @@ public class CourseEntity extends BaseEntity{
     @OneToMany(mappedBy = "course")
     private List<StudentFollowsCoursesEntity> registrations;
 
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "course")
-//    private Set<MaterialEntity> materials;
+    @JsonIgnore
+    @OneToMany(mappedBy = "course")
+    private List<MaterialEntity> materials;
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
