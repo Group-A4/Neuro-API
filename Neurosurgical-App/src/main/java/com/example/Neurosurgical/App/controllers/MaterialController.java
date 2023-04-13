@@ -1,0 +1,60 @@
+package com.example.Neurosurgical.App.controllers;
+
+
+import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
+import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
+import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
+import com.example.Neurosurgical.App.models.dtos.CourseDto;
+import com.example.Neurosurgical.App.models.dtos.MaterialDto;
+import com.example.Neurosurgical.App.models.entities.MaterialEntity;
+import com.example.Neurosurgical.App.services.MaterialService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RequestMapping("/materials")
+@RestController
+public class MaterialController {
+    private final MaterialService materialService;
+
+    @Autowired
+    public MaterialController(MaterialService materialService) {
+        this.materialService = materialService;
+    }
+
+    @GetMapping(value = "", produces = "application/json")
+    public List<MaterialDto> getAll(){
+        return materialService.findAll();
+    }
+
+    @GetMapping(value = "/{id}", produces = "application/json")
+    public Optional<MaterialDto> getById(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
+        return materialService.findById(id);
+    }
+
+    @DeleteMapping(value = "/{id}", produces = "application/json")
+    public void deleteMaterialById(@PathVariable @Valid @Min(0) Long id){
+        materialService.deleteMaterial(id);
+    }
+
+    @PostMapping(value = "/create", produces = "application/json")
+    public void createMaterial(@RequestBody @Valid MaterialEntity materialEntity){
+        materialService.createMaterial(materialEntity);
+    }
+
+    @GetMapping(value = "/title={title}", produces = "application/json")
+    public Optional<MaterialDto> findByTitle(@PathVariable @Valid String title) throws EntityNotFoundException {
+        return materialService.findByTitle(title);
+    }
+
+    @PutMapping("update/{id}")
+    public void updateMaterial(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid MaterialEntity materialEntity) {
+        materialService.updateMaterial(id, materialEntity);
+    }
+}
+
+
