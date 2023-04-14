@@ -5,6 +5,7 @@ import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.models.dtos.CourseDto;
+import com.example.Neurosurgical.App.models.dtos.MaterialCreationDto;
 import com.example.Neurosurgical.App.models.dtos.MaterialDto;
 import com.example.Neurosurgical.App.models.entities.MaterialEntity;
 import com.example.Neurosurgical.App.services.MaterialService;
@@ -42,8 +43,8 @@ public class MaterialController {
     }
 
     @PostMapping(value = "/create", produces = "application/json")
-    public void createMaterial(@RequestBody @Valid MaterialEntity materialEntity){
-        materialService.createMaterial(materialEntity);
+    public void createMaterial(@RequestBody @Valid MaterialCreationDto materialCreationDto){
+        materialService.createMaterial(materialCreationDto);
     }
 
     @GetMapping(value = "/title={title}", produces = "application/json")
@@ -51,8 +52,8 @@ public class MaterialController {
         return materialService.findByTitle(title);
     }
     @PutMapping("update/{id}")
-    public void updateMaterial(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid MaterialEntity materialEntity) {
-        materialService.updateMaterial(id, materialEntity);
+    public void updateMaterial(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid MaterialCreationDto materialCreationDto) {
+        materialService.updateMaterial(id, materialCreationDto);
     }
 
     @GetMapping(value = "/course={id}", produces = "application/json")

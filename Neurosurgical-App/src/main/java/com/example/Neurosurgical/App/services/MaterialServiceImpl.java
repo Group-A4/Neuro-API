@@ -4,9 +4,11 @@ import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.mappers.MaterialMapper;
+import com.example.Neurosurgical.App.models.dtos.MaterialCreationDto;
 import com.example.Neurosurgical.App.models.dtos.MaterialDto;
 import com.example.Neurosurgical.App.models.entities.CourseEntity;
 import com.example.Neurosurgical.App.models.entities.MaterialEntity;
+import com.example.Neurosurgical.App.models.entities.ProfessorEntity;
 import com.example.Neurosurgical.App.repositories.CourseRepository;
 import com.example.Neurosurgical.App.repositories.MaterialRepository;
 import com.example.Neurosurgical.App.repositories.ProfessorRepository;
@@ -52,16 +54,39 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     @Override
-    public void createMaterial(MaterialEntity materialEntity) throws UserAlreadyExistsException {
+    public void createMaterial(MaterialCreationDto materialCreationDto) throws UserAlreadyExistsException {
+        Optional<CourseEntity> courseEntityOptional = courseRepository.findById(materialCreationDto.getIdCourse());
+        Optional<ProfessorEntity> professorEntityOptional = professorRepository.findById(materialCreationDto.getIdProfessor());
+
+        if(courseEntityOptional.isEmpty()) throw new EntityNotFoundException("course", materialCreationDto.getIdCourse());
+        if(professorEntityOptional.isEmpty()) throw new EntityNotFoundException("professor", materialCreationDto.getIdProfessor());
+
+        MaterialEntity materialEntity = MaterialEntity.builder()
+                .course(courseEntityOptional.get())
+                .professor(professorEntityOptional.get())
+                .title(materialCreationDto.getTitle())
+                .link(materialCreationDto.getLink())
+                .build();
+
         materialRepository.save(materialEntity);
     }
 
     @Override
-    public void updateMaterial(Long id, MaterialEntity materialEntity) {
+    public void updateMaterial(Long id, MaterialCreationDto materialCreationDto) throws UserNotFoundException {
+        Optional<CourseEntity> courseEntityOptional = courseRepository.findById(materialCreationDto.getIdCourse());
+        Optional<ProfessorEntity> professorEntityOptional = professorRepository.findById(materialCreationDto.getIdProfessor());
+
+        if(courseEntityOptional.isEmpty()) throw new EntityNotFoundException("course", materialCreationDto.getIdCourse());
+        if(professorEntityOptional.isEmpty()) throw new EntityNotFoundException("professor", materialCreationDto.getIdProfessor());
+
         checkIfExists(id);
-        // save() -- when we send an object without id, it adds directly a row in database,
-        // but if we send an object with an existing id,
-        // it changes the columns already found in the database.
+        MaterialEntity materialEntity = MaterialEntity.builder()
+                .course(courseEntityOptional.get())
+                .professor(professorEntityOptional.get())
+                .title(materialCreationDto.getTitle())
+                .link(materialCreationDto.getLink())
+                .build();
+
         materialEntity.setId(id);
         materialRepository.save(materialEntity);
     }
