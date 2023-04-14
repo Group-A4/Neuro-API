@@ -4,6 +4,7 @@ import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.mappers.CourseMapper;
+import com.example.Neurosurgical.App.models.dtos.CourseCreationDto;
 import com.example.Neurosurgical.App.models.dtos.CourseDto;
 import com.example.Neurosurgical.App.models.entities.CourseEntity;
 import com.example.Neurosurgical.App.repositories.CourseRepository;
@@ -18,7 +19,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-
 public class CourseServiceImpl implements CourseService {
 
     public final CourseRepository courseRepository;
@@ -54,16 +54,14 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void createCourse(CourseEntity courseEntity) throws UserAlreadyExistsException {
-        courseRepository.save(courseEntity);
+    public void createCourse(CourseCreationDto courseCreationDto) throws UserAlreadyExistsException {
+        courseRepository.save(CourseMapper.fromCreationDto(courseCreationDto));
     }
 
     @Override
-    public void updateCourse(Long id, CourseEntity courseEntity) {
+    public void updateCourse(Long id, CourseCreationDto courseCreationDto) {
         checkIfExists(id);
-        // save() -- when we send an object without id, it adds directly a row in database,
-        // but if we send an object with an existing id,
-        // it changes the columns already found in the database.
+        CourseEntity courseEntity = CourseMapper.fromCreationDto(courseCreationDto);
         courseEntity.setId(id);
         courseRepository.save(courseEntity);
     }

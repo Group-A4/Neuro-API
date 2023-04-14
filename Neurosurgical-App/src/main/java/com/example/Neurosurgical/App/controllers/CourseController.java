@@ -2,6 +2,7 @@ package com.example.Neurosurgical.App.controllers;
 
 
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
+import com.example.Neurosurgical.App.models.dtos.CourseCreationDto;
 import com.example.Neurosurgical.App.models.dtos.CourseDto;
 import com.example.Neurosurgical.App.models.entities.CourseEntity;
 import com.example.Neurosurgical.App.models.entities.MaterialEntity;
@@ -38,13 +39,13 @@ public class CourseController {
     }
 
     @DeleteMapping(value = "/{id}", produces = "application/json")
-    public void deletCourseById(@PathVariable @Valid @Min(0) Long id){
+    public void deleteCourseById(@PathVariable @Valid @Min(0) Long id){
         courseService.deleteCourse(id);
     }
 
     @PostMapping(value = "/create", produces = "application/json")
-    public void createCourse(@RequestBody @Valid CourseEntity courseEntity){
-        courseService.createCourse(courseEntity);
+    public void createCourse(@RequestBody @Valid CourseCreationDto courseCreationDto){
+        courseService.createCourse(courseCreationDto);
     }
 
     @GetMapping(value = "/title={title}", produces = "application/json")
@@ -57,8 +58,8 @@ public class CourseController {
         return courseService.findByCode(code);
     }
     @PutMapping("/update/{id}")
-    public void updateCourse(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid CourseEntity courseEntity) {
-        courseService.updateCourse(id, courseEntity);
+    public void updateCourse(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid CourseCreationDto courseCreationDto) {
+        courseService.updateCourse(id, courseCreationDto);
     }
 
     @GetMapping(value="/material={id}", produces = "application/json")
