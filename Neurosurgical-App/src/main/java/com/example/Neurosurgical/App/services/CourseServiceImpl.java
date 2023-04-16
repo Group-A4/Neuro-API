@@ -1,19 +1,22 @@
 package com.example.Neurosurgical.App.services;
 
+import com.example.Neurosurgical.App.advice.exceptions.EntityAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.mappers.CourseMapper;
 import com.example.Neurosurgical.App.models.dtos.CourseCreationDto;
 import com.example.Neurosurgical.App.models.dtos.CourseDto;
-import com.example.Neurosurgical.App.models.entities.CourseEntity;
+import com.example.Neurosurgical.App.models.entities.*;
 import com.example.Neurosurgical.App.repositories.CourseRepository;
 import com.example.Neurosurgical.App.repositories.MaterialRepository;
 import com.example.Neurosurgical.App.repositories.ProfessorRepository;
 import com.example.Neurosurgical.App.repositories.StudentRepository;
+import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,11 +38,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseDto> findAll() {
-        return courseRepository.findAll()
-                .stream()
-                .map(CourseMapper::toDto)
-                .collect(Collectors.toList());
+    public List<CourseEntity> findAll() {
+        return courseRepository.findAll();
+//                .stream()
+//                .map(CourseMapper::toDto)
+//                .collect(Collectors.toList());
     }
 
     @Override
@@ -48,14 +51,19 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Optional<CourseDto> findById(Long id) throws UserNotFoundException {
-        CourseDto courseDto = CourseMapper.toDto(courseRepository.findById(id).get());
+    public Optional<CourseDto> findById(Long id) throws EntityNotFoundException {
+        CourseDto courseDto = CourseMapper.toDto(courseRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Course",id)));
         return Optional.of(courseDto);
     }
 
     @Override
-    public void createCourse(CourseCreationDto courseCreationDto) throws UserAlreadyExistsException {
-        courseRepository.save(CourseMapper.fromCreationDto(courseCreationDto));
+    public void createCourse(CourseCreationDto courseCreationDto) {
+        try{
+            courseRepository.save(CourseMapper.fromCreationDto(courseCreationDto));
+        }catch (Exception e){
+            throw new EntityAlreadyExistsException("Course",courseCreationDto.getTitle());
+        }
+
     }
 
     @Override
@@ -67,20 +75,19 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Optional<CourseDto> findByCode(String code) throws UserNotFoundException {
+    public Optional<CourseDto> findByCode(String code) throws EntityNotFoundException {
 
-        Optional<CourseEntity> courseEntity = Optional.of(courseRepository.findByCode(code));
+        CourseEntity courseEntity = Optional.ofNullable(courseRepository.findByCode(code))
+                .orElseThrow(() -> new EntityNotFoundException("Course", code));
 
-        if(courseEntity.isEmpty()) throw new EntityNotFoundException("course", code);
-
-        return Optional.of(CourseMapper.toDto(courseEntity.get()));
+        return Optional.of(CourseMapper.toDto(courseEntity));
     }
 
     @Override
-    public Optional<CourseDto> findByTitle(String title) throws UserNotFoundException {
-        CourseEntity courseEntity = courseRepository.findByTitle(title);
+    public Optional<CourseDto> findByTitle(String title) throws EntityNotFoundException {
 
-        if(courseEntity == null) throw new EntityNotFoundException("course", title);
+        CourseEntity courseEntity = Optional.ofNullable(courseRepository.findByTitle(title))
+                .orElseThrow(() -> new EntityNotFoundException("Course", title));
 
         return Optional.of(CourseMapper.toDto(courseEntity));
     }
@@ -91,14 +98,29 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Optional<CourseDto> findByMaterialId(Long id) throws UserNotFoundException {
-        CourseEntity courseEntity = materialRepository.findById(id).get().getCourse();
+    public Optional<CourseDto> findByMaterialId(Long id) throws EntityNotFoundException {
+
+        MaterialEntity materialEntity = Optional.of(materialRepository.findById(id))
+                .orElseThrow(() -> new EntityNotFoundException("Material",id )).get();
+
+        CourseEntity courseEntity = Optional.ofNullable(materialEntity.getCourse())
+                .orElseThrow(() -> new EntityNotFoundException("Course with material: ", materialEntity.getTitle()));
+
         return Optional.of(CourseMapper.toDto(courseEntity));
     }
 
     @Override
     public List<CourseDto> findAllByProfessorId(Long id) {
-        return professorRepository.findById(id).get().getTeachings()
+
+        ProfessorEntity professorEntity = Optional.of(professorRepository.findById(id))
+                .orElseThrow(() -> new EntityNotFoundException("Material",id)).get() ;
+
+        //check if professor has teachings
+        if(professorEntity.getTeachings().isEmpty()){
+            return new ArrayList<CourseDto>();
+        }
+
+        return professorEntity.getTeachings()
                 .stream()
                 .map(teaching -> CourseMapper.toDto(teaching.getCourse()))
                 .collect(Collectors.toList());
@@ -106,7 +128,15 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<CourseDto> findAllByStudentId(Long id) {
-        return studentRepository.findById(id).get().getEnrollments()
+
+        StudentEntity studentEntity = Optional.of(studentRepository.findById(id))
+                .orElseThrow(() -> new EntityNotFoundException("Student",id)).get() ;
+
+        //check if student has enrollments
+        if(studentEntity.getEnrollments().isEmpty()){
+            return new ArrayList<CourseDto>();
+        }
+        return studentEntity.getEnrollments()
                 .stream()
                 .map(enrollment -> CourseMapper.toDto(enrollment.getCourse()))
                 .collect(Collectors.toList());

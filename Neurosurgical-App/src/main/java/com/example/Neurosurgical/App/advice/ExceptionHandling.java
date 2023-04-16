@@ -1,6 +1,8 @@
 package com.example.Neurosurgical.App.advice;
 
 
+import com.example.Neurosurgical.App.advice.exceptions.EntityAlreadyExistsException;
+import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -22,4 +24,15 @@ public class ExceptionHandling {
         return ResponseEntity.badRequest().body(error);
     }
 
+    @ExceptionHandler({EntityNotFoundException.class})
+    public ResponseEntity<ErrorResponse> handle(EntityNotFoundException exception){
+        ErrorResponse error = new ErrorResponse(exception.getMessage());
+        return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler({EntityAlreadyExistsException.class})
+    public ResponseEntity<ErrorResponse> handle(EntityAlreadyExistsException exception){
+        ErrorResponse error = new ErrorResponse(exception.getMessage());
+        return ResponseEntity.badRequest().body(error);
+    }
 }

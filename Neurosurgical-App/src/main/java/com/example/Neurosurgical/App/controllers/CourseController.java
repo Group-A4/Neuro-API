@@ -29,7 +29,7 @@ public class CourseController {
     }
 
     @GetMapping(value = "", produces = "application/json")
-    public List<CourseDto> getAll(){
+    public List<CourseEntity> getAll(){
         return courseService.findAll();
     }
 
