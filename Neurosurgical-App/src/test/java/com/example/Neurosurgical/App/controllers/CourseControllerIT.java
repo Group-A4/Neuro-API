@@ -50,11 +50,11 @@ class CourseControllerIT {
     }
 
     @Test
-    void deleteCourseById_shouldDeleteCourse() throws Exception {
+    void deleteCourseById_shouldReturnBadRequest() throws Exception {
 
         Long id = 1000L;
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/courses/9"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/courses/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
