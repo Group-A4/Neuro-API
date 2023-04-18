@@ -46,7 +46,7 @@ class CourseControllerIT {
         Long id = 1000L;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/{id}", id))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
@@ -55,7 +55,7 @@ class CourseControllerIT {
         Long id = 1000L;
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/courses/{id}", id))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
@@ -92,7 +92,7 @@ class CourseControllerIT {
         String title = "ExpectedBadRequest";
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/title={title}", title))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
 
@@ -106,18 +106,18 @@ class CourseControllerIT {
     }
 
     @Test
-    void getByCode_shouldReturnCourseByCode_shouldReturnBadRequest() throws Exception {
+    void getByCode_shouldReturnCourseByCode_shouldReturnNotFound() throws Exception {
 
         String code = "Expected_Bad_Request";
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/code={code}", code))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
 
 
     @Test
-    void updateCourse_shouldReturnBadRequest() throws Exception {
+    void updateCourse_shouldReturnNotFound() throws Exception {
 
         Long id = 1000L;
 
@@ -133,7 +133,7 @@ class CourseControllerIT {
                         .content(objectMapper.writeValueAsString(courseCreationDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
 }
