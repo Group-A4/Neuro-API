@@ -1,5 +1,6 @@
 package com.example.Neurosurgical.App.services;
 
+import com.example.Neurosurgical.App.advice.exceptions.EntityAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.models.entities.*;
 import com.example.Neurosurgical.App.repositories.CourseRepository;
@@ -60,22 +61,27 @@ public class ProfessorServiceImpl implements ProfessorService {
     }
 
     @Override
-    public Optional<ProfessorDto> findById(Long id) throws UserNotFoundException {
+    public Optional<ProfessorDto> findById(Long id) {
+        checkIfExists(id);
         return Optional.of(ProfessorMapper
                 .toDto(userRepository.findById(id).get(), professorRepository.findById(id).get()));
     }
 
     @Override
-    public void createProfessor(ProfessorCreationDto professorCreationDto) throws UserAlreadyExistsException {
+    public void createProfessor(ProfessorCreationDto professorCreationDto) {
         if(userRepository.findByFacMail(professorCreationDto.getEmailFaculty()) != null)
-            throw new UserAlreadyExistsException("Faculty email already in use!");
+            throw new EntityAlreadyExistsException("Faculty email already in use!");
         if(userRepository.findByPersonalMail(professorCreationDto.getEmailPersonal()) != null)
-            throw new UserAlreadyExistsException("Personal email already in use!");
+            throw new EntityAlreadyExistsException("Personal email already in use!");
         if(professorRepository.findByCode(professorCreationDto.getCode()) != null)
-            throw new UserAlreadyExistsException("Code already in use!");
+            throw new EntityAlreadyExistsException("Code already in use!");
 
         UserEntity user = UserMapper.fromProfessorCreationDtoToUserEntity(professorCreationDto);
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new UserAlreadyExistsException("User already exists!");
+        }
 
         ProfessorEntity professorEntity = ProfessorEntity.builder()
                 .idUser(userRepository.findByFacMail(user.getEmailFaculty()).getId())
@@ -83,7 +89,11 @@ public class ProfessorServiceImpl implements ProfessorService {
                 .degree(professorCreationDto.getDegree())
                 .build();
 
-        professorRepository.save(professorEntity);
+        try{
+            professorRepository.save(professorEntity);
+        } catch (Exception e) {
+            throw new UserAlreadyExistsException("User already exists!");
+        }
     }
 
     @Override
@@ -105,16 +115,19 @@ public class ProfessorServiceImpl implements ProfessorService {
 
 
     @Override
-    public Optional<ProfessorDto> findByCode(String code) throws UserNotFoundException {
+    public Optional<ProfessorDto> findByCode(String code) {
         ProfessorEntity professorEntity = professorRepository.findByCode(code);
+        if (professorEntity == null)
+            throw new EntityNotFoundException("Professor", code);
+
         UserEntity userEntity = userRepository.findById(professorEntity.getIdUser()).get();
 
         return Optional.of(ProfessorMapper.toDto(userEntity, professorEntity));
     }
 
     @Override
-    public List<ProfessorDto> findByCourseId(Long id) throws UserNotFoundException {
-        CourseEntity courseEntity = courseRepository.findById(id).get();
+    public List<ProfessorDto> findByCourseId(Long id) {
+        CourseEntity courseEntity = courseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Course", id));
         List<ProfessorEntity> professors = courseEntity.getTeachings().stream().map(DidacticEntity::getProfessor).toList();
         List<UserEntity> users = userRepository.findAll();
 
@@ -130,8 +143,8 @@ public class ProfessorServiceImpl implements ProfessorService {
     }
 
     @Override
-    public Optional<ProfessorDto> findByMaterialId(Long id) throws UserNotFoundException{
-        MaterialEntity materialEntity = materialRepository.findById(id).get();
+    public Optional<ProfessorDto> findByMaterialId(Long id){
+        MaterialEntity materialEntity = materialRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Material", id));
         ProfessorEntity professorEntity = materialEntity.getProfessor();
         UserEntity userEntity = userRepository.findById(professorEntity.getIdUser()).get();
 

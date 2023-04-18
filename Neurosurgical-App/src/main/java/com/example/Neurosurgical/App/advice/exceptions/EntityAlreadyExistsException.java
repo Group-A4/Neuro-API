@@ -7,4 +7,10 @@ public class EntityAlreadyExistsException extends RuntimeException{
         super(String.format("%s %s already exists", entityName, name));
     }
 
+    public EntityAlreadyExistsException(String message) {
+        super(message);
+    }
+
+
+
 }

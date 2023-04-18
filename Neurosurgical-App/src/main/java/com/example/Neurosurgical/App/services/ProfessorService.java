@@ -15,10 +15,10 @@ import java.util.Optional;
 public interface ProfessorService {
     List<ProfessorDto> findAll();
     void deleteProfessor(Long id);
-    Optional<ProfessorDto> findById(Long id) throws UserNotFoundException;
-    void createProfessor(ProfessorCreationDto professorCreationDto) throws UserAlreadyExistsException;
+    Optional<ProfessorDto> findById(Long id);
+    void createProfessor(ProfessorCreationDto professorCreationDto);
     void updateProfessor(Long id, ProfessorDto professorDto);
-    Optional<ProfessorDto> findByCode(String code) throws UserNotFoundException;
-    List<ProfessorDto> findByCourseId(Long id) throws UserNotFoundException;
-    Optional<ProfessorDto> findByMaterialId(Long id) throws UserNotFoundException;
+    Optional<ProfessorDto> findByCode(String code);
+    List<ProfessorDto> findByCourseId(Long id);
+    Optional<ProfessorDto> findByMaterialId(Long id);
 }
