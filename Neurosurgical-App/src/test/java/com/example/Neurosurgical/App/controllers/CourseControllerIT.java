@@ -55,7 +55,7 @@ class CourseControllerIT {
         Long id = 1000L;
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/courses/9"))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test

@@ -53,6 +53,7 @@ public class StudentServiceImpl implements StudentService{
 
     @Override
     public void deleteStudent(Long id){
+        checkIfExists(id);
         studentRepository.deleteById(id);
         userRepository.deleteById(id);
     }

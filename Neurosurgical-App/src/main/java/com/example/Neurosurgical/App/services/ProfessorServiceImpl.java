@@ -54,6 +54,7 @@ public class ProfessorServiceImpl implements ProfessorService {
 
     @Override
     public void deleteProfessor(Long id) {
+        checkIfExists(id);
         professorRepository.deleteById(id);
         userRepository.deleteById(id);
     }

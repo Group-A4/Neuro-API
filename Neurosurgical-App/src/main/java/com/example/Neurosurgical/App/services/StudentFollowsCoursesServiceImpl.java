@@ -1,5 +1,6 @@
 package com.example.Neurosurgical.App.services;
 
+import com.example.Neurosurgical.App.advice.exceptions.EntityAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.models.entities.CourseEntity;
 import com.example.Neurosurgical.App.models.entities.DidacticEntity;
@@ -41,7 +42,12 @@ public class StudentFollowsCoursesServiceImpl implements StudentFollowsCoursesSe
         if (studentEntityOptional.isEmpty() || courseEntityOptional.isEmpty()) {
             throw new EntityNotFoundException("Student or course not found");
         }
-        studentFollowsCoursesRepository.save(new StudentFollowsCoursesEntity(studentEntityOptional.get(), courseEntityOptional.get()));
+
+        try {
+            studentFollowsCoursesRepository.save(new StudentFollowsCoursesEntity(studentEntityOptional.get(), courseEntityOptional.get()));
+        } catch (Exception e) {
+            throw new EntityAlreadyExistsException("studentFollowsCourses", "studentFollowsCourses");
+        }
     }
 
     @Override

@@ -44,6 +44,7 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public void deleteMaterial(Long id) {
+        checkIfExists(id);
         materialRepository.deleteById(id);
     }
 

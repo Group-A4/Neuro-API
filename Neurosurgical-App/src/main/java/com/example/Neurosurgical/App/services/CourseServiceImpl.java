@@ -47,6 +47,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void deleteCourse(Long id) {
+        checkIfExists(id);
         courseRepository.deleteById(id);
     }
 

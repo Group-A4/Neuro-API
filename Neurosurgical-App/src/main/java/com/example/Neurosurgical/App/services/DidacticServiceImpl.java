@@ -1,5 +1,6 @@
 package com.example.Neurosurgical.App.services;
 
+import com.example.Neurosurgical.App.advice.exceptions.EntityAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.models.entities.CourseEntity;
 import com.example.Neurosurgical.App.models.entities.DidacticEntity;
@@ -42,7 +43,11 @@ public class DidacticServiceImpl implements DidacticService{
         }
 
         DidacticEntity didacticEntity = new DidacticEntity( professorEntityOptional.get(), courseEntityOptional.get());
-        didacticRepository.save(didacticEntity);
+        try{
+            didacticRepository.save(didacticEntity);
+        }catch (Exception e){
+            throw new EntityAlreadyExistsException("Didactic", "Didactic");
+        }
     }
 
     @Override
