@@ -43,7 +43,7 @@ public class ProfessorController {
         return professorService.findByCode(code);
     }
 
-    @DeleteMapping(value = "/{id}", produces = "application/json")
+    @DeleteMapping(value = "delete/{id}", produces = "application/json")
     public void deleteUserById(@PathVariable @Valid @Min(0) Long id){
         professorService.deleteProfessor(id);
     }
