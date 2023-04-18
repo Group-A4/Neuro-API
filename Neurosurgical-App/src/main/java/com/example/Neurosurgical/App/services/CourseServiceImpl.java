@@ -38,11 +38,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseEntity> findAll() {
-        return courseRepository.findAll();
-//                .stream()
-//                .map(CourseMapper::toDto)
-//                .collect(Collectors.toList());
+    public List<CourseDto> findAll() {
+        return courseRepository.findAll()
+                .stream()
+                .map(CourseMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override

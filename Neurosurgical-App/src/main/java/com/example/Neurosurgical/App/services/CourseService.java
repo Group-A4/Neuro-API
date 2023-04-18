@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Service
 public interface CourseService {
-    List<CourseEntity> findAll();
+    List<CourseDto> findAll();
     void deleteCourse(Long id);
     Optional<CourseDto> findById(Long id) throws EntityNotFoundException;
     void createCourse(CourseCreationDto courseCreationDto) throws UserAlreadyExistsException;
