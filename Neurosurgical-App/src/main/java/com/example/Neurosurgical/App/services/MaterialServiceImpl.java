@@ -3,7 +3,9 @@ package com.example.Neurosurgical.App.services;
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
+import com.example.Neurosurgical.App.mappers.CourseMapper;
 import com.example.Neurosurgical.App.mappers.MaterialMapper;
+import com.example.Neurosurgical.App.models.dtos.CourseDto;
 import com.example.Neurosurgical.App.models.dtos.MaterialCreationDto;
 import com.example.Neurosurgical.App.models.dtos.MaterialDto;
 import com.example.Neurosurgical.App.models.entities.CourseEntity;
@@ -15,6 +17,7 @@ import com.example.Neurosurgical.App.repositories.ProfessorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,13 +47,12 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public void deleteMaterial(Long id) {
-        checkIfExists(id);
         materialRepository.deleteById(id);
     }
 
     @Override
     public Optional<MaterialDto> findById(Long id) throws UserNotFoundException {
-        MaterialDto materialDto = MaterialMapper.toDto(materialRepository.findById(id).get());
+        MaterialDto materialDto = MaterialMapper.toDto(materialRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Material",id)));
         return Optional.of(materialDto);
     }
 
@@ -94,9 +96,8 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public Optional<MaterialDto> findByTitle(String title) throws UserNotFoundException {
-        MaterialEntity materialEntity = materialRepository.findByTitle(title);
-
-        if(materialEntity == null) throw new EntityNotFoundException("material", title);
+        MaterialEntity materialEntity = Optional.ofNullable(materialRepository.findByTitle(title))
+                .orElseThrow(() -> new EntityNotFoundException("Material", title));
 
         return Optional.of(MaterialMapper.toDto(materialEntity));
     }
@@ -108,7 +109,8 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public List<MaterialDto> findAllByCourseId(Long id) {
-        CourseEntity courseEntity = courseRepository.findById(id).get();
+        CourseEntity courseEntity = Optional.of(courseRepository.findById(id)).get()
+                .orElseThrow(() -> new EntityNotFoundException("Course",id));
         return courseEntity.getMaterials()
                 .stream()
                 .map(MaterialMapper::toDto)
@@ -117,6 +119,8 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public List<MaterialDto> findAllByTeacherId(Long id) {
+        ProfessorEntity professorEntity = Optional.of(professorRepository.findById(id)).get()
+                .orElseThrow(() -> new EntityNotFoundException("Professor",id));
         return professorRepository.findById(id).get().getMaterials()
                 .stream()
                 .map(MaterialMapper::toDto)
