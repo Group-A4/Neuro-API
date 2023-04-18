@@ -3,7 +3,6 @@ package com.example.Neurosurgical.App.controllers;
 
 import com.example.Neurosurgical.App.models.dtos.CourseCreationDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
