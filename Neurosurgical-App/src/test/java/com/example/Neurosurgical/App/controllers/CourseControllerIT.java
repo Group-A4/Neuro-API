@@ -3,17 +3,20 @@ package com.example.Neurosurgical.App.controllers;
 
 import com.example.Neurosurgical.App.models.dtos.CourseCreationDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 class CourseControllerIT {
 
     @Autowired
@@ -31,11 +34,11 @@ class CourseControllerIT {
     }
 
     @Test
-    void getById_1_shouldReturnCourseById_shouldReturnOk() throws Exception {
+    void getById_3_shouldReturnCourseById_shouldReturnOk() throws Exception {
 
-        Long id = 1L;
+        Long id = 3L;
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/courses/{id}", 3L))
+        mockMvc.perform(MockMvcRequestBuilders.get("/courses/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
@@ -74,6 +77,23 @@ class CourseControllerIT {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
+    }
+    @Test
+    @Rollback
+    void createCourse_shouldCreateNewCourse_shouldReturnOk() throws Exception {
+        CourseCreationDto courseCreationDto = CourseCreationDto.builder()
+                .title("SpringBootTest123")
+                .year(1)
+                .semester(1)
+                .code("Spring_Boot_Test123")
+                .credits(4)
+                .build();
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/courses/create")
+                        .content(objectMapper.writeValueAsString(courseCreationDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
@@ -135,4 +155,24 @@ class CourseControllerIT {
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
+    @Test
+    @Rollback
+    void updateCourse_shouldReturnOk() throws Exception {
+        Long id = 3L;
+
+        CourseCreationDto courseCreationDto = CourseCreationDto.builder()
+                .title("SpringBootTestUpdate12")
+                .year(1)
+                .semester(1)
+                .code("Spring_Boot_Test_Update12")
+                .credits(4)
+                .build();
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/courses/update/{id}",id)
+                        .content(objectMapper.writeValueAsString(courseCreationDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+    }
 }
