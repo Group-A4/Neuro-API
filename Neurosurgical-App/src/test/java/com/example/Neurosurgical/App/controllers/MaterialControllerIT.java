@@ -54,10 +54,16 @@ class MaterialControllerIT {
     }
 
     @Test
-    void deleteMaterialById_shouldDeleteMaterial() throws Exception {
-
+    void deleteMaterialById_shouldDeleteMaterial_shouldReturnNotFound() throws Exception {
         Long id = 1000L;
+        mockMvc.perform(MockMvcRequestBuilders.delete("/materials/{id}", id))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
 
+    @Test
+    @Rollback
+    void deleteMaterialById_shouldDeleteMaterial_shouldReturnOk() throws Exception {
+        Long id = 3L;
         mockMvc.perform(MockMvcRequestBuilders.delete("/materials/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
