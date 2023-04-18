@@ -26,7 +26,6 @@ public class ExceptionHandling {
 
     @ExceptionHandler({EntityNotFoundException.class})
     public ResponseEntity<ErrorResponse> handle(EntityNotFoundException exception){
-        ErrorResponse error = new ErrorResponse(exception.getMessage());
         return ResponseEntity.notFound().build();
     }
 
