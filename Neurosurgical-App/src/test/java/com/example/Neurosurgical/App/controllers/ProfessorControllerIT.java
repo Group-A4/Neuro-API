@@ -143,8 +143,8 @@ public class ProfessorControllerIT {
     }
 
     @Test
-    void findByCode_shouldReturns_notFound() throws Exception {
-            String code = "NotFound";
+    void findByCode_shouldReturns_BadRequest() throws Exception {
+        String code = "NotFound";
 
         mockMvc.perform(MockMvcRequestBuilders.get("/professors/code={code}",code))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -167,7 +167,7 @@ public class ProfessorControllerIT {
     }
 
     @Test
-    void findByMateriaId_shouldReturns_isOk() throws Exception {
+    void findByMaterialId_shouldReturns_isOk() throws Exception {
         Long materialId = 5L;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/professors/material={id}",materialId))
@@ -175,7 +175,7 @@ public class ProfessorControllerIT {
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
     @Test
-    void findByMateriaId_shouldReturns_notFound() throws Exception {
+    void findByMaterialId_shouldReturns_notFound() throws Exception {
         Long materialId = 1000L;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/professors/material={id}",materialId))

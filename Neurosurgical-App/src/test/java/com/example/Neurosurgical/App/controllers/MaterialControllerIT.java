@@ -47,7 +47,7 @@ class MaterialControllerIT {
         Long id = 1000L;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/materials/{id}", id))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
@@ -55,12 +55,12 @@ class MaterialControllerIT {
 
         Long id = 1000L;
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/materials/9"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/materials/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    void createMaterial_shouldCreateNewMaterial_shouldReturnBadRequest() throws Exception {
+    void createMaterial_shouldCreateNewMaterial_shouldReturnNotFound() throws Exception {
 
         MaterialCreationDto materialCreationDto = MaterialCreationDto.builder()
                 .title("SpringBootTest14")
@@ -73,7 +73,7 @@ class MaterialControllerIT {
                         .content(objectMapper.writeValueAsString(materialCreationDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
 
     }
 
@@ -96,12 +96,12 @@ class MaterialControllerIT {
     }
 
     @Test
-    void getAllByCourseId_shouldReturnAllMaterialsByCourseId_shouldReturnBadRequest() throws Exception {
+    void getAllByCourseId_shouldReturnAllMaterialsByCourseId_shouldReturnNotFound() throws Exception {
 
         Long id = 1000L;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/materials/course={id}", id))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
@@ -114,25 +114,25 @@ class MaterialControllerIT {
     }
 
     @Test
-    void getAllByTeacherId_shouldReturnAllMaterialsByTeacherId_shouldReturnBadRequest() throws Exception {
+    void getAllByTeacherId_shouldReturnAllMaterialsByTeacherId_shouldReturnNotFound() throws Exception {
 
         Long id = 1000L;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/materials/teacher={id}", id))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
-    void getByTitle_shouldReturnMaterialByTitle_shouldReturnBadRequest() throws Exception {
+    void getByTitle_shouldReturnMaterialByTitle_shouldReturnNotFound() throws Exception {
 
         String title = "ExpectedBadRequest";
 
         mockMvc.perform(MockMvcRequestBuilders.get("/materials/title={title}", title))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
-    void updateMaterial_shouldReturnBadRequest() throws Exception {
+    void updateMaterial_shouldReturnNotFound() throws Exception {
 
         Long id = 1000L;
 
@@ -147,7 +147,7 @@ class MaterialControllerIT {
                         .content(objectMapper.writeValueAsString(materialCreationDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
 }

@@ -26,7 +26,7 @@ public class DidacticControllerIT {
     }
 
     @Test
-    void deleteDidacticByCourseIdAndProfessorId_shouldReturnBadRequest() throws Exception {
+    void deleteDidacticByCourseIdAndProfessorId_shouldReturnNotFound() throws Exception {
         Long courseId = 1000L;
         Long professorId = 1000L;
 
@@ -35,7 +35,7 @@ public class DidacticControllerIT {
     }
 
     @Test
-    void createDidacticByCourseIdAndProfessorId_shouldReturnBadRequest() throws Exception {
+    void createDidacticByCourseIdAndProfessorId_shouldReturnNotFound() throws Exception {
         Long courseId = 1000L;
         Long professorId = 1000L;
 
