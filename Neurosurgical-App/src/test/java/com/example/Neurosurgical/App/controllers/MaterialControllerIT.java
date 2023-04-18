@@ -4,18 +4,21 @@ package com.example.Neurosurgical.App.controllers;
 import com.example.Neurosurgical.App.models.dtos.CourseCreationDto;
 import com.example.Neurosurgical.App.models.dtos.MaterialCreationDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 class MaterialControllerIT {
 
     @Autowired
@@ -75,6 +78,27 @@ class MaterialControllerIT {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 
+    }
+
+    @Test
+    @Rollback
+    void createMaterial_shouldCreateNewMaterial_shouldReturnOk() throws Exception {
+
+        Long courseId = 3L;
+        Long idProfessor = 52L;
+
+        MaterialCreationDto materialCreationDto = MaterialCreationDto.builder()
+                .title("SpringBootTest14")
+                .idCourse(courseId)
+                .idProfessor(idProfessor)
+                .link("www.doc1.com")
+                .build();
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/materials/create")
+                        .content(objectMapper.writeValueAsString(materialCreationDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
@@ -143,7 +167,29 @@ class MaterialControllerIT {
                 .link("www.doc1.com")
                 .build();
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/materials/update/{id}",id)
+        mockMvc.perform(MockMvcRequestBuilders.put("/materials/update/{id}", id)
+                        .content(objectMapper.writeValueAsString(materialCreationDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    @Rollback
+    void updateMaterial_shouldReturnOk() throws Exception {
+        Long id = 1L;
+        Long courseId = 3L;
+        Long idProfessor = 52L;
+
+
+        MaterialCreationDto materialCreationDto = MaterialCreationDto.builder()
+                .title("SpringBootTestUpdate13")
+                .idCourse(courseId)
+                .idProfessor(idProfessor)
+                .link("www.doc1.com")
+                .build();
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/materials/update/{id}", id)
                         .content(objectMapper.writeValueAsString(materialCreationDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
