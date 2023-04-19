@@ -3,8 +3,10 @@ package com.example.Neurosurgical.App.controllers;
 
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
-import com.example.Neurosurgical.App.model.dto.ProfessorCreationDto;
-import com.example.Neurosurgical.App.model.dto.ProfessorDto;
+import com.example.Neurosurgical.App.models.dtos.ProfessorCreationDto;
+import com.example.Neurosurgical.App.models.dtos.ProfessorDto;
+import com.example.Neurosurgical.App.models.entities.CourseEntity;
+import com.example.Neurosurgical.App.models.entities.MaterialEntity;
 import com.example.Neurosurgical.App.services.ProfessorService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/professors")
@@ -40,15 +43,28 @@ public class ProfessorController {
         return professorService.findByCode(code);
     }
 
-    @DeleteMapping(value = "/{id}", produces = "application/json")
-    public void deleteUserById(@PathVariable Long id){
+    @DeleteMapping(value = "delete/{id}", produces = "application/json")
+    public void deleteUserById(@PathVariable @Valid @Min(0) Long id){
         professorService.deleteProfessor(id);
     }
 
     @PostMapping(value = "/create", produces = "application/json")
-    public void createProfessor(@RequestBody ProfessorCreationDto professorCreationDto) throws UserAlreadyExistsException {
+    public void createProfessor(@RequestBody @Valid ProfessorCreationDto professorCreationDto) throws UserAlreadyExistsException {
         professorService.createProfessor(professorCreationDto);
     }
 
+    @PutMapping("update/{id}")
+    public void updateProfessor(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid ProfessorDto professorDto) {
+        professorService.updateProfessor(id, professorDto);
+    }
 
+    @GetMapping(value = "/course={id}", produces = "application/json")
+    public List<ProfessorDto> getByCourseId(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException {
+        return professorService.findByCourseId(id);
+    }
+
+    @GetMapping(value = "/material={id}", produces = "application/json")
+    public Optional<ProfessorDto> getByMaterialId(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException {
+        return professorService.findByMaterialId(id);
+    }
 }

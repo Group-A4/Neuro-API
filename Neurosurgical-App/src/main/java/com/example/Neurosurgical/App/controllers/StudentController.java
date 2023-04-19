@@ -3,8 +3,10 @@ package com.example.Neurosurgical.App.controllers;
 
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
-import com.example.Neurosurgical.App.model.dto.StudentCreationDto;
-import com.example.Neurosurgical.App.model.dto.StudentDto;
+import com.example.Neurosurgical.App.models.dtos.ProfessorDto;
+import com.example.Neurosurgical.App.models.dtos.StudentCreationDto;
+import com.example.Neurosurgical.App.models.dtos.StudentDto;
+import com.example.Neurosurgical.App.models.entities.CourseEntity;
 import com.example.Neurosurgical.App.services.StudentService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -30,23 +32,32 @@ public class StudentController {
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
-    public Optional<StudentDto> getById(@Valid @Min(0) @PathVariable Long id) throws UserNotFoundException {
+    public Optional<StudentDto> getById(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException {
         return studentService.findById(id);
     }
 
     @GetMapping(value = "/code/{code}", produces = "application/json")
-    public Optional<StudentDto> getByCode(@Valid @Min(0) @PathVariable String code) throws UserNotFoundException {
+    public Optional<StudentDto> getByCode(@PathVariable @Valid @Min(0) String code) throws UserNotFoundException {
         return studentService.findByCode(code);
     }
 
     @DeleteMapping(value = "/{id}", produces = "application/json")
-    public void deleteUserById(@PathVariable Long id){
+    public void deleteUserById(@PathVariable @Valid @Min(0) Long id){
         studentService.deleteStudent(id);
     }
 
     @PostMapping(value = "/create", produces = "application/json")
-    public void createStudent(@RequestBody StudentCreationDto studentCreationDto) throws UserAlreadyExistsException {
+    public void createStudent(@RequestBody @Valid StudentCreationDto studentCreationDto) throws UserAlreadyExistsException {
         studentService.createStudent(studentCreationDto);
     }
 
+    @PutMapping("update/{id}")
+    public void updateStudent(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid StudentDto studentDto) {
+        studentService.updateStudent(id, studentDto);
+    }
+
+    @GetMapping(value = "/course={id}", produces = "application/json")
+    public List<StudentDto> getByCourseId(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException {
+        return studentService.findByCourseId(id);
+    }
 }
