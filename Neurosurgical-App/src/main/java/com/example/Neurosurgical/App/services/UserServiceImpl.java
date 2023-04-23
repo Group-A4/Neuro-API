@@ -53,7 +53,9 @@ public class UserServiceImpl implements UserService{
         }catch (Exception e){
             throw new UserNotFoundException();
         }
-
+        if (!user.isPresent()) {
+            throw new UserNotFoundException();
+        }
         return Optional.of(UserMapper.toDto(user.get()));
     }
 
@@ -91,7 +93,9 @@ public class UserServiceImpl implements UserService{
         }catch (Exception e){
             throw new UserNotFoundException();
         }
-
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
 
         return UserMapper.toDto(user);
     }
