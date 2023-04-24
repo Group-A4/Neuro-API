@@ -1,5 +1,6 @@
 package com.example.Neurosurgical.App.services;
 
+import com.example.Neurosurgical.App.advice.exceptions.CannotRemoveLastAdminException;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.models.dtos.UserDto;
@@ -13,7 +14,7 @@ import java.util.Optional;
 public interface UserService {
     List<UserDto> findAll();
     List<UserDto> findAllWithRole(Integer role);
-    void deleteUser(Long id);
+    void deleteUser(Long id)  throws UserNotFoundException, CannotRemoveLastAdminException;
     Optional<UserDto> findById(Long id) throws UserNotFoundException;
     void createUser(UserEntity user) throws UserAlreadyExistsException;
     void updateUser(Long id, UserDto userDto);

@@ -1,4 +1,4 @@
-package com.example.Neurosurgical.App.exceptions;
+package com.example.Neurosurgical.App.advice.exceptions;
 
 public class CannotRemoveLastAdminException extends RuntimeException{
     public CannotRemoveLastAdminException() {
