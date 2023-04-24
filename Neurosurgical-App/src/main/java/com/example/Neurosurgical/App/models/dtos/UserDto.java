@@ -19,4 +19,6 @@ public class UserDto {
     private String emailFaculty;
 
     private String emailPersonal;
+
+    private Integer role;
 }
