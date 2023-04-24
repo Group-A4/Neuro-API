@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -11,7 +12,6 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "answers_quizz")
 public class AnswerQuizzEntity extends BaseEntity{
     @Column(name = "answer_text")
@@ -24,4 +24,9 @@ public class AnswerQuizzEntity extends BaseEntity{
     @JsonIgnore
     @OneToMany( cascade = CascadeType.ALL, mappedBy = "answer")
     private List<CorrectAnswerQuizzEntity> correctAnswerQuizz;
+
+    public AnswerQuizzEntity(){
+        this.correctAnswerQuizz = new ArrayList<>();
+    }
+
 }

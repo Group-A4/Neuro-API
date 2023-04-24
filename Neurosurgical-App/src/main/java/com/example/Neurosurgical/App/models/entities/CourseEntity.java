@@ -50,6 +50,11 @@ public class CourseEntity extends BaseEntity{
     private List<QuestionQuizzEntity> questionsQuizzes;
 
     public CourseEntity(){
+        this.registrations = new ArrayList<>();
+        this.materials = new ArrayList<>();
         this.teachings = new ArrayList<>();
+
+        this.quizzes = new ArrayList<>();
+        this.questionsQuizzes = new ArrayList<>();
     }
 }
