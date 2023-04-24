@@ -76,23 +76,25 @@ public class ProfessorServiceImpl implements ProfessorService {
         if(professorRepository.findByCode(professorCreationDto.getCode()) != null)
             throw new EntityAlreadyExistsException("Code already in use!");
 
-        UserEntity user = UserMapper.fromProfessorCreationDtoToUserEntity(professorCreationDto);
+        UserEntity user;
         try {
+            user = UserMapper.fromProfessorCreationDtoToUserEntity(professorCreationDto);
             userRepository.save(user);
         } catch (Exception e) {
-            throw new UserAlreadyExistsException("User already exists!");
+            throw new UserAlreadyExistsException("User already exists or the input is invalid!");
         }
 
-        ProfessorEntity professorEntity = ProfessorEntity.builder()
-                .idUser(userRepository.findByFacMail(user.getEmailFaculty()).getId())
-                .code(professorCreationDto.getCode())
-                .degree(professorCreationDto.getDegree())
-                .build();
-
         try{
+            ProfessorEntity professorEntity = ProfessorEntity.builder()
+                    .idUser(userRepository.findByFacMail(user.getEmailFaculty()).getId())
+                    .code(professorCreationDto.getCode())
+                    .degree(professorCreationDto.getDegree())
+                    .build();
+
             professorRepository.save(professorEntity);
         } catch (Exception e) {
-            throw new UserAlreadyExistsException("User already exists!");
+            userRepository.deleteById(user.getId());
+            throw new UserAlreadyExistsException("User already exists or the input is invalid!");
         }
     }
 

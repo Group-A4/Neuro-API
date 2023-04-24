@@ -14,6 +14,7 @@ import com.example.Neurosurgical.App.mappers.UserMapper;
 import com.example.Neurosurgical.App.models.dtos.StudentCreationDto;
 import com.example.Neurosurgical.App.models.dtos.StudentDto;
 import com.example.Neurosurgical.App.models.dtos.UserDto;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -64,6 +65,7 @@ public class StudentServiceImpl implements StudentService{
     }
 
     @Override
+    @Transactional
     public void createStudent(StudentCreationDto studentCreationDto) throws UserAlreadyExistsException{
         if(userRepository.findByFacMail(studentCreationDto.getEmailFaculty()) != null)
             throw new UserAlreadyExistsException("Faculty email already in use!");
@@ -72,18 +74,28 @@ public class StudentServiceImpl implements StudentService{
         if(studentRepository.findByCode(studentCreationDto.getCode()) != null)
             throw new UserAlreadyExistsException("Code already in use!");
 
-        UserEntity user = UserMapper.fromStudentCreationDtoToUserEntity(studentCreationDto);
-        userRepository.save(user);
+        UserEntity user;
+        try {
+            user = UserMapper.fromStudentCreationDtoToUserEntity(studentCreationDto);
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new UserAlreadyExistsException("User already exists or the input is invalid!");
+        }
 
-        StudentEntity studentEntity = StudentEntity.builder()
-                .idUser(userRepository.findByFacMail(user.getEmailFaculty()).getId())
-                .code(studentCreationDto.getCode())
-                .year(studentCreationDto.getYear())
-                .semester(studentCreationDto.getSemester())
-                .birthDate(studentCreationDto.getBirthDate())
-                .build();
+        try {
+            StudentEntity studentEntity = StudentEntity.builder()
+                    .idUser(userRepository.findByFacMail(user.getEmailFaculty()).getId())
+                    .code(studentCreationDto.getCode())
+                    .year(studentCreationDto.getYear())
+                    .semester(studentCreationDto.getSemester())
+                    .birthDate(studentCreationDto.getBirthDate())
+                    .build();
 
-        studentRepository.save(studentEntity);
+            studentRepository.save(studentEntity);
+        } catch (Exception e) {
+            userRepository.deleteById(user.getId());
+            throw new UserAlreadyExistsException("User already exists or the input is invalid!");
+        }
     }
 
     @Override
