@@ -44,10 +44,10 @@ class UserControllerIT {
     }
 
     @Test
-    void getById_shouldReturnUserById_shouldReturnBadRequest() throws Exception {
+    void getById_shouldReturnUserById_shouldReturnNotFound() throws Exception {
         Long id = 1000L;
         mockMvc.perform(MockMvcRequestBuilders.get("/users/{id}", id))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
@@ -107,10 +107,10 @@ class UserControllerIT {
     }
 
     @Test
-    void getByMail_shouldReturnUserByMail_shouldReturnBadRequest() throws Exception {
+    void getByMail_shouldReturnUserByMail_shouldReturnNotFound() throws Exception {
         String mail = "aaaaaaaaa@umfiasi.ro";
         mockMvc.perform(MockMvcRequestBuilders.get("/users/mail/{mail}", mail))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
