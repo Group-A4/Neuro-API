@@ -31,6 +31,10 @@ public class ProfessorEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "professor")
     private List<DidacticEntity> teachings;
 
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "professor")
+    private List<QuestionQuizzEntity> questionsQuizzes;
+
     public ProfessorEntity(){
         this.materials = new ArrayList<>();
         this.teachings = new ArrayList<>();
