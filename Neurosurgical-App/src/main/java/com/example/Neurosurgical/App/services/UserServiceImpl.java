@@ -1,6 +1,8 @@
 package com.example.Neurosurgical.App.services;
 
+import com.example.Neurosurgical.App.advice.exceptions.CannotRemoveLastAdminException;
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
+import com.example.Neurosurgical.App.models.entities.Role;
 import com.example.Neurosurgical.App.repositories.UserRepository;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
@@ -21,7 +23,9 @@ public class UserServiceImpl implements UserService{
     @Autowired
     public UserServiceImpl(UserRepository userDao) {
         this.userRepository = userDao;
+
     }
+
 
     @Override
     public List<UserDto> findAll() {
@@ -40,9 +44,16 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void deleteUser(Long id) {
-        checkIfExists(id);
+    public void deleteUser(Long id) throws UserNotFoundException, CannotRemoveLastAdminException {
+        if(!userRepository.existsById(id)){
+            throw new UserNotFoundException();
+        }
+
+        if(userRepository.findById(id).orElseThrow(UserNotFoundException::new).getRole() == Role.ADMIN.ordinal() && userRepository.countByRole(Role.ADMIN.ordinal()) == 1){
+            throw new CannotRemoveLastAdminException();
+        }
         userRepository.deleteById(id);
+
     }
 
     @Override

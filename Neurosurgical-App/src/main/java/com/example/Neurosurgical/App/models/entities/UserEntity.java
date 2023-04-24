@@ -39,4 +39,6 @@ public class UserEntity extends BaseEntity {
 
     @Column(name="role")
     private Integer role;
+
+
 }
