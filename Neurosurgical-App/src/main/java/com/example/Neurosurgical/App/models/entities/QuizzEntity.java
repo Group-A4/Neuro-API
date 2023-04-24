@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -11,7 +12,6 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "quizz")
 public class QuizzEntity extends BaseEntity{
     @ManyToOne
@@ -25,5 +25,10 @@ public class QuizzEntity extends BaseEntity{
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "quizz")
     private List<QuizzHasQuestionsEntity> quizzHasQuestions;
 
+    public QuizzEntity(){
+
+        this.quizzHasQuestions = new ArrayList<>();
+
+    }
 
 }

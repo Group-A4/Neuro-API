@@ -38,5 +38,7 @@ public class ProfessorEntity {
     public ProfessorEntity(){
         this.materials = new ArrayList<>();
         this.teachings = new ArrayList<>();
+
+        this.questionsQuizzes = new ArrayList<>();
     }
 }
