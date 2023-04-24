@@ -1,5 +1,6 @@
 package com.example.Neurosurgical.App.controllers;
 
+import com.example.Neurosurgical.App.advice.exceptions.CannotRemoveLastAdminException;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.models.dtos.UserDto;
@@ -39,7 +40,8 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/{id}", produces = "application/json")
-    public void deleteUserById(@PathVariable @Valid @Min(0) Long id){
+    public void deleteUserById(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException, CannotRemoveLastAdminException
+    {
         userService.deleteUser(id);
     }
 
