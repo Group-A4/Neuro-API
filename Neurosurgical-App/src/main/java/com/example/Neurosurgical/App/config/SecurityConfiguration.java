@@ -1,7 +1,6 @@
 package com.example.Neurosurgical.App.config;
 
-import jakarta.servlet.Filter;
-import jakarta.servlet.annotation.WebFilter;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +26,7 @@ public class SecurityConfiguration {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("")
+                .requestMatchers("**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -42,3 +41,4 @@ public class SecurityConfiguration {
     }
 
 }
+

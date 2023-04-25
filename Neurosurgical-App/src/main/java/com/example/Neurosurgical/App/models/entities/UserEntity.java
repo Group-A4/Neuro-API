@@ -52,11 +52,10 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @Column(name = "role")
     private Integer role;
 
-    @Enumerated(EnumType.STRING)
-    private Role roleEnum;
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        Role roleEnum;
+        roleEnum = Role.values()[role];
         return List.of(new SimpleGrantedAuthority(roleEnum.name()));
     }
 
