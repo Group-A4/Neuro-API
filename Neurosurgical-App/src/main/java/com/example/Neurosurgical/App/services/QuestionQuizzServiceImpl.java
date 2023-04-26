@@ -100,19 +100,12 @@ public class QuestionQuizzServiceImpl implements QuestionQuizzService {
     public void createQuestionQuizz(QuestionQuizzDto questionQuizzDto) {
         long courseId = questionQuizzDto.getIdCourse();
         long professorId = questionQuizzDto.getIdProfessor();
-        String questionText = questionQuizzDto.getQuestionText();
 
         Optional<CourseEntity> courseEntityOptional = courseRepository.findById(courseId);
         Optional<ProfessorEntity> professorEntityOptional = professorRepository.findById(professorId);
 
         if(courseEntityOptional.isEmpty()) throw new EntityNotFoundException("course", courseId);
         if(professorEntityOptional.isEmpty()) throw new EntityNotFoundException("professor", professorId);
-
-        if(questionQuizzRepository.findByCourseIdProffesorIdQuestionText(
-                courseId, professorId, questionText
-        ).isPresent()) {
-            throw new EntityAlreadyExistsException("QuestionQuizz", "CourseId: " + courseId + ", professorId: " + professorId + ", text: " + questionQuizzDto.getQuestionText());
-        }
 
         QuestionQuizzEntity questionQuizzEntity = QuestionQuizzMapper.fromDto(questionQuizzDto);
 
