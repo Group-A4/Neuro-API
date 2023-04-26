@@ -11,8 +11,7 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AnswerQuizzDto {
+public class CorrectAnswerQuizzDto {
     private Long idQuestion;
-    private String answerText;
-    private boolean isCorrect;
+    private Long idAnswer;
 }

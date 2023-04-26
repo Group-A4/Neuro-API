@@ -1,9 +1,6 @@
 package com.example.Neurosurgical.App.models.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
@@ -18,7 +15,7 @@ public class CorrectAnswerQuizzEntity extends BaseEntity{
     @JoinColumn(name = "id_question")
     private QuestionQuizzEntity question;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_answer")
     private AnswerQuizzEntity answer;
 }
