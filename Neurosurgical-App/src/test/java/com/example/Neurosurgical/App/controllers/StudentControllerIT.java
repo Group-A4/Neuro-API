@@ -43,15 +43,15 @@ public class StudentControllerIT {
 
 
     @Test
-    void getById_shouldReturn_BadRequest() throws Exception {
+    void getById_shouldReturn_NotFound() throws Exception {
         Long id = 1000L;
         mockMvc.perform(MockMvcRequestBuilders.get("/students/{id}", id))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
     void getByCode_shouldReturnOk() throws Exception {
-        String code = "52125-795";
+        String code = "53208-551";
 
         mockMvc.perform(MockMvcRequestBuilders.get("/students/code/{code}",code))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -91,7 +91,7 @@ public class StudentControllerIT {
                 .semester(Integer.parseInt("1"))
                 .birthDate(Timestamp.valueOf("2000-06-11 00:00:00"))
                 .password("674")
-                .code("def")
+                .code("string")
                 .build();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/students/create")
@@ -159,11 +159,11 @@ public class StudentControllerIT {
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
     @Test
-    void findByCourseId_shouldReturn_BadRequest() throws Exception {
+    void findByCourseId_shouldReturn_NotFound() throws Exception {
         Long courseId = 1000L;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/students/course={id}",courseId))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
 
