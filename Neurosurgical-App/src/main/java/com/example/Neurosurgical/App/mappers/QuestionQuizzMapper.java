@@ -1,9 +1,11 @@
 package com.example.Neurosurgical.App.mappers;
 
+import com.example.Neurosurgical.App.models.dtos.AnswerQuizzDto;
 import com.example.Neurosurgical.App.models.dtos.QuestionQuizzDto;
 import com.example.Neurosurgical.App.models.entities.AnswerQuizzEntity;
 import com.example.Neurosurgical.App.models.entities.CorrectAnswerQuizzEntity;
 import com.example.Neurosurgical.App.models.entities.QuestionQuizzEntity;
+import com.example.Neurosurgical.App.models.entities.QuizzEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -31,4 +33,24 @@ public class QuestionQuizzMapper {
                 .build();
     }
 
+    public static QuestionQuizzEntity fromDto(QuestionQuizzDto questionQuizzDto) {
+
+            final List<AnswerQuizzDto> answersQuizzDtoList = questionQuizzDto.getAnswersQuestion();
+
+            final List<AnswerQuizzEntity> answersQuizzEntityList = new ArrayList<>();
+
+            final List<CorrectAnswerQuizzEntity> correctAnswersQuizzEntityList = new ArrayList<>();
+
+            answersQuizzDtoList.forEach(answer -> {
+                answersQuizzEntityList.add(AnswerQuizzMapper.fromDto(answer));
+                if(answer.isCorrect())
+                    correctAnswersQuizzEntityList.add(CorrectAnswerQuizzMapper.fromDto(answer));
+            });
+
+            return QuestionQuizzEntity.builder()
+                    .questionText(questionQuizzDto.getQuestionText())
+                    .answersQuestion(answersQuizzEntityList)
+                    .correctAnswersQuestion(correctAnswersQuizzEntityList)
+                    .build();
+    }
 }
