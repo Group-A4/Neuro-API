@@ -1,16 +1,12 @@
 package com.example.Neurosurgical.App.services;
 
-import com.example.Neurosurgical.App.advice.exceptions.EntityAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
-import com.example.Neurosurgical.App.mappers.AnswerQuizzMapper;
 import com.example.Neurosurgical.App.mappers.QuestionQuizzMapper;
 import com.example.Neurosurgical.App.models.dtos.QuestionQuizzDto;
 import com.example.Neurosurgical.App.models.entities.CourseEntity;
 import com.example.Neurosurgical.App.models.entities.ProfessorEntity;
 import com.example.Neurosurgical.App.models.entities.QuestionQuizzEntity;
-import com.example.Neurosurgical.App.repositories.CourseRepository;
-import com.example.Neurosurgical.App.repositories.ProfessorRepository;
-import com.example.Neurosurgical.App.repositories.QuestionQuizzRepository;
+import com.example.Neurosurgical.App.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -113,7 +109,7 @@ public class QuestionQuizzServiceImpl implements QuestionQuizzService {
         questionQuizzEntity.setProfessor(professorEntityOptional.get());
 
         questionQuizzRepository.save(questionQuizzEntity);
-    }
+}
 
     @Override
     public void deleteQuestionQuizzById(Long id) {
@@ -126,7 +122,6 @@ public class QuestionQuizzServiceImpl implements QuestionQuizzService {
         checkIfExistsById(id);
         long courseId = questionQuizzDto.getIdCourse();
         long professorId = questionQuizzDto.getIdProfessor();
-        String questionText = questionQuizzDto.getQuestionText();
 
         Optional<CourseEntity> courseEntityOptional = courseRepository.findById(courseId);
         Optional<ProfessorEntity> professorEntityOptional = professorRepository.findById(professorId);
@@ -134,17 +129,14 @@ public class QuestionQuizzServiceImpl implements QuestionQuizzService {
         if(courseEntityOptional.isEmpty()) throw new EntityNotFoundException("course", courseId);
         if(professorEntityOptional.isEmpty()) throw new EntityNotFoundException("professor", professorId);
 
-        QuestionQuizzEntity questionQuizz
-                = QuestionQuizzEntity.builder()
-                        .course(courseEntityOptional.get())
-                        .professor(professorEntityOptional.get())
-                        .questionText(questionText)
-                        .answersQuestion(questionQuizzDto.getAnswersQuestion()
-                                .stream().map(AnswerQuizzMapper::fromDto).collect(Collectors.toList()))
-                        .build();
-        questionQuizz.setId(id);
+        QuestionQuizzEntity questionQuizzEntity = QuestionQuizzMapper.fromDto(questionQuizzDto);
 
-        questionQuizzRepository.save(questionQuizz);
+        questionQuizzEntity.setCourse(courseEntityOptional.get());
+        questionQuizzEntity.setProfessor(professorEntityOptional.get());
+
+        questionQuizzEntity.setId(id);
+
+        questionQuizzRepository.save(questionQuizzEntity);
     }
 
     @Override

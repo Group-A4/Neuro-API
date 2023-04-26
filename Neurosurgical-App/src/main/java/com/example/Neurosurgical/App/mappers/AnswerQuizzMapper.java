@@ -3,6 +3,7 @@ package com.example.Neurosurgical.App.mappers;
 import com.example.Neurosurgical.App.models.dtos.AnswerQuizzDto;
 import com.example.Neurosurgical.App.models.entities.AnswerQuizzEntity;
 import com.example.Neurosurgical.App.models.entities.CorrectAnswerQuizzEntity;
+import com.example.Neurosurgical.App.models.entities.QuestionQuizzEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -24,9 +25,10 @@ public class AnswerQuizzMapper {
                 .build();
     }
 
-    public static AnswerQuizzEntity fromDto(AnswerQuizzDto answer) {
+    public static AnswerQuizzEntity fromDto(AnswerQuizzDto answer, QuestionQuizzEntity questionQuizzEntity) {
         return AnswerQuizzEntity.builder()
                 .answerText(answer.getAnswerText())
+                .question(questionQuizzEntity)
                 .build();
     }
 }

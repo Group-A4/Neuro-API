@@ -41,16 +41,20 @@ public class QuestionQuizzMapper {
 
             final List<CorrectAnswerQuizzEntity> correctAnswersQuizzEntityList = new ArrayList<>();
 
+            QuestionQuizzEntity questionQuizzEntity =
+                    QuestionQuizzEntity.builder()
+                    .questionText(questionQuizzDto.getQuestionText())
+                    .correctAnswersQuestion(correctAnswersQuizzEntityList)
+                    .answersQuestion(answersQuizzEntityList)
+                    .build();
+
             answersQuizzDtoList.forEach(answer -> {
-                answersQuizzEntityList.add(AnswerQuizzMapper.fromDto(answer));
+                if(!answer.isCorrect())
+                    answersQuizzEntityList.add(AnswerQuizzMapper.fromDto(answer, questionQuizzEntity));
                 if(answer.isCorrect())
-                    correctAnswersQuizzEntityList.add(CorrectAnswerQuizzMapper.fromDto(answer));
+                    correctAnswersQuizzEntityList.add(CorrectAnswerQuizzMapper.fromDto(answer, questionQuizzEntity));
             });
 
-            return QuestionQuizzEntity.builder()
-                    .questionText(questionQuizzDto.getQuestionText())
-                    .answersQuestion(answersQuizzEntityList)
-                    .correctAnswersQuestion(correctAnswersQuizzEntityList)
-                    .build();
+            return questionQuizzEntity;
     }
 }
