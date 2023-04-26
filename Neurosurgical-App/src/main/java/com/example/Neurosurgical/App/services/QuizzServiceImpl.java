@@ -4,6 +4,8 @@ import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.mappers.QuestionQuizzMapper;
 import com.example.Neurosurgical.App.models.dtos.QuestionQuizzDto;
 import com.example.Neurosurgical.App.models.entities.QuestionQuizzEntity;
+import com.example.Neurosurgical.App.repositories.AnswerQuizzRepository;
+import com.example.Neurosurgical.App.repositories.CorrectAnswerQuizzRepository;
 import com.example.Neurosurgical.App.repositories.QuestionQuizzRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +18,18 @@ import java.util.Optional;
 public class QuizzServiceImpl implements QuizzService {
 
     final private QuestionQuizzRepository questionQuizzRepository;
+    final private AnswerQuizzRepository answerQuizzRepository;
+    final private CorrectAnswerQuizzRepository correctAnswerQuizzRepository;
     final private int NR_QUESTIONS_FOR_QUIZZ = 5;
 
     @Autowired
-    public QuizzServiceImpl(QuestionQuizzRepository questionQuizzRepository) {
+    public QuizzServiceImpl(QuestionQuizzRepository questionQuizzRepository,
+                            AnswerQuizzRepository answerQuizzRepository,
+                            CorrectAnswerQuizzRepository correctAnswerQuizzRepository) {
+
         this.questionQuizzRepository = questionQuizzRepository;
+        this.answerQuizzRepository = answerQuizzRepository;
+        this.correctAnswerQuizzRepository = correctAnswerQuizzRepository;
     }
 
     @Override
@@ -41,7 +50,12 @@ public class QuizzServiceImpl implements QuizzService {
                 throw new EntityNotFoundException("Question", id);
             }
 
-            listQuestions.add(QuestionQuizzMapper.toDto(questionQuizzEntity.get()));
+            listQuestions.add(QuestionQuizzMapper.toDto(
+                    questionQuizzEntity.get(),
+                    this.answerQuizzRepository.findByIdQuestion(questionQuizzEntity.get().getId()),
+                    this.correctAnswerQuizzRepository.findByIdQuestion(questionQuizzEntity.get().getId())
+                    )
+            );
         }
 
         return Optional.of(listQuestions);
