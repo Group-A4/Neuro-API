@@ -29,21 +29,6 @@ public class QuestionQuizzMapper {
                 .build();
     }
 
-
-
-    //no usage!
-    public static QuestionQuizzEntity fromDto(QuestionQuizzDto questionQuizzDto,
-                                              List<AnswerQuizzEntity> answersQuizzEntity,
-                                              List<CorrectAnswerQuizzEntity> correctAnswersQuizzEntity) {
-
-        return QuestionQuizzEntity.builder()
-                .questionText(questionQuizzDto.getQuestionText())
-                .answersQuestion(answersQuizzEntity)
-                .correctAnswersQuestion(correctAnswersQuizzEntity)
-                .build();
-    }
-
-    //no usage!
     public static QuestionQuizzEntity fromDto(QuestionQuizzDto questionQuizzDto) {
 
             final List<AnswerQuizzDto> answersQuizzDtoList = questionQuizzDto.getAnswersQuestion();

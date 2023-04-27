@@ -42,7 +42,9 @@ public class QuizzServiceImpl implements QuizzService {
             throw new EntityNotFoundException("Question", id);
         }
 
-        for( int i=0 ; i < NR_QUESTIONS_FOR_QUIZZ ; ++ i) {
+        long mini = Math.min(nrQuestions, NR_QUESTIONS_FOR_QUIZZ);
+
+        for( int i=0 ; i < mini ; ++ i) {
             int randomQuestion = (int) (Math.random() * nrQuestions) + 1;
             Optional <QuestionQuizzEntity> questionQuizzEntity = this.questionQuizzRepository.findByCourseId(id, randomQuestion);
 
