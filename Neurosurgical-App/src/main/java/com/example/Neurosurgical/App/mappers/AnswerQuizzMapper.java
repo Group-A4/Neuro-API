@@ -24,7 +24,6 @@ public class AnswerQuizzMapper {
                 .build();
     }
 
-    // no usage !
     public static AnswerQuizzEntity fromDto(AnswerQuizzDto answer, QuestionQuizzEntity questionQuizzEntity) {
         return AnswerQuizzEntity.builder()
                 .answerText(answer.getAnswerText())

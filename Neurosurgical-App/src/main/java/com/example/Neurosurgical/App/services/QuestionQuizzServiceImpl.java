@@ -38,11 +38,11 @@ public class QuestionQuizzServiceImpl implements QuestionQuizzService {
 
     @Override
     public Optional<QuestionQuizzDto> findById(Long id) throws EntityNotFoundException {
-        Optional<QuestionQuizzEntity> list
-                = questionQuizzRepository.findById(id);
+        Optional<QuestionQuizzEntity> list = questionQuizzRepository.findById(id);
 
-        if(list.isEmpty())
+        if(list.isEmpty()){
             throw new EntityNotFoundException("QuestionQuizz", id.toString());
+        }
 
         return Optional.of(QuestionQuizzMapper.toDto(list.get(),
                 this.answerQuizzRepository.findByIdQuestion(id),
@@ -126,32 +126,12 @@ public class QuestionQuizzServiceImpl implements QuestionQuizzService {
         if(courseEntityOptional.isEmpty()) throw new EntityNotFoundException("course", courseId);
         if(professorEntityOptional.isEmpty()) throw new EntityNotFoundException("professor", professorId);
 
-        QuestionQuizzEntity questionQuizzEntity = QuestionQuizzEntity.builder()
-                .questionText(questionQuizzDto.getQuestionText())
-                .course(courseEntityOptional.get())
-                .professor(professorEntityOptional.get())
-                .build();
+        QuestionQuizzEntity questionQuizzEntity = QuestionQuizzMapper.fromDto(questionQuizzDto);
 
-        this.questionQuizzRepository.save(questionQuizzEntity);// save in question table
+        questionQuizzEntity.setCourse(courseEntityOptional.get());
+        questionQuizzEntity.setProfessor(professorEntityOptional.get());
 
-        for (AnswerQuizzDto answerQuizzDto : questionQuizzDto.getAnswersQuestion()){
-            AnswerQuizzEntity answerQuizzEntity = AnswerQuizzEntity.builder()
-                    .answerText(answerQuizzDto.getAnswerText())
-                    .question(questionQuizzEntity)
-                    .build();
-
-            this.answerQuizzRepository.save(answerQuizzEntity);//save in answer table
-
-            if( answerQuizzDto.isCorrect() ){
-                CorrectAnswerQuizzEntity correctAnswerQuizzEntity = CorrectAnswerQuizzEntity.builder()
-                        .answer(answerQuizzEntity)
-                        .question(questionQuizzEntity)
-                        .build();
-
-                this.correctAnswerQuizzRepository.save(correctAnswerQuizzEntity);//save in correct answer table
-
-            }
-        }
+        questionQuizzRepository.save(questionQuizzEntity);
 
 }
 
