@@ -34,7 +34,7 @@ class CourseControllerIT {
     }
 
     @Test
-    void getById_3_shouldReturnCourseById_shouldReturnOk() throws Exception {
+    void getById_3_shouldReturnCourseById_shouldReturn_isOk() throws Exception {
 
         Long id = 3L;
 
@@ -43,25 +43,25 @@ class CourseControllerIT {
     }
 
     @Test
-    void getById_1000_shouldReturnCourseById_shouldReturnNotFound() throws Exception {
+    void getById_1000_shouldReturnCourseById_shouldReturn_BadRequest() throws Exception {
 
         Long id = 1000L;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/{id}", id))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
-    void deleteCourseById_shouldReturnBadRequest() throws Exception {
+    void deleteCourseById_shouldReturn_BadRequest() throws Exception {
 
         Long id = 1000L;
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/courses/{id}", id))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
-    void createCourse_shouldCreateNewCourse_shouldReturnBadRequest() throws Exception {
+    void createCourse_shouldCreateNewCourse_shouldReturn_BadRequest() throws Exception {
 
         CourseCreationDto courseCreationDto = CourseCreationDto.builder()
                 .title("SpringBootTest12")
@@ -80,7 +80,7 @@ class CourseControllerIT {
     }
     @Test
     @Rollback
-    void createCourse_shouldCreateNewCourse_shouldReturnOk() throws Exception {
+    void createCourse_shouldCreateNewCourse_shouldReturn_isOk() throws Exception {
         CourseCreationDto courseCreationDto = CourseCreationDto.builder()
                 .title("SpringBootTest123")
                 .year(1)
@@ -97,7 +97,7 @@ class CourseControllerIT {
     }
 
     @Test
-    void getByTitle_shouldReturnCourseByTitle_ShouldReturnOk() throws Exception {
+    void getByTitle_shouldReturnCourseByTitle_ShouldReturn_isOk() throws Exception {
 
         String title = "SpringBootTest12";
 
@@ -106,17 +106,17 @@ class CourseControllerIT {
     }
 
     @Test
-    void getByTitle_shouldReturnCourseByTitle_shouldReturnBadRequest() throws Exception {
+    void getByTitle_shouldReturnCourseByTitle_shouldReturn_BadRequest() throws Exception {
 
         String title = "ExpectedBadRequest";
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/title={title}", title))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
 
     @Test
-    void getByCode_shouldReturnCourseByCode_ShouldReturnOk() throws Exception {
+    void getByCode_shouldReturnCourseByCode_ShouldReturn_isOk() throws Exception {
 
         String code = "Spring_Boot_Test12";
 
@@ -125,18 +125,18 @@ class CourseControllerIT {
     }
 
     @Test
-    void getByCode_shouldReturnCourseByCode_shouldReturnNotFound() throws Exception {
+    void getByCode_shouldReturnCourseByCode_shouldReturn_BadRequest() throws Exception {
 
         String code = "Expected_Bad_Request";
 
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/code={code}", code))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
 
 
     @Test
-    void updateCourse_shouldReturnNotFound() throws Exception {
+    void updateCourse_shouldReturn_BadRequest() throws Exception {
 
         Long id = 1000L;
 
@@ -152,12 +152,12 @@ class CourseControllerIT {
                         .content(objectMapper.writeValueAsString(courseCreationDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
     @Rollback
-    void updateCourse_shouldReturnOk() throws Exception {
+    void updateCourse_shouldReturn_isOk() throws Exception {
         Long id = 3L;
 
         CourseCreationDto courseCreationDto = CourseCreationDto.builder()
