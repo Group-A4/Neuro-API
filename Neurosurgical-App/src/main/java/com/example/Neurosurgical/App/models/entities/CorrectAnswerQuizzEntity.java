@@ -15,7 +15,7 @@ public class CorrectAnswerQuizzEntity extends BaseEntity{
     @JoinColumn(name = "id_question")
     private QuestionQuizzEntity question;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "id_answer")
     private AnswerQuizzEntity answer;
 }
