@@ -60,10 +60,10 @@ public class QuestionQuizzMapper {
                     .build();
 
             answersQuizzDtoList.forEach(answer -> {
-                if(!answer.isCorrect())
-                    answersQuizzEntityList.add(AnswerQuizzMapper.fromDto(answer, questionQuizzEntity));
+                AnswerQuizzEntity answerQuizzEntity = AnswerQuizzMapper.fromDto(answer, questionQuizzEntity);
+                answersQuizzEntityList.add(answerQuizzEntity);
                 if(answer.isCorrect())
-                    correctAnswersQuizzEntityList.add(CorrectAnswerQuizzMapper.fromDto(answer, questionQuizzEntity));
+                    correctAnswersQuizzEntityList.add(CorrectAnswerQuizzMapper.fromAnswerQuizzEntity(answerQuizzEntity, questionQuizzEntity));
             });
 
             return questionQuizzEntity;
