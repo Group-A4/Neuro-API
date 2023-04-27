@@ -8,13 +8,13 @@ import com.example.Neurosurgical.App.repositories.MaterialRepository;
 import com.example.Neurosurgical.App.repositories.ProfessorRepository;
 import com.example.Neurosurgical.App.repositories.UserRepository;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
-import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.mappers.ProfessorMapper;
 import com.example.Neurosurgical.App.mappers.UserMapper;
 import com.example.Neurosurgical.App.models.dtos.ProfessorCreationDto;
 import com.example.Neurosurgical.App.models.dtos.ProfessorDto;
 import com.example.Neurosurgical.App.models.dtos.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -26,13 +26,15 @@ public class ProfessorServiceImpl implements ProfessorService {
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
     private final MaterialRepository materialRepository;
+    private final PasswordEncoder encoder;
 
     @Autowired
-    public ProfessorServiceImpl(ProfessorRepository professorDao, UserRepository userDao, CourseRepository courseRepository, MaterialRepository materialRepository) {
+    public ProfessorServiceImpl(ProfessorRepository professorDao, UserRepository userDao, CourseRepository courseRepository, MaterialRepository materialRepository, PasswordEncoder encoder) {
         this.professorRepository = professorDao;
         this.userRepository = userDao;
         this.courseRepository = courseRepository;
         this.materialRepository = materialRepository;
+        this.encoder = encoder;
     }
 
     @Override
@@ -79,6 +81,7 @@ public class ProfessorServiceImpl implements ProfessorService {
         UserEntity user;
         try {
             user = UserMapper.fromProfessorCreationDtoToUserEntity(professorCreationDto);
+            user.setPassword(encoder.encode(professorCreationDto.getPassword()));
             userRepository.save(user);
         } catch (Exception e) {
             throw new UserAlreadyExistsException("User already exists or the input is invalid!");
@@ -106,7 +109,7 @@ public class ProfessorServiceImpl implements ProfessorService {
         professorRepository.save(professorToUpdate);
 
         UserDto userToUpdate = UserMapper.fromProfessorDtoToUserDto(professorDto);
-        new UserServiceImpl(userRepository).updateUser(id, userToUpdate);
+        new UserServiceImpl(userRepository, encoder).updateUser(id, userToUpdate);
     }
 
     public void checkIfExists(Long id) {

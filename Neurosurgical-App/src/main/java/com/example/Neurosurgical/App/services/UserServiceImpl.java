@@ -10,6 +10,7 @@ import com.example.Neurosurgical.App.mappers.UserMapper;
 import com.example.Neurosurgical.App.models.dtos.UserDto;
 import com.example.Neurosurgical.App.models.entities.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,11 +20,13 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
+    private final PasswordEncoder encoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userDao) {
+    public UserServiceImpl(UserRepository userDao, PasswordEncoder encoder) {
         this.userRepository = userDao;
 
+        this.encoder = encoder;
     }
 
 
@@ -75,6 +78,7 @@ public class UserServiceImpl implements UserService{
         if(userRepository.findByFacMail(user.getEmailFaculty()) != null && userRepository.findByPersonalMail(user.getEmailPersonal()) != null)
             throw new UserAlreadyExistsException("email in use.");
 
+        user.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
@@ -86,7 +90,7 @@ public class UserServiceImpl implements UserService{
         UserEntity userToUpdate = UserMapper.fromDto(userDto);
         userToUpdate.setId(id);
         userToUpdate.setRole(userToBeUpdated.getRole());
-        userToUpdate.setPassword(userToBeUpdated.getPassword());
+        userToUpdate.setPassword(encoder.encode(userToBeUpdated.getPassword()));
         userRepository.save(userToUpdate);
     }
 
