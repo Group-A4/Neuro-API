@@ -52,7 +52,20 @@ public class CourseEntity extends BaseEntity{
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
     private List<DidacticEntity> teachings;
 
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
+    private List<QuizzEntity> quizzes;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
+    private List<QuestionQuizzEntity> questionsQuizzes;
+
     public CourseEntity(){
+        this.registrations = new ArrayList<>();
+        this.materials = new ArrayList<>();
         this.teachings = new ArrayList<>();
+
+        this.quizzes = new ArrayList<>();
+        this.questionsQuizzes = new ArrayList<>();
     }
 }
