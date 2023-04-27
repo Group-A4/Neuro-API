@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Component
 public class AnswerQuizzMapper {
@@ -25,6 +24,7 @@ public class AnswerQuizzMapper {
                 .build();
     }
 
+    // no usage !
     public static AnswerQuizzEntity fromDto(AnswerQuizzDto answer, QuestionQuizzEntity questionQuizzEntity) {
         return AnswerQuizzEntity.builder()
                 .answerText(answer.getAnswerText())

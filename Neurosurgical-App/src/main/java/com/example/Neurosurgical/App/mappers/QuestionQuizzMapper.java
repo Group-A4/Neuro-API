@@ -5,7 +5,6 @@ import com.example.Neurosurgical.App.models.dtos.QuestionQuizzDto;
 import com.example.Neurosurgical.App.models.entities.AnswerQuizzEntity;
 import com.example.Neurosurgical.App.models.entities.CorrectAnswerQuizzEntity;
 import com.example.Neurosurgical.App.models.entities.QuestionQuizzEntity;
-import com.example.Neurosurgical.App.models.entities.QuizzEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,12 +14,9 @@ import java.util.stream.Collectors;
 @Component
 public class QuestionQuizzMapper {
 
-    public static QuestionQuizzDto toDto (QuestionQuizzEntity questionQuizzEntity){
-
-        final List<AnswerQuizzEntity> answersQuizzEntity = questionQuizzEntity.getAnswersQuestion();
-
-        final List<CorrectAnswerQuizzEntity> correctAnswersQuizzEntity = questionQuizzEntity.getCorrectAnswersQuestion();
-
+    public static QuestionQuizzDto toDto (QuestionQuizzEntity questionQuizzEntity,
+                                          List<AnswerQuizzEntity> answersQuizzEntity,
+                                          List<CorrectAnswerQuizzEntity> correctAnswersQuizzEntity){
 
         return QuestionQuizzDto.builder()
                 .questionText(questionQuizzEntity.getQuestionText())
@@ -33,6 +29,21 @@ public class QuestionQuizzMapper {
                 .build();
     }
 
+
+
+    //no usage!
+    public static QuestionQuizzEntity fromDto(QuestionQuizzDto questionQuizzDto,
+                                              List<AnswerQuizzEntity> answersQuizzEntity,
+                                              List<CorrectAnswerQuizzEntity> correctAnswersQuizzEntity) {
+
+        return QuestionQuizzEntity.builder()
+                .questionText(questionQuizzDto.getQuestionText())
+                .answersQuestion(answersQuizzEntity)
+                .correctAnswersQuestion(correctAnswersQuizzEntity)
+                .build();
+    }
+
+    //no usage!
     public static QuestionQuizzEntity fromDto(QuestionQuizzDto questionQuizzDto) {
 
             final List<AnswerQuizzDto> answersQuizzDtoList = questionQuizzDto.getAnswersQuestion();
@@ -57,4 +68,7 @@ public class QuestionQuizzMapper {
 
             return questionQuizzEntity;
     }
+
+
+
 }
