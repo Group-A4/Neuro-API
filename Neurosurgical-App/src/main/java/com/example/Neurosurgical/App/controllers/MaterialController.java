@@ -29,7 +29,7 @@ public class MaterialController {
     }
 
     @DeleteMapping(value = "/{id}", produces = "application/json")
-    public void deleteMaerialById(@PathVariable Long id) throws MaterialNotFoundException {
+    public void deleteMaterialById(@PathVariable Long id) throws MaterialNotFoundException {
         deleteMaterialService.deleteMaterialById(id);
     }
 
