@@ -37,14 +37,14 @@ class UserControllerIT {
     }
 
     @Test
-    void getById_shouldReturnUserById_shouldReturnOk() throws Exception {
+    void getById_shouldReturnUserById_shouldReturn_isOk() throws Exception {
         Long id = 60L;
         mockMvc.perform(MockMvcRequestBuilders.get("/users/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    void getById_shouldReturnUserById_shouldReturnNotFound() throws Exception {
+    void getById_shouldReturnUserById_shouldReturn_NotFound() throws Exception {
         Long id = 1000L;
         mockMvc.perform(MockMvcRequestBuilders.get("/users/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
@@ -52,21 +52,21 @@ class UserControllerIT {
 
     @Test
     @Rollback
-    void deleteUserById_shouldReturnOk() throws Exception {
+    void deleteUserById_shouldReturn_isOk() throws Exception {
         Long id = 60L;
         mockMvc.perform(MockMvcRequestBuilders.delete("/users/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    void deleteUserById_shouldReturnNotFound() throws Exception {
+    void deleteUserById_shouldReturn_NotFound() throws Exception {
         Long id = 1000L;
         mockMvc.perform(MockMvcRequestBuilders.delete("/users/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
-    void createUser_shouldReturnBadRequest() throws Exception {
+    void createUser_shouldReturn_BadRequest() throws Exception {
         UserEntity userCreation = UserEntity.builder()
                 .password("passWord")
                 .lastName("Phillip")
@@ -84,7 +84,7 @@ class UserControllerIT {
 
     @Test
     @Rollback
-    void createUser_shouldReturnOk() throws Exception {
+    void createUser_shouldReturn_isOk() throws Exception {
         UserEntity userCreation = UserEntity.builder()
                 .password("passWord")
                 .lastName("Phillip")
@@ -100,21 +100,21 @@ class UserControllerIT {
     }
 
     @Test
-    void getByMail_shouldReturnUserByMail_shouldReturnOk() throws Exception {
+    void getByMail_shouldReturnUserByMail_shouldReturn_isOk() throws Exception {
         String mail = "cstilled@umfiasi.ro";
         mockMvc.perform(MockMvcRequestBuilders.get("/users/mail/{mail}", mail))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    void getByMail_shouldReturnUserByMail_shouldReturnNotFound() throws Exception {
+    void getByMail_shouldReturnUserByMail_shouldReturn_NotFound() throws Exception {
         String mail = "aaaaaaaaa@umfiasi.ro";
         mockMvc.perform(MockMvcRequestBuilders.get("/users/mail/{mail}", mail))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
-    void updateUser_shouldReturnNotFound() throws Exception {
+    void updateUser_shouldReturn_BadRequest() throws Exception {
         Long id = 1000L;
         UserEntity userCreation = UserEntity.builder()
                 .password("password123")
@@ -127,12 +127,12 @@ class UserControllerIT {
         mockMvc.perform(MockMvcRequestBuilders.put("/users/update/{id}", id)
                         .content(objectMapper.writeValueAsString(userCreation))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
     @Rollback
-    void updateUser_shouldReturnOk() throws Exception {
+    void updateUser_shouldReturn_isOk() throws Exception {
         Long id =60L;
         UserEntity userCreation = UserEntity.builder()
                 .password("password123")

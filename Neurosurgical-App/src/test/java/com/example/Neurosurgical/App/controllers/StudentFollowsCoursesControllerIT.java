@@ -19,34 +19,34 @@ public class StudentFollowsCoursesControllerIT {
     private MockMvc mockMvc;
 
     @Test
-    void deleteStudentFollowsCourseById_shouldReturnNotFound() throws Exception {
+    void deleteStudentFollowsCourseById_shouldReturn_BadRequest() throws Exception {
         Long id = 1000L;
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/studentFollowsCourses/delete/{id}", id))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
-    void deleteStudentFollowsCourseByCourseIdAndStudentId_shouldReturnNotFound() throws Exception {
+    void deleteStudentFollowsCourseByCourseIdAndStudentId_shouldReturn_BadRequest() throws Exception {
         Long courseId = 1000L;
         Long studentId = 1000L;
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/studentFollowsCourses/delete/course={courseId}/student={studentId}", courseId, studentId))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
-    void createStudentFollowsCourse_shouldReturnNotFound() throws Exception {
+    void createStudentFollowsCourse_shouldReturn_BadRequest() throws Exception {
         Long courseId = 10000L;
         Long studentId = 10000L;
 
         mockMvc.perform(MockMvcRequestBuilders.post("/studentFollowsCourses/create/course={courseId}/student={studentId}", courseId, studentId))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
     @Rollback
-    void deleteStudentFollowsCourseById_shouldReturnOk() throws Exception {
+    void deleteStudentFollowsCourseById_shouldReturn_isOk() throws Exception {
         Long id = 12L;
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/studentFollowsCourses/delete/{id}", id))
@@ -56,7 +56,7 @@ public class StudentFollowsCoursesControllerIT {
 
     @Test
     @Rollback
-    void deleteStudentFollowsCourseByCourseIdAndStudentId_shouldReturnOk() throws Exception {
+    void deleteStudentFollowsCourseByCourseIdAndStudentId_shouldReturn_isOk() throws Exception {
         Long courseId = 3L;
         Long studentId = 49L;
 
@@ -66,7 +66,7 @@ public class StudentFollowsCoursesControllerIT {
 
     @Test
     @Rollback
-    void createStudentFollowsCourse_shouldReturnOk() throws Exception {
+    void createStudentFollowsCourse_shouldReturn_isOk() throws Exception {
         Long courseId = 4L;
         Long studentId = 51L;
 

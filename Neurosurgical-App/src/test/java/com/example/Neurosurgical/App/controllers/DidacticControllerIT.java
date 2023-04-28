@@ -18,34 +18,34 @@ public class DidacticControllerIT {
     private MockMvc mockMvc;
 
     @Test
-    void deleteDidacticById_shouldReturnBadRequest() throws Exception {
+    void deleteDidacticById_shouldReturn_BadRequest() throws Exception {
         Long id = 1000L;
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/didactic/delete/{id}", id))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
-    void deleteDidacticByCourseIdAndProfessorId_shouldReturnNotFound() throws Exception {
+    void deleteDidacticByCourseIdAndProfessorId_shouldReturn_BadRequest() throws Exception {
         Long courseId = 1000L;
         Long professorId = 1000L;
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/didactic/delete/course={courseId}/professor={professorId}", courseId, professorId))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
-    void createDidacticByCourseIdAndProfessorId_shouldReturnNotFound() throws Exception {
+    void createDidacticByCourseIdAndProfessorId_shouldReturn_BadRequest() throws Exception {
         Long courseId = 1000L;
         Long professorId = 1000L;
 
         mockMvc.perform(MockMvcRequestBuilders.post("/didactic/create/course={courseId}/professor={professorId}", courseId, professorId))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
     @Rollback
-    void deleteDidacticById_shouldReturnOk() throws Exception {
+    void deleteDidacticById_shouldReturn_isOk() throws Exception {
         Long id = 2L;
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/didactic/delete/{id}", id))
@@ -54,7 +54,7 @@ public class DidacticControllerIT {
 
     @Test
     @Rollback
-    void createDidacticByCourseIdAndProfessorId_shouldReturnOk() throws Exception {
+    void createDidacticByCourseIdAndProfessorId_shouldReturn_isOk() throws Exception {
         Long courseId = 4L;
         Long professorId = 58L;
 
@@ -64,7 +64,7 @@ public class DidacticControllerIT {
 
     @Test
     @Rollback
-    void deleteDidacticByCourseIdAndProfessorId_shouldReturnOk() throws Exception {
+    void deleteDidacticByCourseIdAndProfessorId_shouldReturn_isOk() throws Exception {
         Long courseId = 4L;
         Long professorId = 60L;
 
