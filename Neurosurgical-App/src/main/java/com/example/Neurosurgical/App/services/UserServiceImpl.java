@@ -92,6 +92,7 @@ public class UserServiceImpl implements UserService{
         userToUpdate.setRole(userToBeUpdated.getRole());
         userToUpdate.setPassword(encoder.encode(userToBeUpdated.getPassword()));
         userRepository.save(userToUpdate);
+
     }
 
     public void checkIfExists(Long id) {
