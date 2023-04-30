@@ -74,10 +74,10 @@ public class StudentControllerIT {
     }
 
     @Test
-    void deleteUserById_shouldReturn_isNotFound() throws Exception {
+    void deleteUserById_shouldReturn_BadRequest() throws Exception {
         Long id = 1000L;
         mockMvc.perform(MockMvcRequestBuilders.delete("/students/{id}", id))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test

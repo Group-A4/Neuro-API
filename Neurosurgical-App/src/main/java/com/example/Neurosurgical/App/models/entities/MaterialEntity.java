@@ -22,6 +22,7 @@ public class MaterialEntity extends BaseEntity{
     @Column(name="title")
     private String title;
 
-    @Column(name="link")
-    private String link;
+    @OneToOne
+    @JoinColumn(name = "id_material_markdown")
+    private MaterialsMarkdownEntity materialMarkdown;
 }
