@@ -14,21 +14,21 @@ import java.util.List;
 @Table(name = "content")
 @Builder
 public class ContentEntity extends BaseEntity{
-    @Column(name="link")
+    @Column(name = "link", nullable = false)
     private String link;
 
-    @Column(name="name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name="type")
-    private Integer type;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
+    private ContentType type;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "id_professor", nullable = false)
     private ProfessorEntity professor;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "contents")
-    private List<MaterialsMarkdownEntity> markdownEntityList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "content")
+    private List<MarkdownContentEntity> markdownContents;
 }

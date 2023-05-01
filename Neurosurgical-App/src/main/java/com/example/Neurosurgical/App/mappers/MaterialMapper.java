@@ -7,17 +7,17 @@ import org.springframework.stereotype.Component;
 @Component
 
 public class MaterialMapper {
-    public static MaterialDto toDto(MaterialEntity materialEntity){
+    public static MaterialDto toDto(MaterialEntity materialEntity, String html){
         return MaterialDto.builder()
+                .id(materialEntity.getId())
                 .title(materialEntity.getTitle())
-                .link(materialEntity.getLink())
+                .html(html)
                 .build();
     }
 
-    public static MaterialEntity fromDto(MaterialDto materialDto){
-        return MaterialEntity.builder()
-                .title(materialDto.getTitle())
-                .link(materialDto.getLink())
-                .build();
-    }
+//    public static MaterialEntity fromDto(MaterialDto materialDto){
+//        return MaterialEntity.builder()
+//                .title(materialDto.getTitle())
+//                .build();
+//    }
 }

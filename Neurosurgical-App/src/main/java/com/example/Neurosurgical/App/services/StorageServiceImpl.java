@@ -25,7 +25,7 @@ public class StorageServiceImpl implements StorageService{
         blobServiceClient = new BlobServiceClientBuilder().connectionString(connectionString).buildClient();
     }
 
-    public void uploadImage(String containerName, String blobName, byte[] imageBytes) throws IOException {
+    public void uploadFile(String containerName, String blobName, byte[] imageBytes) throws IOException {
         BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient(containerName);
         BlobClient blobClient = containerClient.getBlobClient(blobName);
         try (InputStream dataStream = new ByteArrayInputStream(imageBytes)) {
@@ -34,7 +34,7 @@ public class StorageServiceImpl implements StorageService{
 
     }
 
-    public byte[] downloadImage(String containerName, String blobName) throws IOException {
+    public byte[] downloadFile(String containerName, String blobName) throws IOException {
         BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient(containerName);
         BlobClient blobClient = containerClient.getBlobClient(blobName);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

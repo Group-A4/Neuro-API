@@ -6,6 +6,6 @@ import java.io.IOException;
 
 @Service
 public interface StorageService {
-    void uploadImage(String containerName, String blobName, byte[] imageBytes) throws IOException;
-    byte[] downloadImage(String containerName, String blobName) throws IOException;
+    void uploadFile(String containerName, String blobName, byte[] imageBytes) throws IOException;
+    byte[] downloadFile(String containerName, String blobName) throws IOException;
 }
