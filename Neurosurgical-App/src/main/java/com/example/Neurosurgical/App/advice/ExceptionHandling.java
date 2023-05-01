@@ -38,5 +38,10 @@ public class ExceptionHandling {
         return ResponseEntity.status(403).body(new ErrorResponse(e.getMessage()));
     }
 
+    @ExceptionHandler(value = ContentNotFound.class)
+    public ResponseEntity<ErrorResponse> handleContentNotFound(ContentNotFound e){
+        return ResponseEntity.status(403).body(new ErrorResponse(e.getMessage()));
+    }
+
 
 }

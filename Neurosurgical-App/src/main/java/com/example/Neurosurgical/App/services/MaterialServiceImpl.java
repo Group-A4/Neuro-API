@@ -8,10 +8,7 @@ import com.example.Neurosurgical.App.mappers.MaterialMapper;
 import com.example.Neurosurgical.App.models.dtos.CourseDto;
 import com.example.Neurosurgical.App.models.dtos.MaterialCreationDto;
 import com.example.Neurosurgical.App.models.dtos.MaterialDto;
-import com.example.Neurosurgical.App.models.entities.CourseEntity;
-import com.example.Neurosurgical.App.models.entities.MaterialEntity;
-import com.example.Neurosurgical.App.models.entities.MaterialsMarkdownEntity;
-import com.example.Neurosurgical.App.models.entities.ProfessorEntity;
+import com.example.Neurosurgical.App.models.entities.*;
 import com.example.Neurosurgical.App.repositories.CourseRepository;
 import com.example.Neurosurgical.App.repositories.MaterialRepository;
 import com.example.Neurosurgical.App.repositories.MaterialsMarkdownRepository;
@@ -86,12 +83,18 @@ public class MaterialServiceImpl implements MaterialService {
         if(courseEntityOptional.isEmpty()) throw new EntityNotFoundException("course", materialCreationDto.getIdCourse());
         if(professorEntityOptional.isEmpty()) throw new EntityNotFoundException("professor", materialCreationDto.getIdProfessor());
 
+        // de la front trebuie sa primim un markdown cu toate escape-urile necesare
+
+        List<ContentEntity> contentEntities = new ArrayList<>();
+
+        MarkdownParserService markdownParserService = new MarkdownParserServiceImpl("neuroapi", "professor" + materialCreationDto.getIdProfessor(), contentEntities);
+        String markdownText = markdownParserService.parse(materialCreationDto.getMarkdownText());
+
+        System.out.println(markdownText);
 
         Parser parser = Parser.builder().build();
         HtmlRenderer renderer = HtmlRenderer.builder().build();
-        String html = renderer.render(parser.parse(materialCreationDto.getMarkdownText()));
-
-        // de la front trebuie sa primim un markdown cu toate escape-urile necesare
+        String html = renderer.render(parser.parse(markdownText));
 
         MaterialsMarkdownEntity materialsMarkdownEntity = MaterialsMarkdownEntity.builder()
                 .markdownText(materialCreationDto.getMarkdownText())
