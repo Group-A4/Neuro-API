@@ -24,6 +24,7 @@ public class ContentEntity extends BaseEntity{
     @Column(name = "type", nullable = false)
     private ContentType type;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "id_professor", nullable = false)
     private ProfessorEntity professor;

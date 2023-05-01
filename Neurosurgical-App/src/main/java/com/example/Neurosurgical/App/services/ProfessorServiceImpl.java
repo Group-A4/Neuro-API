@@ -8,7 +8,6 @@ import com.example.Neurosurgical.App.repositories.MaterialRepository;
 import com.example.Neurosurgical.App.repositories.ProfessorRepository;
 import com.example.Neurosurgical.App.repositories.UserRepository;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
-import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.mappers.ProfessorMapper;
 import com.example.Neurosurgical.App.mappers.UserMapper;
 import com.example.Neurosurgical.App.models.dtos.ProfessorCreationDto;
@@ -22,13 +21,15 @@ import java.util.*;
 
 @Service
 public class ProfessorServiceImpl implements ProfessorService {
+    private final StorageService storageService;
     private final ProfessorRepository professorRepository;
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
     private final MaterialRepository materialRepository;
 
     @Autowired
-    public ProfessorServiceImpl(ProfessorRepository professorDao, UserRepository userDao, CourseRepository courseRepository, MaterialRepository materialRepository) {
+    public ProfessorServiceImpl(StorageService storageService, ProfessorRepository professorDao, UserRepository userDao, CourseRepository courseRepository, MaterialRepository materialRepository) {
+        this.storageService = storageService;
         this.professorRepository = professorDao;
         this.userRepository = userDao;
         this.courseRepository = courseRepository;
@@ -96,6 +97,8 @@ public class ProfessorServiceImpl implements ProfessorService {
             userRepository.deleteById(user.getId());
             throw new UserAlreadyExistsException("User already exists or the input is invalid!");
         }
+        String containerName = "professor" + user.getId();
+        storageService.createContainer(containerName);
     }
 
     @Override

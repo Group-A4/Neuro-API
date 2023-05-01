@@ -3,7 +3,9 @@ package com.example.Neurosurgical.App.controllers;
 import com.example.Neurosurgical.App.models.dtos.ContentCreationDto;
 import com.example.Neurosurgical.App.models.entities.ContentEntity;
 import com.example.Neurosurgical.App.services.ContentService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,9 +54,10 @@ public class ContentController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Void> createContent(@RequestBody ContentCreationDto contentEntity) throws IOException {
-        contentService.createContent(contentEntity);
+    @PostMapping(path ="/create" , consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<Void> createContent(@ModelAttribute ContentCreationDto content) throws IOException {
+        System.out.println(content);
+        contentService.createContent(content);
         return ResponseEntity.ok().build();
     }
 }
