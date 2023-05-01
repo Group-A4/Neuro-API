@@ -6,5 +6,15 @@ public enum ContentType {
     IMAGE,
     AUDIO,
     PDF,
-    OTHER
+    OTHER;
+
+    public static ContentType fromString(String text) {
+        for (ContentType b : ContentType.values()) {
+            if (b.name().equalsIgnoreCase(text)) {
+                return b;
+            }
+        }
+        return null;
+    }
+
 }

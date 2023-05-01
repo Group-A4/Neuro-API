@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface ContentRepository extends JpaRepository<ContentEntity, Long>{
 
-    @Query(value = "SELECT * FROM content WHERE id_proffesor = :id",nativeQuery = true)
+    @Query(value = "SELECT * FROM content WHERE id_professor = :id",nativeQuery = true)
     List<ContentEntity> findByProfessorId(@Param("id") Long id);
 
     @Query(value = "SELECT * FROM content WHERE  name = :name",nativeQuery = true)

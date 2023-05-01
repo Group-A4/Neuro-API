@@ -3,9 +3,7 @@ package com.example.Neurosurgical.App.services;
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
-import com.example.Neurosurgical.App.mappers.CourseMapper;
 import com.example.Neurosurgical.App.mappers.MaterialMapper;
-import com.example.Neurosurgical.App.models.dtos.CourseDto;
 import com.example.Neurosurgical.App.models.dtos.MaterialCreationDto;
 import com.example.Neurosurgical.App.models.dtos.MaterialDto;
 import com.example.Neurosurgical.App.models.entities.*;
@@ -27,17 +25,19 @@ import java.util.stream.Collectors;
 
 public class MaterialServiceImpl implements MaterialService {
 
-    public final MaterialRepository materialRepository;
-    public final CourseRepository courseRepository;
-    public final ProfessorRepository professorRepository;
-    public final MaterialsMarkdownRepository materialsMarkdownRepository;
+    private final MaterialRepository materialRepository;
+    private final CourseRepository courseRepository;
+    private final ProfessorRepository professorRepository;
+    private final MaterialsMarkdownRepository materialsMarkdownRepository;
+    private final ContentServiceImpl contentService;
 
     @Autowired
-    public MaterialServiceImpl(MaterialRepository materialRepository, CourseRepository courseRepository, ProfessorRepository professorRepository, MaterialsMarkdownRepository materialsMarkdownRepository) {
+    public MaterialServiceImpl(MaterialRepository materialRepository, CourseRepository courseRepository, ProfessorRepository professorRepository, MaterialsMarkdownRepository materialsMarkdownRepository, ContentServiceImpl contentService) {
         this.materialRepository = materialRepository;
         this.courseRepository = courseRepository;
         this.professorRepository = professorRepository;
         this.materialsMarkdownRepository = materialsMarkdownRepository;
+        this.contentService = contentService;
     }
 
     @Override
@@ -84,7 +84,7 @@ public class MaterialServiceImpl implements MaterialService {
 
         // de la front trebuie sa primim un markdown cu toate escape-urile necesare
 
-        List<ContentEntity> contentEntities = new ArrayList<>();
+        List<ContentEntity> contentEntities = contentService.findByProfessorId(materialCreationDto.getIdProfessor());
 
         MarkdownParserService markdownParserService = new MarkdownParserServiceImpl("neuroapi", "professor" + materialCreationDto.getIdProfessor(), contentEntities);
         String markdownText = markdownParserService.parse(materialCreationDto.getMarkdownText());
@@ -123,7 +123,7 @@ public class MaterialServiceImpl implements MaterialService {
         MaterialEntity materialEntity = materialRepository.findById(id).get();
         MaterialsMarkdownEntity materialsMarkdownEntity = materialEntity.getMaterialMarkdown();
 
-        List<ContentEntity> contentEntities = new ArrayList<>();
+        List<ContentEntity> contentEntities = contentService.findByProfessorId(materialCreationDto.getIdProfessor());
 
         MarkdownParserService markdownParserService = new MarkdownParserServiceImpl("neuroapi", "professor" + materialCreationDto.getIdProfessor(), contentEntities);
         String markdownText = markdownParserService.parse(materialCreationDto.getMarkdownText());

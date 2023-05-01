@@ -36,10 +36,10 @@ public class ContentServiceImpl implements ContentService{
     @Override
     public void createContent(ContentCreationDto contentCreationDto) throws IOException {
         String containerName = "professor"+contentCreationDto.getProfessorId();
-        storageService.createContainer(containerName);
+        if(!storageService.verifyIfContainerExists(containerName))
+            storageService.createContainer(containerName);
 
-        storageService.uploadFile(containerName, contentCreationDto.getFileName(),contentCreationDto.getContentFile().getBytes());
-        System.out.println(contentCreationDto.getContentFile().getBytes().length);
+//        storageService.uploadFile(containerName, contentCreationDto.getFileName(),contentCreationDto.getContentFile().getBytes());
 
         String link = "https://neuroapi.blob.core.windows.net/"+containerName+"/"+contentCreationDto.getFileName();
 
@@ -47,8 +47,8 @@ public class ContentServiceImpl implements ContentService{
         ContentEntity contentEntity = ContentEntity.builder()
                 .name(contentCreationDto.getFileName())
                 .link(link)
-                .type(ContentType.valueOf(contentCreationDto.getType().toUpperCase().trim()))
-                .professor(professorRepository.getById(contentCreationDto.getProfessorId()))
+                .type(ContentType.fromString(contentCreationDto.getType().toUpperCase().trim()).ordinal())
+                .professor(professorRepository.findById(contentCreationDto.getProfessorId()).get())
                 .build();
 
         contentRepository.save(contentEntity);
