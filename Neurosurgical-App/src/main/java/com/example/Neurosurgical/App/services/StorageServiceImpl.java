@@ -25,6 +25,10 @@ public class StorageServiceImpl implements StorageService{
         blobServiceClient = new BlobServiceClientBuilder().connectionString(connectionString).buildClient();
     }
 
+    public void createContainer(String containerName) {
+        blobServiceClient.createBlobContainer(containerName);
+    }
+
     public void uploadFile(String containerName, String blobName, byte[] imageBytes) throws IOException {
         BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient(containerName);
         BlobClient blobClient = containerClient.getBlobClient(blobName);
