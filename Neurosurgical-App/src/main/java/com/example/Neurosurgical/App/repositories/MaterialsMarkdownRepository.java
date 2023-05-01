@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MaterialsMarkdownRepository extends JpaRepository<MaterialsMarkdownEntity,Long> {
-    @Query(value = "SELECT * FROM materials_markdown WHERE id_material = :material_id",nativeQuery = true)
-    MaterialsMarkdownEntity findByMaterialId(@Param("material_id") Long materialId);
+//    @Query(value = "SELECT * FROM materials_markdown WHERE id_material = :material_id",nativeQuery = true)
+//    MaterialsMarkdownEntity findByMaterialId(@Param("material_id") Long materialId);
 }

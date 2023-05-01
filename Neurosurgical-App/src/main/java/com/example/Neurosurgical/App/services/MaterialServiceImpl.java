@@ -68,9 +68,8 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     public Optional<MaterialDto> findById(Long id) throws UserNotFoundException {
         MaterialEntity materialEntity = materialRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Material",id));
-        MaterialsMarkdownEntity materialsMarkdownEntity = materialsMarkdownRepository.findByMaterialId(id);
 
-        MaterialDto materialDto = MaterialMapper.toDto(materialEntity,materialsMarkdownEntity.getHtml());
+        MaterialDto materialDto = MaterialMapper.toDto(materialEntity, materialEntity.getMaterialMarkdown().getHtml());
 
         return Optional.of(materialDto);
     }
@@ -89,8 +88,6 @@ public class MaterialServiceImpl implements MaterialService {
 
         MarkdownParserService markdownParserService = new MarkdownParserServiceImpl("neuroapi", "professor" + materialCreationDto.getIdProfessor(), contentEntities);
         String markdownText = markdownParserService.parse(materialCreationDto.getMarkdownText());
-
-        System.out.println(markdownText);
 
         Parser parser = Parser.builder().build();
         HtmlRenderer renderer = HtmlRenderer.builder().build();
@@ -123,16 +120,26 @@ public class MaterialServiceImpl implements MaterialService {
         if(professorEntityOptional.isEmpty()) throw new EntityNotFoundException("professor", materialCreationDto.getIdProfessor());
 
         checkIfExists(id);
+        MaterialEntity materialEntity = materialRepository.findById(id).get();
+        MaterialsMarkdownEntity materialsMarkdownEntity = materialEntity.getMaterialMarkdown();
 
-        MaterialsMarkdownEntity materialsMarkdownEntity = materialsMarkdownRepository.findByMaterialId(id);
+        List<ContentEntity> contentEntities = new ArrayList<>();
+
+        MarkdownParserService markdownParserService = new MarkdownParserServiceImpl("neuroapi", "professor" + materialCreationDto.getIdProfessor(), contentEntities);
+        String markdownText = markdownParserService.parse(materialCreationDto.getMarkdownText());
+
+        Parser parser = Parser.builder().build();
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        String html = renderer.render(parser.parse(markdownText));
+
 
         materialsMarkdownEntity.setMarkdownText(materialCreationDto.getMarkdownText());
+        materialsMarkdownEntity.setHtml(html);
 
-        //materialsMarkdownEntity.setHtml(materialCreationDto.getHtml());
 
         materialsMarkdownRepository.save(materialsMarkdownEntity);
 
-        MaterialEntity materialEntity = MaterialEntity.builder()
+        materialEntity = MaterialEntity.builder()
                 .course(courseEntityOptional.get())
                 .professor(professorEntityOptional.get())
                 .title(materialCreationDto.getTitle())
@@ -148,7 +155,7 @@ public class MaterialServiceImpl implements MaterialService {
         MaterialEntity materialEntity = Optional.ofNullable(materialRepository.findByTitle(title))
                 .orElseThrow(() -> new EntityNotFoundException("Material", title));
 
-        String html = materialsMarkdownRepository.findByMaterialId(materialEntity.getId()).getHtml();
+        String html = materialEntity.getMaterialMarkdown().getHtml();
 
         return Optional.of(MaterialMapper.toDto(materialEntity, html));
     }
@@ -163,14 +170,13 @@ public class MaterialServiceImpl implements MaterialService {
         CourseEntity courseEntity = Optional.of(courseRepository.findById(id)).get()
                 .orElseThrow(() -> new EntityNotFoundException("Course",id));
 
-        String html = materialsMarkdownRepository.findByMaterialId(courseEntity.getId()).getHtml();
 
         List<MaterialDto> materialDtos = courseEntity.getMaterials()
                 .stream()
                 .map(materialEntity -> MaterialDto.builder()
                         .id(materialEntity.getId())
                         .title(materialEntity.getTitle())
-                        .html(html)
+                        .html(materialEntity.getMaterialMarkdown().getHtml())
                         .build())
                 .collect(Collectors.toList());
 
@@ -180,15 +186,14 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     public List<MaterialDto> findAllByTeacherId(Long id) {
         ProfessorEntity professorEntity = Optional.of(professorRepository.findById(id)).get()
-                .orElseThrow(() -> new EntityNotFoundException("Professor",id));
-        String html = materialsMarkdownRepository.findByMaterialId(professorEntity.getIdUser()).getHtml();
+                .orElseThrow(() -> new EntityNotFoundException("Professor",id));;
 
         List<MaterialDto> materialDtos = professorRepository.findById(id).get().getMaterials()
                 .stream()
                 .map(materialEntity -> MaterialDto.builder()
                         .id(materialEntity.getId())
                         .title(materialEntity.getTitle())
-                        .html(html)
+                        .html(materialEntity.getMaterialMarkdown().getHtml())
                         .build())
                 .collect(Collectors.toList());
 
