@@ -46,4 +46,10 @@ public class StorageServiceImpl implements StorageService{
         return outputStream.toByteArray();
     }
 
+    public void deleteFile(String containerName, String blobName) {
+        BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient(containerName);
+        BlobClient blobClient = containerClient.getBlobClient(blobName);
+        blobClient.delete();
+    }
+
 }
