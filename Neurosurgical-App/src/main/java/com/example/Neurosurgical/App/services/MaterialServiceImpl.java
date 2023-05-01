@@ -8,10 +8,7 @@ import com.example.Neurosurgical.App.mappers.MaterialMapper;
 import com.example.Neurosurgical.App.models.dtos.CourseDto;
 import com.example.Neurosurgical.App.models.dtos.MaterialCreationDto;
 import com.example.Neurosurgical.App.models.dtos.MaterialDto;
-import com.example.Neurosurgical.App.models.entities.CourseEntity;
-import com.example.Neurosurgical.App.models.entities.MaterialEntity;
-import com.example.Neurosurgical.App.models.entities.MaterialsMarkdownEntity;
-import com.example.Neurosurgical.App.models.entities.ProfessorEntity;
+import com.example.Neurosurgical.App.models.entities.*;
 import com.example.Neurosurgical.App.repositories.CourseRepository;
 import com.example.Neurosurgical.App.repositories.MaterialRepository;
 import com.example.Neurosurgical.App.repositories.MaterialsMarkdownRepository;
@@ -110,57 +107,103 @@ public class MaterialServiceImpl implements MaterialService {
         materialRepository.save(materialEntity);
     }
 
-//    @Override
-//    public void updateMaterial(Long id, MaterialCreationDto materialCreationDto) throws UserNotFoundException {
-//        Optional<CourseEntity> courseEntityOptional = courseRepository.findById(materialCreationDto.getIdCourse());
-//        Optional<ProfessorEntity> professorEntityOptional = professorRepository.findById(materialCreationDto.getIdProfessor());
-//
-//        if(courseEntityOptional.isEmpty()) throw new EntityNotFoundException("course", materialCreationDto.getIdCourse());
-//        if(professorEntityOptional.isEmpty()) throw new EntityNotFoundException("professor", materialCreationDto.getIdProfessor());
-//
-//        checkIfExists(id);
-//        MaterialEntity materialEntity = MaterialEntity.builder()
-//                .course(courseEntityOptional.get())
-//                .professor(professorEntityOptional.get())
-//                .title(materialCreationDto.getTitle())
-//                .link(materialCreationDto.getLink())
-//                .build();
-//
-//        materialEntity.setId(id);
-//        materialRepository.save(materialEntity);
-//    }
-//
-//    @Override
-//    public Optional<MaterialDto> findByTitle(String title) throws UserNotFoundException {
-//        MaterialEntity materialEntity = Optional.ofNullable(materialRepository.findByTitle(title))
-//                .orElseThrow(() -> new EntityNotFoundException("Material", title));
-//
-//        return Optional.of(MaterialMapper.toDto(materialEntity));
-//    }
+    @Override
+    public void updateMaterial(Long id, MaterialCreationDto materialCreationDto) throws UserNotFoundException {
+        Optional<CourseEntity> courseEntityOptional = courseRepository.findById(materialCreationDto.getIdCourse());
+        Optional<ProfessorEntity> professorEntityOptional = professorRepository.findById(materialCreationDto.getIdProfessor());
+
+
+        if(courseEntityOptional.isEmpty()) throw new EntityNotFoundException("course", materialCreationDto.getIdCourse());
+        if(professorEntityOptional.isEmpty()) throw new EntityNotFoundException("professor", materialCreationDto.getIdProfessor());
+
+        checkIfExists(id);
+
+        MaterialsMarkdownEntity materialsMarkdownEntity = materialsMarkdownRepository.findByMaterialId(id);
+
+        materialsMarkdownEntity.setMarkdownText(materialCreationDto.getMarkdownText());
+
+        //materialsMarkdownEntity.setHtml(materialCreationDto.getHtml());
+
+        materialsMarkdownRepository.save(materialsMarkdownEntity);
+
+        MaterialEntity materialEntity = MaterialEntity.builder()
+                .course(courseEntityOptional.get())
+                .professor(professorEntityOptional.get())
+                .title(materialCreationDto.getTitle())
+                .materialMarkdown(materialsMarkdownEntity)
+                .build();
+
+        materialEntity.setId(id);
+        materialRepository.save(materialEntity);
+    }
+
+    @Override
+    public Optional<MaterialDto> findByTitle(String title) throws UserNotFoundException {
+        MaterialEntity materialEntity = Optional.ofNullable(materialRepository.findByTitle(title))
+                .orElseThrow(() -> new EntityNotFoundException("Material", title));
+
+        String html = materialsMarkdownRepository.findByMaterialId(materialEntity.getId()).getHtml();
+
+        return Optional.of(MaterialMapper.toDto(materialEntity, html));
+    }
     public void checkIfExists(Long id) {
         if (materialRepository.findById(id).isEmpty()) {
             throw new EntityNotFoundException("Material", id);
         }
     }
-//
-//    @Override
-//    public List<MaterialDto> findAllByCourseId(Long id) {
-//        CourseEntity courseEntity = Optional.of(courseRepository.findById(id)).get()
-//                .orElseThrow(() -> new EntityNotFoundException("Course",id));
-//        return courseEntity.getMaterials()
-//                .stream()
-//                .map(MaterialMapper::toDto)
-//                .collect(Collectors.toList());
-//    }
-//
-//    @Override
-//    public List<MaterialDto> findAllByTeacherId(Long id) {
-//        ProfessorEntity professorEntity = Optional.of(professorRepository.findById(id)).get()
-//                .orElseThrow(() -> new EntityNotFoundException("Professor",id));
-//        return professorRepository.findById(id).get().getMaterials()
-//                .stream()
-//                .map(MaterialMapper::toDto)
-//                .collect(Collectors.toList());
-//    }
+
+    @Override
+    public List<MaterialDto> findAllByCourseId(Long id) {
+        CourseEntity courseEntity = Optional.of(courseRepository.findById(id)).get()
+                .orElseThrow(() -> new EntityNotFoundException("Course",id));
+
+        String html = materialsMarkdownRepository.findByMaterialId(courseEntity.getId()).getHtml();
+
+        List<MaterialDto> materialDtos = courseEntity.getMaterials()
+                .stream()
+                .map(materialEntity -> MaterialDto.builder()
+                        .id(materialEntity.getId())
+                        .title(materialEntity.getTitle())
+                        .html(html)
+                        .build())
+                .collect(Collectors.toList());
+
+        return materialDtos;
+    }
+
+    @Override
+    public List<MaterialDto> findAllByTeacherId(Long id) {
+        ProfessorEntity professorEntity = Optional.of(professorRepository.findById(id)).get()
+                .orElseThrow(() -> new EntityNotFoundException("Professor",id));
+        String html = materialsMarkdownRepository.findByMaterialId(professorEntity.getIdUser()).getHtml();
+
+        List<MaterialDto> materialDtos = professorRepository.findById(id).get().getMaterials()
+                .stream()
+                .map(materialEntity -> MaterialDto.builder()
+                        .id(materialEntity.getId())
+                        .title(materialEntity.getTitle())
+                        .html(html)
+                        .build())
+                .collect(Collectors.toList());
+
+        return materialDtos;
+    }
+
+    @Override
+    public List<MaterialDto> findByMarkdownId(Long id) {
+        MaterialsMarkdownEntity materialsMarkdownEntity = Optional.of(materialsMarkdownRepository.findById(id)).get()
+                .orElseThrow(() -> new EntityNotFoundException("Markdown",id));
+
+        List<MaterialDto> materialDtos = materialsMarkdownEntity.getMaterials()
+                .stream()
+                .map(materialEntity -> MaterialDto.builder()
+                        .id(materialEntity.getId())
+                        .title(materialEntity.getTitle())
+                        .html(materialsMarkdownEntity.getHtml())
+                        .build())
+                .collect(Collectors.toList());
+
+        return materialDtos;
+    }
 }
 

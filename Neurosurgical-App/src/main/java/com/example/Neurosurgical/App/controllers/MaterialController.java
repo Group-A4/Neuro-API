@@ -47,24 +47,29 @@ public class MaterialController {
         materialService.createMaterial(materialCreationDto);
     }
 
-//    @GetMapping(value = "/title={title}", produces = "application/json")
-//    public Optional<MaterialDto> getByTitle(@PathVariable @Valid String title) throws EntityNotFoundException {
-//        return materialService.findByTitle(title);
-//    }
-//    @PutMapping("update/{id}")
-//    public void updateMaterial(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid MaterialCreationDto materialCreationDto) {
-//        materialService.updateMaterial(id, materialCreationDto);
-//    }
-//
-//    @GetMapping(value = "/course={id}", produces = "application/json")
-//    public List<MaterialDto> getAllByCourseId(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
-//        return materialService.findAllByCourseId(id);
-//    }
-//
-//    @GetMapping(value = "/teacher={id}", produces = "application/json")
-//    public List<MaterialDto> getAllByTeacherId(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
-//        return materialService.findAllByTeacherId(id);
-//    }
+    @GetMapping(value = "/title={title}", produces = "application/json")
+    public Optional<MaterialDto> getByTitle(@PathVariable @Valid String title) throws EntityNotFoundException {
+        return materialService.findByTitle(title);
+    }
+    @PutMapping("update/{id}")
+    public void updateMaterial(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid MaterialCreationDto materialCreationDto) {
+        materialService.updateMaterial(id, materialCreationDto);
+    }
+
+    @GetMapping(value = "/id_course={id}", produces = "application/json")
+    public List<MaterialDto> getAllByCourseId(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
+        return materialService.findAllByCourseId(id);
+    }
+
+    @GetMapping(value = "/id_professor={id}", produces = "application/json")
+    public List<MaterialDto> getAllByTeacherId(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
+        return materialService.findAllByTeacherId(id);
+    }
+
+    @GetMapping(value = "/id_material_markdown={id}", produces = "application/json")
+    public List<MaterialDto> getByMarkdownId(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
+        return materialService.findByMarkdownId(id);
+    }
 }
 
 
