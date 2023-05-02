@@ -39,13 +39,11 @@ public class UserController {
     public Optional<UserDto> getById(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException {
         return userService.findById(id);
     }
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(value = "/{id}", produces = "application/json")
     public void deleteUserById(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException, CannotRemoveLastAdminException
     {
         userService.deleteUser(id);
     }
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/create", produces = "application/json")
     public void createUser(@RequestBody @Valid UserEntity user) throws UserAlreadyExistsException {
         userService.createUser(user);
@@ -55,7 +53,6 @@ public class UserController {
     public UserDto getByMail(@PathVariable @Valid String mail) throws UserNotFoundException {
         return userService.findByFacMail(mail);
     }
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("update/{id}")
     public void updateUser(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid UserDto userDto) {
         userService.updateUser(id, userDto);
