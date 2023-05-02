@@ -39,7 +39,7 @@ public class ContentServiceImpl implements ContentService{
         if(!storageService.verifyIfContainerExists(containerName))
             storageService.createContainer(containerName);
 
-//        storageService.uploadFile(containerName, contentCreationDto.getFileName(),contentCreationDto.getContentFile().getBytes());
+        storageService.uploadFile(containerName, contentCreationDto.getFileName(),contentCreationDto.getContentFile().getBytes());
 
         String link = "https://neuroapi.blob.core.windows.net/"+containerName+"/"+contentCreationDto.getFileName();
 

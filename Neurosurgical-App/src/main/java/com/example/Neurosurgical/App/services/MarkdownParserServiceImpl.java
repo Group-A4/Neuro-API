@@ -3,19 +3,19 @@ package com.example.Neurosurgical.App.services;
 
 import com.example.Neurosurgical.App.advice.exceptions.ContentNotFound;
 import com.example.Neurosurgical.App.models.entities.ContentEntity;
+import com.ibm.icu.impl.Pair;
 
-import java.util.ConcurrentModificationException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MarkdownParserServiceImpl implements MarkdownParserService{
     private static final String AZURE_STORAGE_URL = "https://%s.blob.core.windows.net/%s/%s";
-    private static final String imagePattern = "!image:([\\w\\.]+)";
-    private static final String videoPattern = "!video:([\\w\\.]+)";
-    private static final String pdfPattern = "!pdf:([\\w\\.]+)";
-//    private static final String pptPattern = "!ppt:([\\w\\.]+)";
-    private static final String audioPattern = "!audio:([\\w\\.]+)";
+
+    private static final String imageFormatString = "\n <img src=\"%s\" alt=\"%s\" />";
     private static final String videoFormatString = "\n <video width=\"320\" height=\"240\" controls>\n" +
             "   <source src=\"%s\" type=\"video/mp4\">\n" +
             "   Your browser does not support the video tag.\n" +
@@ -23,80 +23,66 @@ public class MarkdownParserServiceImpl implements MarkdownParserService{
     private static final String pdfFormatString = "\n <iframe src=\"%s\" width=\"100%%\" height=\"600px\">\n" +
             "   <p>Your browser does not support iframes.</p>\n" +
             " </iframe>";
-
+    private static final String pptFormatString = "\n <iframe src=\"https://view.officeapps.live.com/op/embed.aspx?src=%s\" frameborder=\"0\" style=\"width: 100%%; height: 600px;\">\n" +
+            "   <p>Your browser does not support iframes.</p>\n" +
+            " </iframe>";
     private static final String audioFormatString = "\n <audio controls>\n" +
             "   <source src=\"%s\" type=\"audio/mpeg\">\n" +
             "   Your browser does not support the audio element.\n" +
             " </audio>";
+    private static final String linkFormatString = "\n <a href=\"%s\">%s</a>";
+    private static final String ytVideoFormatString = "\n <iframe width=\"1026\" height=\"577\" src=\"https://www.youtube.com/embed/%s\" title=\"%s\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen></iframe>";
 
 
     private final String azureAccountName;
     private final String azureContainerName;
     private final List<ContentEntity> contentEntities;
+    private final Map<String, Pair<String, Function<List<String>, String>>> contentMap;
 
     public MarkdownParserServiceImpl(String azureAccountName, String azureContainerName, List<ContentEntity> contentEntities) {
         this.azureAccountName = azureAccountName;
         this.azureContainerName = azureContainerName;
         this.contentEntities = contentEntities;
+
+        this.contentMap = new HashMap<>();
+        contentMap.put("!image", Pair.of(imageFormatString, this::parseThree));
+        contentMap.put("!video", Pair.of(videoFormatString, this::parseTwo));
+        contentMap.put("!pdf", Pair.of(pdfFormatString, this::parseTwo));
+        contentMap.put("!ppt", Pair.of(pptFormatString, this::parseTwo));
+        contentMap.put("!audio", Pair.of(audioFormatString, this::parseTwo));
+        contentMap.put("!link", Pair.of(linkFormatString, this::parseThree));
+        contentMap.put("!ytvideo", Pair.of(ytVideoFormatString, this::parseThree));
     }
 
     @Override
     public String parse(String markdownText) {
-        Pattern pattern = Pattern.compile(imagePattern);
-        Matcher matcher = pattern.matcher(markdownText);
-        while (matcher.find()) {
-            String imageName = matcher.group(1);
-            if(!exists(imageName))
-                throw new ContentNotFound(imageName);
-            String imageUrl = String.format(AZURE_STORAGE_URL, azureAccountName, azureContainerName, imageName);
-            markdownText = markdownText.replace("!image:" + imageName, imageUrl);
-        }
+        markdownText = markdownText.replaceAll("https://www.youtube.com/watch\\?v=", "");
 
-        pattern = Pattern.compile(videoPattern);
-        matcher = pattern.matcher(markdownText);
-        while (matcher.find()) {
-            String videoName = matcher.group(1);
-            if(!exists(videoName))
-                throw new ContentNotFound(videoName);
-            String videoUrl = String.format(AZURE_STORAGE_URL, azureAccountName, azureContainerName, videoName);
-            String videoTag = String.format(videoFormatString, videoUrl);
-            markdownText = markdownText.replace("!video:" + videoName, videoTag);
-        }
-
-        pattern = Pattern.compile(pdfPattern);
-        matcher = pattern.matcher(markdownText);
-        while (matcher.find()) {
-            String pdfName = matcher.group(1);
-            if(!exists(pdfName))
-                throw new ContentNotFound(pdfName);
-            String pdfUrl = String.format(AZURE_STORAGE_URL, azureAccountName, azureContainerName, pdfName);
-            String pdfTag = String.format(pdfFormatString, pdfUrl);
-            markdownText = markdownText.replace("!pdf:" + pdfName, pdfTag);
-        }
-
-//        pattern = Pattern.compile(pptPattern);
-//        matcher = pattern.matcher(markdownText);
-//        while (matcher.find()) {
-//            String pptName = matcher.group(1);
-//            if(!exists(pptName))
-//                throw new ContentNotFound(pptName);
-//            String pptUrl = String.format(AZURE_STORAGE_URL, azureAccountName, azureContainerName, pptName);
-//            String pptTag = String.format(pdfFormatString, pptUrl);
-//            markdownText = markdownText.replace("!ppt:" + pptName, pptTag);
-//        }
-
-        pattern = Pattern.compile(audioPattern);
-        matcher = pattern.matcher(markdownText);
-        while (matcher.find()) {
-            String audioName = matcher.group(1);
-            if(!exists(audioName))
-                throw new ContentNotFound(audioName);
-            String audioUrl = String.format(AZURE_STORAGE_URL, azureAccountName, azureContainerName, audioName);
-            String audioTag = String.format(audioFormatString, audioUrl);
-            markdownText = markdownText.replace("!audio:" + audioName, audioTag);
+        var tags = contentMap.keySet();
+        for (String tag : tags) {
+            Pattern pattern = Pattern.compile(tag + ":([\\w\\.]+)");
+            Matcher matcher = pattern.matcher(markdownText);
+            while (matcher.find()) {
+                String fileName = matcher.group(1);
+                if(!exists(fileName) && !tag.equals("!ytvideo"))
+                    throw new ContentNotFound(fileName);
+                String fileUrl = String.format(AZURE_STORAGE_URL, azureAccountName, azureContainerName, fileName);
+                if(tag.equals("!ytvideo"))
+                    fileUrl = fileName;
+                String fileTag = contentMap.get(tag).second.apply(List.of(contentMap.get(tag).first, fileUrl, fileName));
+                markdownText = markdownText.replace(tag + ":" + fileName, fileTag);
+            }
         }
 
         return markdownText;
+    }
+
+    private String parseTwo(List<String> args){
+        return String.format(args.get(0), args.get(1));
+    }
+
+    private String parseThree(List<String> args){
+        return String.format(args.get(0), args.get(1), args.get(2));
     }
 
     private boolean exists(String name) {
