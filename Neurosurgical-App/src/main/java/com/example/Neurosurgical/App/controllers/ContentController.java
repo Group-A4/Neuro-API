@@ -5,6 +5,7 @@ import com.example.Neurosurgical.App.models.entities.ContentEntity;
 import com.example.Neurosurgical.App.services.ContentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ public class ContentController {
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ContentEntity> getContentById(Long id){
         return ResponseEntity.ok(contentService.findById(id));
     }
@@ -34,30 +36,37 @@ public class ContentController {
     }
 
     @GetMapping("/name/{name}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ContentEntity> getContentByName(String name){
         return ResponseEntity.ok(contentService.findByName(name));
     }
 
     @GetMapping("/professor/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<ContentEntity>> getContentByProfessorId(Long id){
         return ResponseEntity.ok(contentService.findByProfessorId(id));
     }
 
     @GetMapping("markdown/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<ContentEntity>> getMarkdownContentById(Long id){
         return ResponseEntity.ok(contentService.findByMarkDownId(id));
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Void> deleteContentById(Long id){
         contentService.deleteById(id);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(path ="/create" , consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Void> createContent(@ModelAttribute ContentCreationDto content) throws IOException {
         System.out.println(content);
         contentService.createContent(content);
         return ResponseEntity.ok().build();
     }
+
+
 }
