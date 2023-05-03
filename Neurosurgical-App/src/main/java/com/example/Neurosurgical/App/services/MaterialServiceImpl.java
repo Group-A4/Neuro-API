@@ -11,8 +11,6 @@ import com.example.Neurosurgical.App.repositories.CourseRepository;
 import com.example.Neurosurgical.App.repositories.MaterialRepository;
 import com.example.Neurosurgical.App.repositories.MaterialsMarkdownRepository;
 import com.example.Neurosurgical.App.repositories.ProfessorRepository;
-import com.vladsch.flexmark.html.HtmlRenderer;
-import com.vladsch.flexmark.parser.Parser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -86,12 +84,8 @@ public class MaterialServiceImpl implements MaterialService {
 
         List<ContentEntity> contentEntities = contentService.findByProfessorId(materialCreationDto.getIdProfessor());
 
-        MarkdownParserService markdownParserService = new MarkdownParserServiceImpl("neuroapi", "professor" + materialCreationDto.getIdProfessor(), contentEntities);
-        String markdownText = markdownParserService.parse(materialCreationDto.getMarkdownText());
-
-        Parser parser = Parser.builder().build();
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
-        String html = renderer.render(parser.parse(markdownText));
+        MarkdownToHtmlParserService markdownParserService = new MarkdownToHtmlParserServiceImpl("neuroapi", "professor" + materialCreationDto.getIdProfessor(), contentEntities);
+        String html = markdownParserService.parse(materialCreationDto.getMarkdownText());
 
         MaterialsMarkdownEntity materialsMarkdownEntity = MaterialsMarkdownEntity.builder()
                 .markdownText(materialCreationDto.getMarkdownText())
@@ -125,12 +119,8 @@ public class MaterialServiceImpl implements MaterialService {
 
         List<ContentEntity> contentEntities = contentService.findByProfessorId(materialCreationDto.getIdProfessor());
 
-        MarkdownParserService markdownParserService = new MarkdownParserServiceImpl("neuroapi", "professor" + materialCreationDto.getIdProfessor(), contentEntities);
-        String markdownText = markdownParserService.parse(materialCreationDto.getMarkdownText());
-
-        Parser parser = Parser.builder().build();
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
-        String html = renderer.render(parser.parse(markdownText));
+        MarkdownToHtmlParserService markdownParserService = new MarkdownToHtmlParserServiceImpl("neuroapi", "professor" + materialCreationDto.getIdProfessor(), contentEntities);
+        String html = markdownParserService.parse(materialCreationDto.getMarkdownText());
 
 
         materialsMarkdownEntity.setMarkdownText(materialCreationDto.getMarkdownText());

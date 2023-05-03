@@ -1,6 +1,6 @@
 package com.example.Neurosurgical.App.services;
 
 
-public interface MarkdownParserService {
+public interface MarkdownToHtmlParserService {
     String parse(String markdown);
 }

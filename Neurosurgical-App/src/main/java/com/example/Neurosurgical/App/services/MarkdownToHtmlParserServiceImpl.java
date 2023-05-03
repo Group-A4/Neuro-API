@@ -3,8 +3,15 @@ package com.example.Neurosurgical.App.services;
 
 import com.example.Neurosurgical.App.advice.exceptions.ContentNotFound;
 import com.example.Neurosurgical.App.models.entities.ContentEntity;
-import com.ibm.icu.impl.Pair;
+import org.commonmark.Extension;
+import org.commonmark.ext.gfm.tables.TablesExtension;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
+import org.springframework.data.util.Pair;
 
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +19,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MarkdownParserServiceImpl implements MarkdownParserService{
+public class MarkdownToHtmlParserServiceImpl implements MarkdownToHtmlParserService {
     private static final String AZURE_STORAGE_URL = "https://%s.blob.core.windows.net/%s/%s";
 
     private static final String imageFormatString = "\n <img src=\"%s\" alt=\"%s\" />";
@@ -39,7 +46,7 @@ public class MarkdownParserServiceImpl implements MarkdownParserService{
     private final List<ContentEntity> contentEntities;
     private final Map<String, Pair<String, Function<List<String>, String>>> contentMap;
 
-    public MarkdownParserServiceImpl(String azureAccountName, String azureContainerName, List<ContentEntity> contentEntities) {
+    public MarkdownToHtmlParserServiceImpl(String azureAccountName, String azureContainerName, List<ContentEntity> contentEntities) {
         this.azureAccountName = azureAccountName;
         this.azureContainerName = azureContainerName;
         this.contentEntities = contentEntities;
@@ -56,25 +63,25 @@ public class MarkdownParserServiceImpl implements MarkdownParserService{
 
     @Override
     public String parse(String markdownText) {
-        markdownText = markdownText.replaceAll("https://www.youtube.com/watch\\?v=", "");
+        markdownText = markdownText.replaceAll("!ytvideo:\\s*https://www.youtube.com/watch\\?v=", "!ytvideo:");
 
         var tags = contentMap.keySet();
         for (String tag : tags) {
             Pattern pattern = Pattern.compile(tag + ":([\\w\\.]+)");
             Matcher matcher = pattern.matcher(markdownText);
             while (matcher.find()) {
-                String fileName = matcher.group(1);
+                String fileName = matcher.group(1).trim();
                 if(!exists(fileName) && !tag.equals("!ytvideo"))
                     throw new ContentNotFound(fileName);
                 String fileUrl = String.format(AZURE_STORAGE_URL, azureAccountName, azureContainerName, fileName);
                 if(tag.equals("!ytvideo"))
                     fileUrl = fileName;
-                String fileTag = contentMap.get(tag).second.apply(List.of(contentMap.get(tag).first, fileUrl, fileName));
+                String fileTag = contentMap.get(tag).getSecond().apply(List.of(contentMap.get(tag).getFirst(), fileUrl, fileName));
                 markdownText = markdownText.replace(tag + ":" + fileName, fileTag);
             }
         }
 
-        return markdownText;
+        return convertMarkdownToHTML(markdownText);
     }
 
     private String parseTwo(List<String> args){
@@ -83,6 +90,14 @@ public class MarkdownParserServiceImpl implements MarkdownParserService{
 
     private String parseThree(List<String> args){
         return String.format(args.get(0), args.get(1), args.get(2));
+    }
+
+    public static String convertMarkdownToHTML(String markdown) {
+        List<Extension> extensions = Arrays.asList(TablesExtension.create());
+        Parser parser = Parser.builder().extensions(extensions).build();
+        Node document = parser.parse(markdown);
+        HtmlRenderer htmlRenderer = HtmlRenderer.builder().extensions(extensions).build();
+        return htmlRenderer.render(document);
     }
 
     private boolean exists(String name) {
