@@ -25,7 +25,7 @@ public class ExamController {
     }
 
     @GetMapping(value = "/exam={id}", produces = "application/json")
-    public Optional<List<ExamQuestionDto>> getExamByCourseId(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
+    public Optional<List<ExamQuestionDto>> getExamById(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
         return examService.findById(id);
     }
 }

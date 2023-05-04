@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -30,21 +31,21 @@ public class ExamQuestionEntity extends BaseEntity {
     @Column(name = "points")
     private int points;
 
-    /* TODO ExamHasQuestions/AnswerExam/CorrectAnswerExam - Entity
     @JsonIgnore
     @OneToMany( cascade = CascadeType.ALL, mappedBy = "question")
-    private List<QuizzHasQuestionsEntity> quizzHasQuestions;
+    private List<ExamHasQuestionsEntity> examHasQuestions;
 
     @JsonIgnore
     @OneToMany( cascade = CascadeType.ALL, mappedBy = "question")
-    private List<AnswerQuizzEntity> answersQuestion;
+    private List<ExamAnswerEntity> answersQuestion;
 
     @JsonIgnore
     @OneToMany( cascade = CascadeType.ALL, mappedBy = "question")
-    private List<CorrectAnswerQuizzEntity> correctAnswersQuestion;
-    */
+    private List<CorrectExamAnswerEntity> correctExamAnswersQuestion;
 
     public ExamQuestionEntity(){
-        //TODO Constructor
+        this.examHasQuestions = new ArrayList<>();
+        this.answersQuestion = new ArrayList<>();
+        this.correctExamAnswersQuestion = new ArrayList<>();
     }
 }
