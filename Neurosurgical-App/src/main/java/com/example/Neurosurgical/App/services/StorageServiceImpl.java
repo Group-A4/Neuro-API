@@ -19,6 +19,7 @@ import java.io.IOException;
 
 
 public class StorageServiceImpl implements StorageService{
+    private static final Tika tika = new Tika();
     private final BlobServiceClient blobServiceClient;
 
     public StorageServiceImpl(@Value("${azure.storage.account-name}") String accountName,
@@ -43,8 +44,7 @@ public class StorageServiceImpl implements StorageService{
     public void uploadFile(String containerName, String blobName, byte[] fileBytes) {
         BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient(containerName);
         BlobClient blobClient = containerClient.getBlobClient(blobName);
-
-        Tika tika = new Tika();
+        
         String type = tika.detect(fileBytes);
 
         BlobHttpHeaders jsonHeaders = new BlobHttpHeaders()
