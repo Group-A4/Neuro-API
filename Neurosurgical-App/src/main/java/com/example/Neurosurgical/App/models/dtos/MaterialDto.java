@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @Builder
 public class MaterialDto {
+    private Long id;
     private String title;
-
-    private String link;
+    private String html;
 }

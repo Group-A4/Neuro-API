@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Table(name = "materials")
 @Builder
-public class MaterialEntity extends BaseEntity{
+public class MaterialEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "id_course")
     private CourseEntity course;
@@ -22,6 +22,7 @@ public class MaterialEntity extends BaseEntity{
     @Column(name="title")
     private String title;
 
-    @Column(name="link")
-    private String link;
+    @ManyToOne
+    @JoinColumn(name = "id_material_markdown")
+    private MaterialsMarkdownEntity materialMarkdown;
 }

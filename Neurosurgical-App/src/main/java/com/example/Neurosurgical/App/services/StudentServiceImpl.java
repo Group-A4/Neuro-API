@@ -61,7 +61,14 @@ public class StudentServiceImpl implements StudentService{
 
     @Override
     public Optional<StudentDto> findById(Long id) throws UserNotFoundException {
-        return Optional.of(StudentMapper.toDto(userRepository.findById(id).get(), studentRepository.findById(id).get()));
+        Optional<UserEntity> userOptional = userRepository.findById(id);
+        Optional<StudentEntity> studentOptional = studentRepository.findById(id);
+
+        if (userOptional.isPresent() && studentOptional.isPresent()) {
+            return Optional.of(StudentMapper.toDto(userOptional.get(), studentOptional.get()));
+        } else {
+            throw new UserNotFoundException();
+        }
     }
 
     @Override
@@ -125,19 +132,27 @@ public class StudentServiceImpl implements StudentService{
 
     @Override
     public List<StudentDto> findByCourseId(Long id) {
-        CourseEntity courseEntity = courseRepository.findById(id).get();
-        List<StudentEntity> studentEntities = courseEntity.getRegistrations().stream().map(x -> x.getStudent()).toList();
-        List<UserEntity> users = userRepository.findAll();
+        Optional<CourseEntity> courseOptional = courseRepository.findById(id);
 
-        List<StudentDto> studentDtos = new ArrayList<>();
-        for(var stud : studentEntities){
-            UserEntity userEntity = users.stream()
-                    .filter(x -> Objects.equals(x.getId(), stud.getIdUser()))
-                    .findAny().get();
+        if (courseOptional.isPresent()) {
+            CourseEntity courseEntity = courseOptional.get();
+            List<StudentEntity> studentEntities = courseEntity.getRegistrations().stream().map(x -> x.getStudent()).toList();
+            List<UserEntity> users = userRepository.findAll();
 
-            studentDtos.add(StudentMapper.toDto(userEntity, stud));
+            List<StudentDto> studentDtos = new ArrayList<>();
+            for(var stud : studentEntities){
+                UserEntity userEntity = users.stream()
+                        .filter(x -> Objects.equals(x.getId(), stud.getIdUser()))
+                        .findAny().get();
+
+                studentDtos.add(StudentMapper.toDto(userEntity, stud));
+            }
+
+            return studentDtos;
+        } else {
+            throw new UserNotFoundException();
         }
-
-        return studentDtos;
     }
+
+
 }
