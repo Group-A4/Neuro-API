@@ -27,6 +27,7 @@ public class UserController {
     }
 
     @GetMapping(value = "", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public List<UserDto> getAll(){
         return userService.findAll();
     }
@@ -38,6 +39,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public Optional<UserDto> getById(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException {
         Optional<UserDto> userDto = userService.findById(id);
         if(userDto.isPresent()){
@@ -60,6 +62,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/mail/{mail}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public UserDto getByMail(@PathVariable @Valid String mail) throws UserNotFoundException {
         UserDto userDto = userService.findByFacMail(mail);
         if(userDto != null){

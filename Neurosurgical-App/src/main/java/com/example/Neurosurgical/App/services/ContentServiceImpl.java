@@ -43,15 +43,16 @@ public class ContentServiceImpl implements ContentService{
 
         String link = "https://neuroapi.blob.core.windows.net/"+containerName+"/"+contentCreationDto.getFileName();
 
+        if(contentRepository.findByLink(link).isEmpty()) {
+            ContentEntity contentEntity = ContentEntity.builder()
+                    .name(contentCreationDto.getFileName())
+                    .link(link)
+                    .type(ContentType.fromString(contentCreationDto.getType().toUpperCase().trim()).ordinal())
+                    .professor(professorRepository.findById(contentCreationDto.getProfessorId()).get())
+                    .build();
 
-        ContentEntity contentEntity = ContentEntity.builder()
-                .name(contentCreationDto.getFileName())
-                .link(link)
-                .type(ContentType.fromString(contentCreationDto.getType().toUpperCase().trim()).ordinal())
-                .professor(professorRepository.findById(contentCreationDto.getProfessorId()).get())
-                .build();
-
-        contentRepository.save(contentEntity);
+            contentRepository.save(contentEntity);
+        }
     }
 
     @Override

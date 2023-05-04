@@ -36,6 +36,7 @@ public class CourseController {
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public Optional<CourseDto> getById(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
         Optional<CourseDto> courseDto = courseService.findById(id);
         if(courseDto.isPresent()){
@@ -58,6 +59,7 @@ public class CourseController {
     }
 
     @GetMapping(value = "/title={title}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public Optional<CourseDto> getByTitle(@PathVariable @Valid String title) throws EntityNotFoundException {
         Optional<CourseDto> courseDto = courseService.findByTitle(title);
         if(courseDto.isPresent()){
