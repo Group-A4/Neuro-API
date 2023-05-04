@@ -29,8 +29,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/**")
                 .permitAll()
-                .requestMatchers(HttpMethod.GET,"/users/**").hasAnyAuthority("ADMIN", "STUDENT")
-                .requestMatchers(HttpMethod.DELETE,"/users/**").hasAnyAuthority("ADMIN")
+                .requestMatchers("/users/**").hasAuthority("ADMIN")
+                .requestMatchers("/studentFollowsCourses/**").hasAuthority("ADMIN")
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -42,12 +42,5 @@ public class SecurityConfiguration {
 
         return http.build();
     }
-
 }
-
-
-// TODO:: ROLURILE PANA LA CAPAT
-// TODO:: STERGEM REGISTERU
-// TODO:: Sesiuni UNICE
-// TODO:: ?? TOKENE REGENERABILE
 
