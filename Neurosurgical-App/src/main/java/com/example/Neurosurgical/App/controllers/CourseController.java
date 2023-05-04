@@ -30,6 +30,7 @@ public class CourseController {
     }
 
     @GetMapping(value = "", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public List<CourseDto> getAll(){
         return courseService.findAll();
     }
@@ -67,6 +68,7 @@ public class CourseController {
     }
 
     @GetMapping(value = "/code={code}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public Optional<CourseDto> getByCode(@PathVariable @Valid String code) throws EntityNotFoundException {
         Optional<CourseDto> courseDto = courseService.findByCode(code);
         if(courseDto.isPresent()){
@@ -82,6 +84,7 @@ public class CourseController {
     }
 
     @GetMapping(value="/material={id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public Optional<CourseDto> getByMaterialId(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
         Optional<CourseDto> courseDto = courseService.findByMaterialId(id);
         if(courseDto.isPresent()){
@@ -91,6 +94,7 @@ public class CourseController {
         }
     }
     @GetMapping(value="/professor={id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public List<CourseDto> getAllByProfessorId(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
         List<CourseDto> courseDto = courseService.findAllByProfessorId(id);
         if(courseDto.isEmpty()){
@@ -101,6 +105,7 @@ public class CourseController {
     }
 
     @GetMapping(value="/student={id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public List<CourseDto> getAllByStudentId(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
         List<CourseDto> courseDto = courseService.findAllByStudentId(id);
         if(courseDto.isEmpty()){
