@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/didactic")
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
+
 public class DidacticController {
     private final DidacticService didacticService;
     @Autowired
