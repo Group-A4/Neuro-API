@@ -41,11 +41,11 @@ public class ExamQuestionEntity extends BaseEntity {
 
     @JsonIgnore
     @OneToMany( cascade = CascadeType.ALL, mappedBy = "question")
-    private List<CorrectExamAnswerEntity> correctExamAnswersQuestion;
+    private List<CorrectExamAnswerEntity> correctAnswersQuestion;
 
     public ExamQuestionEntity(){
         this.examHasQuestions = new ArrayList<>();
         this.answersQuestion = new ArrayList<>();
-        this.correctExamAnswersQuestion = new ArrayList<>();
+        this.correctAnswersQuestion = new ArrayList<>();
     }
 }

@@ -22,7 +22,7 @@ public class ExamEntity extends BaseEntity {
     private CourseEntity course;
 
     @Column(name = "title")
-    private String titleQuizz;
+    private String ExamTitle;
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "exam")

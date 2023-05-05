@@ -21,9 +21,9 @@ public interface ExamQuestionService {
 
     void createExamQuestion(ExamQuestionDto examQuestionDto) throws EntityNotFoundException;
 
+    void deleteExamQuestionById(Long id) throws EntityNotFoundException;
+
     void updateExamQuestionText(Long id, String questionText) throws EntityNotFoundException;
 
     void updateExamQuestion(Long id, ExamQuestionDto examQuestionDto) throws EntityNotFoundException;
-
-    void deleteExamQuestionById(Long id) throws EntityNotFoundException;
 }
