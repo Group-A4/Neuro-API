@@ -19,7 +19,11 @@ public class QuestionQuizzMapper {
                                           List<CorrectAnswerQuizzEntity> correctAnswersQuizzEntity){
 
         return QuestionQuizzDto.builder()
+                .id(questionQuizzEntity.getId())
                 .questionText(questionQuizzEntity.getQuestionText())
+                .timeMinutes(questionQuizzEntity.getTimeMinutes())
+                .difficulty(questionQuizzEntity.getDifficulty())
+                .lectureNumber(questionQuizzEntity.getLectureNumber())
                 .idCourse(questionQuizzEntity.getCourse().getId())
                 .idProfessor(questionQuizzEntity.getProfessor().getIdUser())
                 .answersQuestion(answersQuizzEntity.stream().map( answer -> //foreach Answer to this question, we map it to a AnswerQuizzDto, where in the second argument we pass the list of correct answers to this question
@@ -40,9 +44,16 @@ public class QuestionQuizzMapper {
             QuestionQuizzEntity questionQuizzEntity =
                     QuestionQuizzEntity.builder()
                     .questionText(questionQuizzDto.getQuestionText())
+                    .lectureNumber(questionQuizzDto.getLectureNumber())
                     .correctAnswersQuestion(correctAnswersQuizzEntityList)
                     .answersQuestion(answersQuizzEntityList)
                     .build();
+            if(questionQuizzDto.getTimeMinutes() != null){
+                questionQuizzEntity.setTimeMinutes(questionQuizzDto.getTimeMinutes());
+            }
+            if(questionQuizzDto.getDifficulty() != null){
+                questionQuizzEntity.setDifficulty(questionQuizzDto.getDifficulty());
+            }
 
             answersQuizzDtoList.forEach(answer -> {
                 AnswerQuizzEntity answerQuizzEntity = AnswerQuizzMapper.fromDto(answer, questionQuizzEntity);

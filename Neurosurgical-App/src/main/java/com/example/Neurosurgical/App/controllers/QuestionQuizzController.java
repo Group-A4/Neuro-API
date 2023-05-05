@@ -14,6 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/questionQuizz")
+@CrossOrigin(origins = "http://localhost:3000")
 public class QuestionQuizzController {
     private final QuestionQuizzService questionQuizzService;
 
