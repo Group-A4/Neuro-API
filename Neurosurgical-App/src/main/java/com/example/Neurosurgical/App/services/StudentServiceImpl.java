@@ -14,6 +14,7 @@ import com.example.Neurosurgical.App.mappers.UserMapper;
 import com.example.Neurosurgical.App.models.dtos.StudentCreationDto;
 import com.example.Neurosurgical.App.models.dtos.StudentDto;
 import com.example.Neurosurgical.App.models.dtos.UserDto;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,10 +61,18 @@ public class StudentServiceImpl implements StudentService{
 
     @Override
     public Optional<StudentDto> findById(Long id) throws UserNotFoundException {
-        return Optional.of(StudentMapper.toDto(userRepository.findById(id).get(), studentRepository.findById(id).get()));
+        Optional<UserEntity> userOptional = userRepository.findById(id);
+        Optional<StudentEntity> studentOptional = studentRepository.findById(id);
+
+        if (userOptional.isPresent() && studentOptional.isPresent()) {
+            return Optional.of(StudentMapper.toDto(userOptional.get(), studentOptional.get()));
+        } else {
+            throw new UserNotFoundException();
+        }
     }
 
     @Override
+    @Transactional
     public void createStudent(StudentCreationDto studentCreationDto) throws UserAlreadyExistsException{
         if(userRepository.findByFacMail(studentCreationDto.getEmailFaculty()) != null)
             throw new UserAlreadyExistsException("Faculty email already in use!");
@@ -72,18 +81,28 @@ public class StudentServiceImpl implements StudentService{
         if(studentRepository.findByCode(studentCreationDto.getCode()) != null)
             throw new UserAlreadyExistsException("Code already in use!");
 
-        UserEntity user = UserMapper.fromStudentCreationDtoToUserEntity(studentCreationDto);
-        userRepository.save(user);
+        UserEntity user;
+        try {
+            user = UserMapper.fromStudentCreationDtoToUserEntity(studentCreationDto);
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new UserAlreadyExistsException("User already exists or the input is invalid!");
+        }
 
-        StudentEntity studentEntity = StudentEntity.builder()
-                .idUser(userRepository.findByFacMail(user.getEmailFaculty()).getId())
-                .code(studentCreationDto.getCode())
-                .year(studentCreationDto.getYear())
-                .semester(studentCreationDto.getSemester())
-                .birthDate(studentCreationDto.getBirthDate())
-                .build();
+        try {
+            StudentEntity studentEntity = StudentEntity.builder()
+                    .idUser(userRepository.findByFacMail(user.getEmailFaculty()).getId())
+                    .code(studentCreationDto.getCode())
+                    .year(studentCreationDto.getYear())
+                    .semester(studentCreationDto.getSemester())
+                    .birthDate(studentCreationDto.getBirthDate())
+                    .build();
 
-        studentRepository.save(studentEntity);
+            studentRepository.save(studentEntity);
+        } catch (Exception e) {
+            userRepository.deleteById(user.getId());
+            throw new UserAlreadyExistsException("User already exists or the input is invalid!");
+        }
     }
 
     @Override
@@ -113,19 +132,27 @@ public class StudentServiceImpl implements StudentService{
 
     @Override
     public List<StudentDto> findByCourseId(Long id) {
-        CourseEntity courseEntity = courseRepository.findById(id).get();
-        List<StudentEntity> studentEntities = courseEntity.getRegistrations().stream().map(x -> x.getStudent()).toList();
-        List<UserEntity> users = userRepository.findAll();
+        Optional<CourseEntity> courseOptional = courseRepository.findById(id);
 
-        List<StudentDto> studentDtos = new ArrayList<>();
-        for(var stud : studentEntities){
-            UserEntity userEntity = users.stream()
-                    .filter(x -> Objects.equals(x.getId(), stud.getIdUser()))
-                    .findAny().get();
+        if (courseOptional.isPresent()) {
+            CourseEntity courseEntity = courseOptional.get();
+            List<StudentEntity> studentEntities = courseEntity.getRegistrations().stream().map(x -> x.getStudent()).toList();
+            List<UserEntity> users = userRepository.findAll();
 
-            studentDtos.add(StudentMapper.toDto(userEntity, stud));
+            List<StudentDto> studentDtos = new ArrayList<>();
+            for(var stud : studentEntities){
+                UserEntity userEntity = users.stream()
+                        .filter(x -> Objects.equals(x.getId(), stud.getIdUser()))
+                        .findAny().get();
+
+                studentDtos.add(StudentMapper.toDto(userEntity, stud));
+            }
+
+            return studentDtos;
+        } else {
+            throw new UserNotFoundException();
         }
-
-        return studentDtos;
     }
+
+
 }

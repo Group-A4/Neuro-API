@@ -19,4 +19,7 @@ public interface UserRepository extends JpaRepository<UserEntity,Long> {
 
     @Query(value = "SELECT * FROM USERS WHERE role = :p_role",nativeQuery = true)
     List<UserEntity> findAllWithRole(@Param("p_role") Integer role);
+
+    @Query(value = "SELECT COUNT(*) FROM USERS WHERE ROLE = :p_role", nativeQuery = true)
+    Long countByRole(@Param("p_role") Integer role);
 }

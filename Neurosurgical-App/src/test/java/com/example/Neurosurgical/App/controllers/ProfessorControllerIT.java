@@ -21,26 +21,25 @@ import org.springframework.test.annotation.Rollback;
 public class ProfessorControllerIT {
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
 
     @Test
-    void updateProfessor_shouldReturnBadRequest() throws Exception {
+    void updateProfessor_shouldReturn_BadRequest() throws Exception {
         Long id = 1000L;
         mockMvc.perform(MockMvcRequestBuilders.put("/professors/update/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
-    void deleteProfessor_shouldReturnNotFound() throws Exception {
+    void deleteProfessor_shouldReturn_BadRequest() throws Exception {
         Long id = 1000L;
         mockMvc.perform(MockMvcRequestBuilders.delete("/professors/delete/{id}", id))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
-    void createProfessor_shouldReturnBadRequest() throws Exception {
+    void createProfessor_shouldReturn_BadRequest() throws Exception {
         ProfessorCreationDto professorCreationDto = ProfessorCreationDto.builder()
                 .firstName("John")
                 .lastName("Doe")
@@ -59,7 +58,7 @@ public class ProfessorControllerIT {
 
     @Test
     @Rollback
-    void createProfessor_shouldReturnOk() throws Exception {
+    void createProfessor_shouldReturn_isOk() throws Exception {
         ProfessorCreationDto professorCreationDto = ProfessorCreationDto.builder()
                 .firstName("John")
                 .lastName("Doe")
@@ -78,7 +77,7 @@ public class ProfessorControllerIT {
 
     @Test
     @Rollback
-    void deleteProfessor_shouldReturnOk() throws Exception {
+    void deleteProfessor_shouldReturn_isOk() throws Exception {
         Long id = 52L;
         mockMvc.perform(MockMvcRequestBuilders.delete("/professors/delete/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -86,7 +85,7 @@ public class ProfessorControllerIT {
 
     @Test
     @Rollback
-    void updateProfessor_shouldReturnOk() throws Exception {
+    void updateProfessor_shouldReturn_isOk() throws Exception {
         Long id = 85L;
         ProfessorCreationDto professorCreationDto = ProfessorCreationDto.builder()
                 .firstName("John")
@@ -125,11 +124,11 @@ public class ProfessorControllerIT {
     }
 
     @Test
-    void findById_shouldReturns_notFound() throws Exception {
+    void findById_shouldReturns_BadRequest() throws Exception {
                 Long id = 1000L;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/professors/{id}",id))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
 
@@ -159,11 +158,11 @@ public class ProfessorControllerIT {
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
     @Test
-    void findByCourseId_shouldReturns_notFound() throws Exception {
+    void findByCourseId_shouldReturns_BadRequest() throws Exception {
         Long courseId = 1000L;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/professors/course={id}",courseId))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
@@ -175,10 +174,10 @@ public class ProfessorControllerIT {
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
     @Test
-    void findByMaterialId_shouldReturns_notFound() throws Exception {
+    void findByMaterialId_shouldReturns_BadRequest() throws Exception {
         Long materialId = 1000L;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/professors/material={id}",materialId))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 }

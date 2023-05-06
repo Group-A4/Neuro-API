@@ -2,6 +2,7 @@ package com.example.Neurosurgical.App.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -18,6 +19,7 @@ public class ProfessorEntity {
     private Long idUser;
 
     @Column(name="code", unique = true)
+    @NotNull(message = "Code cannot be null")
     private String code;
 
     @Column(name="degree")
@@ -30,10 +32,13 @@ public class ProfessorEntity {
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "professor")
     private List<DidacticEntity> teachings;
-
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "professor")
     private List<QuestionQuizzEntity> questionsQuizzes;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "professor")
+    private List<ContentEntity> contents;
 
     public ProfessorEntity(){
         this.materials = new ArrayList<>();

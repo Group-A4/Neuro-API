@@ -17,5 +17,5 @@ public class MaterialCreationDto {
     private Long idCourse;
     private Long idProfessor;
     private String title;
-    private String link;
+    private String markdownText;
 }

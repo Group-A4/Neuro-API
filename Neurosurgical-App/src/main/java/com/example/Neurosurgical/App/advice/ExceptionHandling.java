@@ -1,10 +1,7 @@
 package com.example.Neurosurgical.App.advice;
 
 
-import com.example.Neurosurgical.App.advice.exceptions.EntityAlreadyExistsException;
-import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
-import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
-import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
+import com.example.Neurosurgical.App.advice.exceptions.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,11 +15,6 @@ public class ExceptionHandling {
     }
 
 
-    @ExceptionHandler({UserNotFoundException.class})
-    public ResponseEntity<ErrorResponse> handle(UserNotFoundException exception){
-        ErrorResponse error = new ErrorResponse(exception.getMessage());
-        return ResponseEntity.badRequest().body(error);
-    }
 
     @ExceptionHandler({EntityNotFoundException.class})
     public ResponseEntity<ErrorResponse> handle(EntityNotFoundException exception){
@@ -34,4 +26,22 @@ public class ExceptionHandling {
         ErrorResponse error = new ErrorResponse(exception.getMessage());
         return ResponseEntity.badRequest().body(error);
     }
+
+
+    @ExceptionHandler(value = UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException e){
+        return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(value = CannotRemoveLastAdminException.class)
+    public ResponseEntity<ErrorResponse> handleCannotRemoveLastAdminException(CannotRemoveLastAdminException e){
+        return ResponseEntity.status(403).body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(value = ContentNotFound.class)
+    public ResponseEntity<ErrorResponse> handleContentNotFound(ContentNotFound e){
+        return ResponseEntity.status(403).body(new ErrorResponse(e.getMessage()));
+    }
+
+
 }

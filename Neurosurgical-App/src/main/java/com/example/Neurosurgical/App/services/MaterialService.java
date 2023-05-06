@@ -20,4 +20,5 @@ public interface MaterialService{
     Optional<MaterialDto> findByTitle(String title) throws UserNotFoundException;
     List<MaterialDto> findAllByCourseId(Long id);
     List<MaterialDto> findAllByTeacherId(Long id);
+    List<MaterialDto> findByMarkdownId(Long id);
 }
