@@ -6,12 +6,12 @@ import com.example.Neurosurgical.App.models.dtos.QuestionQuizzDto;
 import com.example.Neurosurgical.App.models.entities.QuestionQuizzEntity;
 import com.example.Neurosurgical.App.repositories.AnswerQuizzRepository;
 import com.example.Neurosurgical.App.repositories.CorrectAnswerQuizzRepository;
+import com.example.Neurosurgical.App.repositories.GeneralInfoRepository;
 import com.example.Neurosurgical.App.repositories.QuestionQuizzRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.DoubleStream;
 
 @Service
 public class QuizzServiceImpl implements QuizzService {
@@ -20,14 +20,18 @@ public class QuizzServiceImpl implements QuizzService {
     final private AnswerQuizzRepository answerQuizzRepository;
     final private CorrectAnswerQuizzRepository correctAnswerQuizzRepository;
 
+    final private GeneralInfoRepository generalInfoRepository;
+
     @Autowired
     public QuizzServiceImpl(QuestionQuizzRepository questionQuizzRepository,
                             AnswerQuizzRepository answerQuizzRepository,
-                            CorrectAnswerQuizzRepository correctAnswerQuizzRepository) {
+                            CorrectAnswerQuizzRepository correctAnswerQuizzRepository,
+                            GeneralInfoRepository generalInfoRepository) {
 
         this.questionQuizzRepository = questionQuizzRepository;
         this.answerQuizzRepository = answerQuizzRepository;
         this.correctAnswerQuizzRepository = correctAnswerQuizzRepository;
+        this.generalInfoRepository = generalInfoRepository;
     }
 
     @Override
@@ -37,7 +41,7 @@ public class QuizzServiceImpl implements QuizzService {
 
         Optional <List<QuestionQuizzEntity>> questionsById = this.questionQuizzRepository.findByIdCourse(id);
 
-        double nrMinutesQuizz = 4.67; //generalInfoRepository.findById(1);
+        double nrMinutesQuizz = this.generalInfoRepository.findById(1L).get().getQuizTime(); //generalInfoRepository.findById(1);
 
         if ( questionsById.isEmpty() ){
             throw new EntityNotFoundException("Question", id);
@@ -48,7 +52,7 @@ public class QuizzServiceImpl implements QuizzService {
         List<Integer> lectures = new ArrayList<>();
         List<Integer> nrQuestionsPerLecture = new ArrayList<>();
 
-        System.out.println("\n\nTotal questions: \n" + totalQuestions + "\n");
+        //System.out.println("\n\nTotal questions: \n" + totalQuestions + "\n");
 
         double meanDifficulty = questionsById.get().stream().mapToInt(QuestionQuizzEntity::getDifficulty).average().orElse(5); // calculate the mean difficulty
         double sdDifficulty = 5;// calculate the standard deviation of difficulty
@@ -73,7 +77,7 @@ public class QuizzServiceImpl implements QuizzService {
 
         averageTimePerQuestion = averageTimePerQuestion / totalQuestions;
 
-        System.out.println("\nThe average time per question is :  " + averageTimePerQuestion + "\n");
+        //System.out.println("\nThe average time per question is :  " + averageTimePerQuestion + "\n");
 
         long expectedQuestions = (long) (nrMinutesQuizz / averageTimePerQuestion);
 
@@ -82,7 +86,7 @@ public class QuizzServiceImpl implements QuizzService {
             return Optional.of(listOfAllExistingQuestions(questionsById.get()));
         }
 
-        System.out.println("The expected number of questions is : " + expectedQuestions + "\n");
+        //System.out.println("The expected number of questions is : " + expectedQuestions + "\n");
 
 
         List<Double> percentages = nrQuestionsPerLecture.stream()
@@ -99,10 +103,10 @@ public class QuizzServiceImpl implements QuizzService {
             difficulties.add(random.nextGaussian() * sdDifficulty + meanDifficulty);
         }
 
-        System.out.println("\nThe distribution : \n");
-        for( double i : difficulties){
-            System.out.print(i + " ");
-        }
+//        System.out.println("\nThe distribution : \n");
+//        for( double i : difficulties){
+//            System.out.print(i + " ");
+//        }
 
         //  after we have the gaussian distribution we uniformmly generate lectures (based on that percentage) from which we will get a question
         //  which has the difficulty closest to one of the difficulties D1 from the gaussian distribution;
@@ -126,7 +130,6 @@ public class QuizzServiceImpl implements QuizzService {
         //Finding the Right Questions
 
         while ( currentTimeQuestions < nrMinutesQuizz ) {
-            System.out.println("IN WHILEEEE current time ->" + currentTimeQuestions + " total time quiz -> " + nrMinutesQuizz);
             QuestionQuizzEntity questionQuizzEntity = this.getNextQuestion( randomLecture, questionsById.get(),
                                                                             percentages, difficulties,lectures,
                                                                             difficultyDifference,questionsAlreadyInserted);
@@ -161,8 +164,6 @@ public class QuizzServiceImpl implements QuizzService {
             lastTimeDifficultyDifferenceWasTooBig = false;
 
             currentTimeQuestions += questionQuizzEntity.getTimeMinutes();
-
-            System.out.println("The current Time updated to  " + currentTimeQuestions + "\n");
 
             listQuestionsQuizz.add(QuestionQuizzMapper.toDto(
                             questionQuizzEntity,

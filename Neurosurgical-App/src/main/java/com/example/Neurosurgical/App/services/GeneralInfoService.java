@@ -9,7 +9,5 @@ import java.util.Optional;
 @Service
 public interface GeneralInfoService {
     Optional<GeneralInfoDto> findById(Long id) throws EntityNotFoundException;
-
-    public void checkIfExists(Long id);
-    public void updateGeneralInfo(Long id, GeneralInfoDto generalInfoDto);
+    void updateGeneralInfo(Long id, GeneralInfoDto generalInfoDto);
 }
