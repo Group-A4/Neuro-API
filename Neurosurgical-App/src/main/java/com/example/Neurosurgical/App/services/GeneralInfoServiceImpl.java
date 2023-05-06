@@ -29,17 +29,18 @@ public class GeneralInfoServiceImpl implements GeneralInfoService{
         return Optional.of(GeneralInfoMapper.toDto(generalInfoEntity.get()));
     }
 
-    public void checkIfExists(Long id) {
-        if (generalInfoRepository.findById(id).isEmpty()) {
-            throw new EntityNotFoundException("GeneralInfo", id);
-        }
-    }
-
     @Override
     public void updateGeneralInfo(Long id, GeneralInfoDto generalInfoDto) {
         checkIfExists(id);
+
         GeneralInfoEntity generalInfoToUpdate = GeneralInfoMapper.fromDto(generalInfoDto);
         generalInfoToUpdate.setId(id);
         generalInfoRepository.save(generalInfoToUpdate);
+    }
+
+    private void checkIfExists(Long id) {
+        if (generalInfoRepository.findById(id).isEmpty()) {
+            throw new EntityNotFoundException("GeneralInfo", id);
+        }
     }
 }
