@@ -66,7 +66,6 @@ public class ContentController {
     @PostMapping(path ="/create" , consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createContent(@ModelAttribute ContentCreationDto content) throws IOException {
-        System.out.println(content);
         contentService.createContent(content);
         return ResponseEntity.created(null).build();
     }

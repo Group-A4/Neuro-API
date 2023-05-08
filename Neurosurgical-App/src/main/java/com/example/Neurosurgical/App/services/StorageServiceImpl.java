@@ -12,6 +12,7 @@ import com.azure.storage.blob.models.PublicAccessType;
 import com.azure.storage.blob.options.BlobParallelUploadOptions;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.ByteArrayOutputStream;
@@ -19,7 +20,6 @@ import java.io.IOException;
 
 
 public class StorageServiceImpl implements StorageService{
-    private static final Tika tika = new Tika();
     private final BlobServiceClient blobServiceClient;
 
     public StorageServiceImpl(@Value("${azure.storage.account-name}") String accountName,
@@ -41,14 +41,14 @@ public class StorageServiceImpl implements StorageService{
     }
 
     @Override
-    public void uploadFile(String containerName, String blobName, byte[] fileBytes) {
+    public void uploadFile(String containerName, String blobName, MultipartFile file) throws IOException {
         BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient(containerName);
         BlobClient blobClient = containerClient.getBlobClient(blobName);
-        
-        String type = tika.detect(fileBytes);
+
+        byte[] fileBytes = file.getBytes();
 
         BlobHttpHeaders jsonHeaders = new BlobHttpHeaders()
-                .setContentType(type);
+                .setContentType(file.getContentType());
 
         BinaryData data = BinaryData.fromByteBuffer(java.nio.ByteBuffer.wrap(fileBytes));
         BlobParallelUploadOptions options = new BlobParallelUploadOptions(data)

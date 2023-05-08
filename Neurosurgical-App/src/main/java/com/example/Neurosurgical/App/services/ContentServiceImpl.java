@@ -3,7 +3,6 @@ package com.example.Neurosurgical.App.services;
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.models.dtos.ContentCreationDto;
 import com.example.Neurosurgical.App.models.entities.ContentEntity;
-import com.example.Neurosurgical.App.models.entities.ContentType;
 import com.example.Neurosurgical.App.models.entities.MarkdownContentEntity;
 import com.example.Neurosurgical.App.repositories.ContentRepository;
 import com.example.Neurosurgical.App.repositories.MarkdownContentRepository;
@@ -39,15 +38,16 @@ public class ContentServiceImpl implements ContentService{
         if(!storageService.verifyIfContainerExists(containerName))
             storageService.createContainer(containerName);
 
-        storageService.uploadFile(containerName, contentCreationDto.getFileName(),contentCreationDto.getContentFile().getBytes());
+        storageService.uploadFile(containerName, contentCreationDto.getFileName(),contentCreationDto.getContentFile());
 
         String link = "https://neuroapi.blob.core.windows.net/"+containerName+"/"+contentCreationDto.getFileName();
 
-        if(contentRepository.findByLink(link).isEmpty()) {
-            ContentEntity contentEntity = ContentEntity.builder()
+        ContentEntity contentEntity = contentRepository.findByLink(link).orElse(null);
+
+        if(contentEntity == null || !contentEntity.getProfessor().getIdUser().equals(contentCreationDto.getProfessorId())) {
+            contentEntity = ContentEntity.builder()
                     .name(contentCreationDto.getFileName())
                     .link(link)
-                    .type(ContentType.fromString(contentCreationDto.getType().toUpperCase().trim()).ordinal())
                     .professor(professorRepository.findById(contentCreationDto.getProfessorId()).get())
                     .build();
 

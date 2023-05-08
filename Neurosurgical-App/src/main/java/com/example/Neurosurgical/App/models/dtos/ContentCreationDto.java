@@ -14,5 +14,4 @@ public class ContentCreationDto {
     public String fileName;
     public MultipartFile contentFile;
     public Long professorId;
-    public String type;
 }
