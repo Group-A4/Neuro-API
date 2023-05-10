@@ -128,7 +128,6 @@ public class QuizzServiceImpl implements QuizzService {
 
 
         //Finding the Right Questions
-
         while ( currentTimeQuestions < nrMinutesQuizz ) {
             QuestionQuizzEntity questionQuizzEntity = this.getNextQuestion( randomLecture, questionsById.get(),
                                                                             percentages, difficulties,lectures,
@@ -162,6 +161,12 @@ public class QuizzServiceImpl implements QuizzService {
             }
 
             lastTimeDifficultyDifferenceWasTooBig = false;
+
+            //if the current question has a time which would lead to a time of the quizz way bigger -> we skip it
+            //ex : if the currTime = 8.9 and the QuizzTime = 10 and the question time = 10 -> the quizz time would be way too big, so we skip it and try o find another one
+            if( currentTimeQuestions + questionQuizzEntity.getTimeMinutes() > nrMinutesQuizz + (1.5*averageTimePerQuestion) ){
+                continue;
+            }
 
             currentTimeQuestions += questionQuizzEntity.getTimeMinutes();
 
