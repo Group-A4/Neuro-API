@@ -55,7 +55,6 @@ public class QuestionQuizzController {
         return questionQuizzService.findByIdCourseAndLectureNumber(idCourse, lectureNumber);
     }
 
-    // get all lectures from a course
     @GetMapping(value = "/course={idCourse}/lectures", produces="application/json")
     public Optional<List<Integer>> getLecturesByIdCourse(@PathVariable @Valid @Min(0) Long idCourse) throws EntityNotFoundException {
         return questionQuizzService.getLecturesByIdCourse(idCourse);
