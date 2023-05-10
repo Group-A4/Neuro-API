@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 @Builder
 public class CourseDto {
 
+    private Long id;
+
     private String title;
 
     private Integer year;

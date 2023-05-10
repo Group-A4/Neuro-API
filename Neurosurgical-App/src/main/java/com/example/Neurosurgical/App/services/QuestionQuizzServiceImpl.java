@@ -115,6 +115,33 @@ public class QuestionQuizzServiceImpl implements QuestionQuizzService {
     }
 
     @Override
+    public Optional<List<QuestionQuizzDto>> findByIdCourseAndLectureNumber(Long idCourse, Integer lectureNumber) throws EntityNotFoundException {
+        Optional<List<QuestionQuizzEntity>> list
+                = questionQuizzRepository.findByIdCourseAndLectureNumber(idCourse, lectureNumber);
+        if(list.isEmpty())
+            throw new EntityNotFoundException("QuestionQuizz", idCourse.toString());
+
+        return Optional.of(
+                list.get()
+                        .stream()
+                        .map( questionEntity -> QuestionQuizzMapper.toDto(questionEntity,
+                                this.answerQuizzRepository.findByIdQuestion(questionEntity.getId()),
+                                this.correctAnswerQuizzRepository.findByIdQuestion(questionEntity.getId())) )
+                        .collect(Collectors.toList())
+        );
+    }
+
+    @Override
+    public Optional<List<Integer>> getLecturesByIdCourse(Long idCourse) throws EntityNotFoundException{
+        Optional<List<Integer>> list = questionQuizzRepository.getLecturesByIdCourse(idCourse);
+        if(list.isEmpty())
+            throw new EntityNotFoundException("QuestionQuizz", idCourse.toString());
+
+        return list;
+    }
+
+
+    @Override
     public void createQuestionQuizz(QuestionQuizzDto questionQuizzDto) throws EntityNotFoundException {
 
         long courseId = questionQuizzDto.getIdCourse();
