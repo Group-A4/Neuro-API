@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/studentFollowsCourses")
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
+
 public class StudentFollowsCoursesController {
     private final StudentFollowsCoursesService studentFollowsCoursesService;
     @Autowired

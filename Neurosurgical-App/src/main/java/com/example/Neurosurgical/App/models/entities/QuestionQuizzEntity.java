@@ -18,6 +18,15 @@ public class QuestionQuizzEntity extends BaseEntity {
     @Column(name = "question_text")
     private String questionText;
 
+    @Column(name = "difficulty",nullable = false, columnDefinition = "INT default 5")
+    private Integer difficulty;
+
+    @Column(name = "time_in_minutes", nullable = false, columnDefinition = "DECIMAL(4,2) NOT NULL DEFAULT 1.00")
+    private Double timeMinutes;
+
+    @Column(name = "lecture_number")
+    private Integer lectureNumber;
+
     @ManyToOne
     @JoinColumn(name = "id_course")
     private CourseEntity course;

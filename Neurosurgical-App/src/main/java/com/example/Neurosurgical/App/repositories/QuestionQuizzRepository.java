@@ -12,9 +12,6 @@ import java.util.Optional;
 @Repository
 public interface QuestionQuizzRepository extends JpaRepository<QuestionQuizzEntity,Long>{
 
-    @Query(value = "SELECT * FROM ( SELECT *, ROW_NUMBER() OVER (ORDER BY id_course ) AS row_num FROM questions_quizz Where id_course = :courseId ) AS subquery WHERE row_num =:rowNr",nativeQuery = true)
-    Optional<QuestionQuizzEntity> findByCourseId(@Param("courseId") Long id, @Param("rowNr") int rowNr);
-
     @Query(value = "Select count('c') from questions_quizz WHERE id_course = :courseId",nativeQuery = true)
     Long countQuestionsWithCourseId(@Param("courseId") Long courseId);
 

@@ -167,6 +167,14 @@ public class QuestionQuizzServiceImpl implements QuestionQuizzService {
         questionQuizzEntityOptional.get().setCourse(courseEntityOptional.get());
         questionQuizzEntityOptional.get().setProfessor(professorEntityOptional.get());
         questionQuizzEntityOptional.get().setQuestionText(questionQuizzDto.getQuestionText());
+        if(questionQuizzDto.getTimeMinutes() != null) {
+            questionQuizzEntityOptional.get().setTimeMinutes(questionQuizzDto.getTimeMinutes());
+        }
+        if(questionQuizzDto.getDifficulty() != null){
+            questionQuizzEntityOptional.get().setDifficulty(questionQuizzDto.getDifficulty());
+        }
+
+        questionQuizzEntityOptional.get().setLectureNumber(questionQuizzDto.getLectureNumber());
         questionQuizzEntityOptional.get().setId(id);
 
         //save updated question

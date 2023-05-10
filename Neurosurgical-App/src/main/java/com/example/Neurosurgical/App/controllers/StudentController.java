@@ -20,6 +20,8 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/students")
+@CrossOrigin(origins = "http://localhost:3000")
+
 public class StudentController {
     private final StudentService studentService;
 
