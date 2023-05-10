@@ -23,4 +23,10 @@ public interface QuestionQuizzRepository extends JpaRepository<QuestionQuizzEnti
 
     @Query(value = "SELECT * FROM questions_quizz WHERE id_course = :idCourse",nativeQuery = true)
     Optional<List<QuestionQuizzEntity>> findByIdCourse(@Param("idCourse") Long id);
+
+    @Query(value = "SELECT * FROM questions_quizz WHERE id_course = :idCourse AND lecture_number = :lectureNumber",nativeQuery = true)
+    Optional<List<QuestionQuizzEntity>> findByIdCourseAndLectureNumber(@Param("idCourse") Long idCourse,@Param("lectureNumber")  Integer lectureNumber);
+
+    @Query(value = "SELECT DISTINCT lecture_number FROM questions_quizz WHERE id_course = :idCourse ORDER BY lecture_number",nativeQuery = true)
+    Optional<List<Integer>> getLecturesByIdCourse(@Param("idCourse") Long idCourse);
 }
