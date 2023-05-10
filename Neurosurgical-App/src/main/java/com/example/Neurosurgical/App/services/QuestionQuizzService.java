@@ -20,6 +20,10 @@ public interface QuestionQuizzService {
 
     Optional<List<QuestionQuizzDto>> findByIdCourse(Long id) throws EntityNotFoundException ;
 
+    Optional<List<QuestionQuizzDto>> findByIdCourseAndLectureNumber(Long idCourse, Integer lectureNumber) throws EntityNotFoundException;
+
+    Optional<List<Integer>> getLecturesByIdCourse(Long idCourse) throws EntityNotFoundException;
+
     void createQuestionQuizz(QuestionQuizzDto questionQuizzDto) throws EntityNotFoundException;
 
     void deleteQuestionQuizzById(Long id) throws EntityNotFoundException;
@@ -27,4 +31,5 @@ public interface QuestionQuizzService {
     void updateQuestionQuizz(Long id, QuestionQuizzDto questionQuizzDto) throws EntityNotFoundException;
 
     void updateQuestionQuizzText(Long id, String questionText) throws EntityNotFoundException;
+
 }
