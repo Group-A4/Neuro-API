@@ -8,10 +8,11 @@ import org.springframework.stereotype.Component;
 @Component
 
 public class MaterialMapper {
-    public static MaterialDto toDto(MaterialEntity materialEntity, String html){
+    public static MaterialDto toDto(MaterialEntity materialEntity, String markdownText, String html){
         return MaterialDto.builder()
                 .id(materialEntity.getId())
                 .title(materialEntity.getTitle())
+                .markdownText(markdownText)
                 .html(html)
                 .build();
     }

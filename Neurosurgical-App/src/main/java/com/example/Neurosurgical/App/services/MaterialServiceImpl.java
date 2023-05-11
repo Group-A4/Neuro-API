@@ -48,7 +48,7 @@ public class MaterialServiceImpl implements MaterialService {
         for (MaterialEntity materialEntity : materialEntities) {
             for (MaterialsMarkdownEntity materialsMarkdownEntity : materialsMarkdownEntities) {
                 if(materialEntity.getMaterialMarkdown().getId().equals(materialsMarkdownEntity.getId())){
-                    materialDtos.add(MaterialMapper.toDto(materialEntity,materialsMarkdownEntity.getHtml()));
+                    materialDtos.add(MaterialMapper.toDto(materialEntity, materialsMarkdownEntity.getMarkdownText(), materialsMarkdownEntity.getHtml()));
                 }
             }
         }
@@ -67,7 +67,10 @@ public class MaterialServiceImpl implements MaterialService {
     public Optional<MaterialDto> findById(Long id) throws UserNotFoundException {
         MaterialEntity materialEntity = materialRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Material",id));
 
-        MaterialDto materialDto = MaterialMapper.toDto(materialEntity, materialEntity.getMaterialMarkdown().getHtml());
+        String markdownText = materialEntity.getMaterialMarkdown().getMarkdownText();
+        String html = materialEntity.getMaterialMarkdown().getHtml();
+
+        MaterialDto materialDto = MaterialMapper.toDto(materialEntity, markdownText, html);
 
         return Optional.of(materialDto);
     }
@@ -143,8 +146,9 @@ public class MaterialServiceImpl implements MaterialService {
                 .orElseThrow(() -> new EntityNotFoundException("Material", title));
 
         String html = materialEntity.getMaterialMarkdown().getHtml();
+        String markdown = materialEntity.getMaterialMarkdown().getMarkdownText();
 
-        return Optional.of(MaterialMapper.toDto(materialEntity, html));
+        return Optional.of(MaterialMapper.toDto(materialEntity, markdown, html));
     }
     public void checkIfExists(Long id) {
         if (materialRepository.findById(id).isEmpty()) {
