@@ -1,7 +1,8 @@
 package com.example.Neurosurgical.App.config;
 
-
+import com.example.Neurosurgical.App.config.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -27,16 +28,10 @@ public class SecurityConfiguration {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/**")
+                .requestMatchers(req -> HttpMethod.OPTIONS.toString().equals(req.getMethod()))
                 .permitAll()
-                /*.requestMatchers("**").hasAuthority("ADMIN")
-                .requestMatchers("/users/mail/**").hasAnyAuthority("ADMIN", "PROFESSOR", "STUDENT")
-                .requestMatchers("/professors/course**").hasAnyAuthority("ADMIN", "PROFESSOR", "STUDENT")
-                .requestMatchers("/professors/material**").hasAnyAuthority("ADMIN", "PROFESSOR", "STUDENT")
-                .requestMatchers("/materials/**").hasAnyAuthority("ADMIN", "PROFESSOR")
-                .requestMatchers(HttpMethod.GET, "/materials/**").hasAnyAuthority("ADMIN", "PROFESSOR", "STUDENT")
-                .requestMatchers("/courses/**").hasAnyAuthority("ADMIN", "PROFESSOR")
-                .requestMatchers(HttpMethod.GET, "/courses/**").hasAnyAuthority("ADMIN", "PROFESSOR", "STUDENT")*/
+                .requestMatchers(req -> req.getRequestURI().startsWith("/api/v1/"))
+                .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -44,9 +39,9 @@ public class SecurityConfiguration {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .cors();
 
         return http.build();
     }
 }
-

@@ -8,10 +8,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
+
+    private final MailSender mailSender;
+
     @Autowired
-    private MailSender mailSender;
+    public EmailService(MailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
     public void sendMessage(SimpleMailMessage simpleMailMessage) {
+        this.mailSender.send(simpleMailMessage);
+    }
+
+    public void sendResetCode(String email, String resetCode) {
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setFrom("");
+        simpleMailMessage.setTo(email);
+        simpleMailMessage.setSubject("Reset Password");
+        simpleMailMessage.setText("Your reset code is: " + resetCode);
         this.mailSender.send(simpleMailMessage);
     }
 }
