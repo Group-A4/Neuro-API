@@ -24,5 +24,4 @@ public class QuestionExamController {
         return questionExamService.findAll();
     }
 
-
 }
