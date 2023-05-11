@@ -16,7 +16,7 @@ import java.util.List;
 public class AnswerExamEntity extends BaseEntity{
 
     @ManyToOne
-    @Column(name = "id_question")
+    @JoinColumn(name = "id_question")
     private QuestionExamEntity question;
 
     @Column(name = "answer_text")

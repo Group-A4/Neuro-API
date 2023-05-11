@@ -17,5 +17,7 @@ public class CorrectAnswerExamEntity extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "id_answer")
-    private AnswerQuizzEntity answer;
+  
+    private AnswerExamEntity answer;
+
 }

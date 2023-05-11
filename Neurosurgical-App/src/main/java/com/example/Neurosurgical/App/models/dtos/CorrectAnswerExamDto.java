@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @Builder
 public class CorrectAnswerExamDto {
-    private Long id;
+  
     private Long idQuestion;
     private Long idAnswer;
+  
 }

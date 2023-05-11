@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 
 @Component
 @Data
@@ -17,6 +18,9 @@ public class QuestionExamDto {
     private Long idExam;
     private Long idCourse;
     private Long idProfessor;
-    private String questionTest;
-    private Integer points;
+
+    private String questionText;
+    private Double points;
+    private List<AnswerExamDto> answersQuestion;
+
 }

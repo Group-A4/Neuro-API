@@ -15,22 +15,23 @@ import java.util.List;
 @Table(name = "questions_exam")
 public class QuestionExamEntity extends BaseEntity{
 
-    @Column(name = "id_exam", nullable = false)
-    private Long idExam;
+    @ManyToOne
+    @JoinColumn(name = "id_exam", nullable = false)
+    private ExamEntity exam;
 
     @ManyToOne
     @JoinColumn(name = "id_course", nullable = false)
-    private CourseEntity idCourse;
+    private CourseEntity course;
 
     @ManyToOne
     @JoinColumn(name = "id_professor", nullable = false)
-    private ProfessorEntity idProfessor;
+    private ProfessorEntity professor;
 
     @Column(name = "question_text")
-    private String questionTest;
+    private String questionText;
 
     @Column(name = "points")
-    private Integer points;
+    private Double points;
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
