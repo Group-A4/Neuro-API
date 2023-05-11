@@ -13,4 +13,6 @@ public interface ExamService {
     Optional<List<ExamQuestionDto>> findById(Long id) throws EntityNotFoundException;
 
     Optional<List<ExamDto>> findByCourseId(Long id) throws EntityNotFoundException;
+    
+    void deleteExamById(Long id) throws EntityNotFoundException;
 }

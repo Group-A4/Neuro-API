@@ -15,5 +15,5 @@ public interface ExamRepository extends JpaRepository<ExamEntity, Long> {
     Optional<ArrayList<Long>> findByIdCourse(@Param("idCourse") Long id);
 
     @Query(value = "SELECT id FROM exam WHERE id = :idExam", nativeQuery = true)
-    Optional<ExamEntity> findById(@Param("idExam") Long id);
+    Optional<ExamEntity> findById(@Param("idExam") Long id); 
 }

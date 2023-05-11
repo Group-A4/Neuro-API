@@ -31,13 +31,25 @@ public class ExamEntity extends BaseEntity {
     @Column(name = "code")
     private String code;
 
-    @Column(name = "time_examen")
+    @Column(name = "time_exam")
     private Integer time;
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "exam")
     private List<ExamQuestionEntity> examQuestions;
-
+    
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "exam")
+    private List<StudentPointsEntity> studentPoints;
+    
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "exam")
+    private List<LongAnswerResponsesEntity> longAnswerResponses;
+    
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "exam")
+    private List<StudentTookExamsEntity> studentTookExams;
+    
     public ExamEntity(){
         this.examQuestions = new ArrayList<>();
     }
