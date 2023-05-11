@@ -1,7 +1,7 @@
 package com.example.Neurosurgical.App.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,9 +26,9 @@ public class ExamEntity extends BaseEntity {
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "exam")
-    private List<ExamHasQuestionsEntity> examHasQuestions;
+    private List<ExamQuestionEntity> examQuestions;
 
     public ExamEntity(){
-        this.examHasQuestions = new ArrayList<>();
+        this.examQuestions = new ArrayList<>();
     }
 }
