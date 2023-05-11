@@ -53,7 +53,7 @@
 		<dependency>
 			<groupId>com.azure</groupId>
 			<artifactId>azure-storage-blob</artifactId>
-			<version>12.19.0</version>
+			<version>12.20.3</version>
 		</dependency>
 <!--		<dependency>-->
 <!--			<groupId>com.vladsch.flexmark</groupId>-->
@@ -74,6 +74,11 @@
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.0.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-core</artifactId>
+			<version>2.7.0</version>
 		</dependency>
 	</dependencies>
 

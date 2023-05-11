@@ -1,16 +1,23 @@
 package com.example.Neurosurgical.App.services;
 
+import com.azure.core.util.BinaryData;
+import com.azure.core.util.Context;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.azure.storage.blob.models.BlobHttpHeaders;
+import com.azure.storage.blob.models.BlobRequestConditions;
+import com.azure.storage.blob.models.PublicAccessType;
+import com.azure.storage.blob.options.BlobParallelUploadOptions;
+import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+
 
 public class StorageServiceImpl implements StorageService{
     private final BlobServiceClient blobServiceClient;
@@ -26,20 +33,27 @@ public class StorageServiceImpl implements StorageService{
     }
 
     public void createContainer(String containerName) {
-        blobServiceClient.createBlobContainer(containerName);
+        blobServiceClient.createBlobContainer(containerName).setAccessPolicy(PublicAccessType.CONTAINER, null);
     }
 
     public boolean verifyIfContainerExists(String containerName) {
         return blobServiceClient.getBlobContainerClient(containerName).exists();
     }
 
-    public void uploadFile(String containerName, String blobName, byte[] imageBytes) throws IOException {
+    @Override
+    public void uploadFile(String containerName, String blobName, MultipartFile file) throws IOException {
         BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient(containerName);
         BlobClient blobClient = containerClient.getBlobClient(blobName);
-        try (InputStream dataStream = new ByteArrayInputStream(imageBytes)) {
-            blobClient.upload(dataStream, imageBytes.length);
-        }
 
+        byte[] fileBytes = file.getBytes();
+
+        BlobHttpHeaders jsonHeaders = new BlobHttpHeaders()
+                .setContentType(file.getContentType());
+
+        BinaryData data = BinaryData.fromByteBuffer(java.nio.ByteBuffer.wrap(fileBytes));
+        BlobParallelUploadOptions options = new BlobParallelUploadOptions(data)
+                .setRequestConditions(new BlobRequestConditions()).setHeaders(jsonHeaders);
+        blobClient.uploadWithResponse(options, null, Context.NONE);
     }
 
     public byte[] downloadFile(String containerName, String blobName) throws IOException {

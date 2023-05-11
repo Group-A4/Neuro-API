@@ -34,11 +34,13 @@ public class ProfessorController {
 
 
     @GetMapping(value = "", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public List<ProfessorDto> getAll(){
         return professorService.findAll();
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public Optional<ProfessorDto> getById(@Valid @Min(0) @PathVariable Long id) throws UserNotFoundException {
         Optional<ProfessorDto> professorDto = professorService.findById(id);
         if(professorDto.isPresent()){
@@ -49,6 +51,7 @@ public class ProfessorController {
     }
 
     @GetMapping(value = "/code/{code}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public Optional<ProfessorDto> getByCode(@Valid @Min(0) @PathVariable String code) throws UserNotFoundException {
         Optional<ProfessorDto> professorDto = professorService.findByCode(code);
         if(professorDto.isPresent()){
@@ -77,6 +80,7 @@ public class ProfessorController {
     }
 
     @GetMapping(value = "/course={id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public List<ProfessorDto> getByCourseId(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException {
         List<ProfessorDto> professorDto = professorService.findByCourseId(id);
         if(professorDto.isEmpty()){
@@ -87,6 +91,7 @@ public class ProfessorController {
     }
 
     @GetMapping(value = "/material={id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public Optional<ProfessorDto> getByMaterialId(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException {
         Optional<ProfessorDto> professorDto = professorService.findByMaterialId(id);
         if(professorDto.isPresent()){

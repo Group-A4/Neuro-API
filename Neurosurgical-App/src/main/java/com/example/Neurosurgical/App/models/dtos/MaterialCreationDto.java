@@ -18,4 +18,5 @@ public class MaterialCreationDto {
     private Long idProfessor;
     private String title;
     private String markdownText;
+    private String html;
 }
