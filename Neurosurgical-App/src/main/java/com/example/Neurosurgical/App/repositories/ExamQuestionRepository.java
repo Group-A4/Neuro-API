@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,4 +29,7 @@ public interface ExamQuestionRepository extends JpaRepository<ExamQuestionEntity
 
     @Query(value = "SELECT * FROM questions_exam WHERE id = :id_question", nativeQuery = true)
     Optional<ExamQuestionEntity> findByQuestionId(@Param("id_question") Long id);
+
+    @Query(value = "SELECT id FROM questions_exam WHERE id_exam = :id", nativeQuery = true)
+    Optional<ArrayList<Long>> findByExamId(@Param("id") Long id);
 }

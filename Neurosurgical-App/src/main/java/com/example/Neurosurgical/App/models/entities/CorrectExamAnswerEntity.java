@@ -2,10 +2,7 @@ package com.example.Neurosurgical.App.models.entities;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import jakarta.persistence.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity

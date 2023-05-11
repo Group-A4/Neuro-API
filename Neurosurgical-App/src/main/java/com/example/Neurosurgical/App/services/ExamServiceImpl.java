@@ -19,17 +19,15 @@ import java.util.Optional;
 public class ExamServiceImpl implements ExamService {
     final private ExamRepository examRepository;
     final private ExamQuestionRepository examQuestionRepository;
-    final private ExamHasQuestionsRepository examHasQuestionsRepository;
     final private ExamAnswerRepository examAnswerRepository;
     final private CorrectExamAnswerRepository correctExamAnswerRepository;
 
     @Autowired
     public ExamServiceImpl(ExamRepository examRepository, ExamQuestionRepository examQuestionRepository,
-                           ExamHasQuestionsRepository examHasQuestionsRepository, ExamAnswerRepository examAnswerRepository,
+                           ExamAnswerRepository examAnswerRepository,
                            CorrectExamAnswerRepository correctExamAnswerRepository) {
         this.examRepository = examRepository;
         this.examQuestionRepository = examQuestionRepository;
-        this.examHasQuestionsRepository = examHasQuestionsRepository;
         this.examAnswerRepository = examAnswerRepository;
         this.correctExamAnswerRepository = correctExamAnswerRepository;
     }
@@ -39,7 +37,7 @@ public class ExamServiceImpl implements ExamService {
         //return the exam questions with the specified id
         List<ExamQuestionDto> exam = new ArrayList<>();
 
-        Optional<ArrayList<Long>> questionsIds = this.examHasQuestionsRepository.findByExamId(id);
+        Optional<ArrayList<Long>> questionsIds = this.examQuestionRepository.findByExamId(id);
         if(questionsIds.isEmpty()){
             throw new EntityNotFoundException("Question", id);
         }
