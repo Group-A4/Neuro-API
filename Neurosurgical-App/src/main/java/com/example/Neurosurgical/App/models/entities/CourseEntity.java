@@ -54,10 +54,6 @@ public class CourseEntity extends BaseEntity{
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
-    private List<QuizzEntity> quizzes;
-
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
     private List<QuestionQuizzEntity> questionsQuizzes;
 
     public CourseEntity(){
@@ -65,7 +61,6 @@ public class CourseEntity extends BaseEntity{
         this.materials = new ArrayList<>();
         this.teachings = new ArrayList<>();
 
-        this.quizzes = new ArrayList<>();
         this.questionsQuizzes = new ArrayList<>();
     }
 }
