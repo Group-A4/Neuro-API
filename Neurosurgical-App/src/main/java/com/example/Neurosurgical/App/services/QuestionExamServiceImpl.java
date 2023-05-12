@@ -25,19 +25,22 @@ public class QuestionExamServiceImpl implements QuestionExamService{
     final private CorrectAnswerExamRepository correctAnswerExamRepository;
     final private ExamRepository examRepository;
     final private ProfessorRepository  professorRepository;
+    final private CourseRepository courseRepository;
 
     @Autowired
     public QuestionExamServiceImpl(QuestionExamRepository questionExamRepository,
                                    AnswerExamRepository answerExamRepository,
                                    CorrectAnswerExamRepository correctAnswerExamRepository,
                                    ExamRepository examRepository,
-                                   ProfessorRepository professorRepository){
+                                   ProfessorRepository professorRepository,
+                                   CourseRepository courseRepository) {
 
         this.questionExamRepository = questionExamRepository;
         this.answerExamRepository = answerExamRepository;
         this.correctAnswerExamRepository = correctAnswerExamRepository;
         this.examRepository = examRepository;
         this.professorRepository = professorRepository;
+        this.courseRepository = courseRepository;
     }
 
     @Override
@@ -47,11 +50,21 @@ public class QuestionExamServiceImpl implements QuestionExamService{
 
     @Override
     public List<QuestionExamDto> findAll() {
-        return questionExamRepository.findAll().stream()
-                .map( questionEntity -> QuestionExamMapper.toDto(questionEntity,
-                        this.answerExamRepository.findByIdQuestion(questionEntity.getId()),
-                        this.correctAnswerExamRepository.findByIdQuestion(questionEntity.getId())) )
-                .collect(Collectors.toList());
+        List<QuestionExamDto> questionExamDtos ;
+
+        List<QuestionExamEntity> questionExamEntities = questionExamRepository.findAll();
+        if (questionExamEntities.size() > 0){
+            questionExamDtos = questionExamEntities.stream()
+                    .map(questionEntity -> QuestionExamMapper.toDto(questionEntity,
+                            answerExamRepository.findByIdQuestion(questionEntity.getId()),
+                            correctAnswerExamRepository.findByIdQuestion(questionEntity.getId())))
+                    .collect(Collectors.toList());
+        }
+        else{
+            throw new EntityNotFoundException("No questions found");
+        }
+
+        return questionExamDtos;
     }
 
     @Override
@@ -65,14 +78,19 @@ public class QuestionExamServiceImpl implements QuestionExamService{
         ExamEntity examForQuestion = this.examRepository.findById(idExam).get();
 
         questionExamEntity.setExam(examForQuestion);
-        questionExamEntity.setCourse(examForQuestion.getCourse());
+
+        Optional<CourseEntity> course = this.courseRepository.findById(questionExamDto.getIdCourse());
+
+        if( course.isEmpty() ){
+            throw new EntityNotFoundException("Course with id " + questionExamDto.getIdCourse() + " not found");
+        }
+        questionExamEntity.setCourse(course.get());
 
         Optional<ProfessorEntity> professor = professorRepository.findById(questionExamDto.getIdProfessor());
 
         if( professor.isEmpty() ){
             throw new EntityNotFoundException("Professor with id " + questionExamDto.getIdProfessor() + " not found");
         }
-
         questionExamEntity.setProfessor(professor.get());
 
         try{

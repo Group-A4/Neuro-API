@@ -37,10 +37,6 @@ public class QuestionQuizzEntity extends BaseEntity {
 
     @JsonIgnore
     @OneToMany( cascade = CascadeType.ALL, mappedBy = "question")
-    private List<QuizzHasQuestionsEntity> quizzHasQuestions;
-
-    @JsonIgnore
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "question")
     private List<AnswerQuizzEntity> answersQuestion;
 
     @JsonIgnore
@@ -49,7 +45,6 @@ public class QuestionQuizzEntity extends BaseEntity {
 
     public QuestionQuizzEntity(){
 
-        this.quizzHasQuestions = new ArrayList<>();
         this.answersQuestion = new ArrayList<>();
         this.correctAnswersQuestion = new ArrayList<>();
 
