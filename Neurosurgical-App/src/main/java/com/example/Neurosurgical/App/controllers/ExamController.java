@@ -1,15 +1,14 @@
 package com.example.Neurosurgical.App.controllers;
 
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
+import com.example.Neurosurgical.App.models.dtos.ExamDto;
 import com.example.Neurosurgical.App.models.dtos.ExamQuestionDto;
 import com.example.Neurosurgical.App.services.ExamService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,4 +33,20 @@ public class ExamController {
     public void deleteExamQuestionById(@PathVariable @Valid @Min(0) Long id) {
         examService.deleteExamById(id);
     }
+
+    @GetMapping(value = "/professor={id}", produces = "application/json")
+    public Optional<List<ExamDto>> getExamByProfessorID(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException{
+        return examService.findByProfessorId(id);
+    }
+
+    @PostMapping(value = "/create", produces = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createExam(@RequestBody @Valid ExamDto examDto){
+        examService.createExam(examDto);
+    }
+
+//    @GetMapping(value = "/sumrExam={code}", produces = "application/json")
+//    public Optional<SumrExamDto> getExamSumrByCode(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException) {
+//
+//    }
 }
