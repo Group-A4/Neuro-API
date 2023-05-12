@@ -18,9 +18,7 @@ public class QuestionExamDto {
     private Long idExam;
     private Long idCourse;
     private Long idProfessor;
-
     private String questionText;
     private Double points;
     private List<AnswerExamDto> answersQuestion;
-
 }
