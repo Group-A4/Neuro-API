@@ -1,6 +1,8 @@
 package com.example.Neurosurgical.App.mappers;
 
+import com.example.Neurosurgical.App.models.dtos.AnswerExamCreationDto;
 import com.example.Neurosurgical.App.models.dtos.AnswerExamDto;
+import com.example.Neurosurgical.App.models.dtos.QuestionExamCreationDto;
 import com.example.Neurosurgical.App.models.dtos.QuestionExamDto;
 import com.example.Neurosurgical.App.models.entities.AnswerExamEntity;
 import com.example.Neurosurgical.App.models.entities.CorrectAnswerExamEntity;
@@ -19,6 +21,7 @@ public class QuestionExamMapper {
 
         return QuestionExamDto.builder()
                 .id(questionExamEntity.getId())
+                .points(questionExamEntity.getPoints())
                 .questionText(questionExamEntity.getQuestionText())
                 .idExam(questionExamEntity.getExam().getId())
                 .idCourse(questionExamEntity.getCourse().getId())
@@ -30,9 +33,9 @@ public class QuestionExamMapper {
                 .build();
     }
 
-    public static QuestionExamEntity fromDto(QuestionExamDto questionExamDto) {
+    public static QuestionExamEntity fromCreationDto(QuestionExamCreationDto questionExamDto) {
 
-        final List<AnswerExamDto> answersExamDtoList = questionExamDto.getAnswersQuestion();
+        final List<AnswerExamCreationDto> answersExamDtoList = questionExamDto.getAnswersQuestion();
 
         final List<AnswerExamEntity> answersExamEntityList = new ArrayList<>();
 
@@ -47,7 +50,7 @@ public class QuestionExamMapper {
                         .build();
 
         answersExamDtoList.forEach(answer -> {
-            AnswerExamEntity answerExamEntity = AnswerExamMapper.fromDto(answer, questionExamEntity);
+            AnswerExamEntity answerExamEntity = AnswerExamMapper.fromCreationDto(answer, questionExamEntity);
             answersExamEntityList.add(answerExamEntity);
             if(answer.isCorrect())
                 correctAnswersExamEntityList.add(CorrectAnswerExamMapper.fromAnswerExamEntity(answerExamEntity, questionExamEntity));
@@ -55,4 +58,5 @@ public class QuestionExamMapper {
 
         return questionExamEntity;
     }
+
 }

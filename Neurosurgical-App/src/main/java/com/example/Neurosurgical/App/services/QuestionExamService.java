@@ -1,6 +1,7 @@
 package com.example.Neurosurgical.App.services;
 
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
+import com.example.Neurosurgical.App.models.dtos.QuestionExamCreationDto;
 import com.example.Neurosurgical.App.models.dtos.QuestionExamDto;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,9 @@ public interface QuestionExamService {
 
     List<QuestionExamDto> findAll();
 
-    void createQuestionExam(QuestionExamDto questionExamDto) throws EntityNotFoundException;
+    void createQuestionExam(QuestionExamCreationDto questionExamDto, Long idExam) throws EntityNotFoundException;
 
-    void deleteQuestionExamById(Long id) throws EntityNotFoundException;
+    void updateQuestionExam(QuestionExamDto questionExamCreationDto, Long idQuestion) throws EntityNotFoundException;
+
+    void deleteQuestionExam(Long idQuestion) throws EntityNotFoundException;
 }

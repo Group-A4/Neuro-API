@@ -1,5 +1,6 @@
 package com.example.Neurosurgical.App.mappers;
 
+import com.example.Neurosurgical.App.models.dtos.AnswerExamCreationDto;
 import com.example.Neurosurgical.App.models.dtos.AnswerExamDto;
 import com.example.Neurosurgical.App.models.entities.AnswerExamEntity;
 import com.example.Neurosurgical.App.models.entities.CorrectAnswerExamEntity;
@@ -25,10 +26,18 @@ public class AnswerExamMapper {
                 .build();
     }
 
+    public static AnswerExamEntity fromCreationDto(AnswerExamCreationDto answer, QuestionExamEntity questionExamEntity) {
+        return AnswerExamEntity.builder()
+                .answerText(answer.getAnswerText())
+                .question(questionExamEntity)
+                .build();
+    }
+
     public static AnswerExamEntity fromDto(AnswerExamDto answer, QuestionExamEntity questionExamEntity) {
         return AnswerExamEntity.builder()
                 .answerText(answer.getAnswerText())
                 .question(questionExamEntity)
                 .build();
     }
+
 }

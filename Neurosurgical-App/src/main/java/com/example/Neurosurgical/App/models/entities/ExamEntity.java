@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.Column;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,10 +19,10 @@ import java.util.List;
 public class ExamEntity extends BaseEntity {
 
     @Column(name = "title")
-    private String titleExam;
+    private String title;
 
     @Column(name = "code")
-    private String codeExam;
+    private String code;
 
     @Column(name = "time_exam")
     private Integer timeExam;

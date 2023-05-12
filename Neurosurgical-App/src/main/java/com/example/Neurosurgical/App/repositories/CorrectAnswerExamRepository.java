@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface CorrectAnswerExamRepository extends JpaRepository<CorrectAnswerExamEntity, Long>{
-    @Query(value = "SELECT * FROM correct_answers_exam WHERE id_question = :id_question;", nativeQuery = true)
+    @Query(value = "SELECT * FROM correct_answers_exam WHERE id_question = :id_question", nativeQuery = true)
     List<CorrectAnswerExamEntity> findByIdQuestion(@Param("id_question") Long idQuestion);
 }
