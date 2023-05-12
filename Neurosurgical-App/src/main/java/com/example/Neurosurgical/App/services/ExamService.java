@@ -20,5 +20,5 @@ public interface ExamService {
 
     Optional<ExamDto> findByCode(String code) throws EntityNotFoundException;
 
-    void createExam(ExamDto examDto);
+    //void createExam(ExamDto examDto);
 }

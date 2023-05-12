@@ -39,11 +39,11 @@ public class ExamController {
         return examService.findByProfessorId(id);
     }
 
-    @PostMapping(value = "/create", produces = "application/json")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createExam(@RequestBody @Valid ExamDto examDto){
-        examService.createExam(examDto);
-    }
+//    @PostMapping(value = "/create", produces = "application/json")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public void createExam(@RequestBody @Valid ExamDto examDto){
+//        examService.createExam(examDto);
+//    }
 
 //    @GetMapping(value = "/sumrExam={code}", produces = "application/json")
 //    public Optional<SumrExamDto> getExamSumrByCode(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException) {
