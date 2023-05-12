@@ -1,6 +1,7 @@
 package com.example.Neurosurgical.App.controllers;
 
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
+import com.example.Neurosurgical.App.models.dtos.ExamDto;
 import com.example.Neurosurgical.App.models.dtos.ExamQuestionDto;
 import com.example.Neurosurgical.App.services.ExamService;
 import jakarta.validation.Valid;
@@ -27,5 +28,9 @@ public class ExamController {
     @GetMapping(value = "/exam={id}", produces = "application/json")
     public Optional<List<ExamQuestionDto>> getExamById(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
         return examService.findById(id);
+    }
+    @GetMapping(value = "/professor={id}", produces = "application/json")
+    public Optional<List<ExamDto>> getExamByProfessorID(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException{
+        return examService.findByProfessorId(id);
     }
 }

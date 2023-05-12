@@ -82,4 +82,40 @@ public class ExamServiceImpl implements ExamService {
 
         return Optional.of(exams);
     }
+
+    public Optional<List<ExamDto>> findByProfessorId(Long id) throws EntityNotFoundException{
+        List<ExamDto> exams = new ArrayList<>();
+
+        Optional<ArrayList<ExamEntity>> examsEntity = this.examRepository.findByIdProfessor(id);
+        if (examsEntity.isEmpty())
+            throw new EntityNotFoundException("Exam", id);
+
+        int size = examsEntity.orElse(new ArrayList<>()).size();
+        for(int i=0; i<size; i++){
+            Optional<ExamEntity> opt = this.examRepository.findById(examsEntity.get().get(i).getId());
+
+            if(opt.isEmpty()){
+                throw new EntityNotFoundException("Exam", id);
+            }
+
+            exams.add(ExamMapper.toDto(
+                    opt.get()
+            ));
+        }
+
+        return Optional.of(exams);
+    }
+
+    public Optional<ExamDto> findByCode(String code) throws EntityNotFoundException{
+
+
+        Optional<ExamEntity> examEntity = this.examRepository.findByCode(code);
+        if(examEntity.isEmpty()){
+            throw new EntityNotFoundException("Exam", code);
+        }
+
+        ExamDto exam = ExamMapper.toDto(examEntity.get());
+        return Optional.of(exam);
+    }
+
 }

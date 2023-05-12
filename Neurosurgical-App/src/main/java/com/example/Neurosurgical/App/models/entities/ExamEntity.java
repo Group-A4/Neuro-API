@@ -31,7 +31,7 @@ public class ExamEntity extends BaseEntity {
     @Column(name = "code")
     private String code;
 
-    @Column(name = "time_examen")
+    @Column(name = "time_exam")
     private Integer time;
 
     @JsonIgnore
