@@ -8,6 +8,7 @@ import java.io.IOException;
 @Service
 public interface StorageService {
     void createContainer(String containerName);
+    void deleteContainer(String containerName);
     boolean verifyIfContainerExists(String containerName);
     void uploadFile(String containerName, String blobName, MultipartFile file) throws IOException;
     byte[] downloadFile(String containerName, String blobName) throws IOException;

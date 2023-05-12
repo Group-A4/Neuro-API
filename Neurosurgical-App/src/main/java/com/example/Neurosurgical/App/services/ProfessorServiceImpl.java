@@ -59,6 +59,8 @@ public class ProfessorServiceImpl implements ProfessorService {
         checkIfExists(id);
         professorRepository.deleteById(id);
         userRepository.deleteById(id);
+        if(storageService.verifyIfContainerExists("professor" + id))
+            storageService.deleteContainer("professor" + id);
     }
 
     @Override

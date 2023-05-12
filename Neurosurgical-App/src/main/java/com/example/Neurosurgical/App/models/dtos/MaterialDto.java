@@ -14,5 +14,6 @@ import org.springframework.stereotype.Component;
 public class MaterialDto {
     private Long id;
     private String title;
+    private String markdownText;
     private String html;
 }
