@@ -11,5 +11,5 @@ import java.util.List;
 @Repository
 public interface AnswerExamRepository extends JpaRepository<AnswerExamEntity, Long> {
     @Query(value = "SELECT * FROM answers_exam where id_question = :id_question",nativeQuery = true)
-    List<AnswerExamEntity> findByIdQuestion (@Param("id_question") Long idQuestion);
+    List<AnswerExamEntity> findByIdQuestion(@Param("id_question") Long idQuestion);
 }

@@ -1,8 +1,7 @@
 package com.example.Neurosurgical.App.models.entities;
 
-import lombok.*;
-
 import jakarta.persistence.*;
+import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity

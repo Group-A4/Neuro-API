@@ -1,7 +1,5 @@
 package com.example.Neurosurgical.App.models.dtos;
 
-
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,10 +11,9 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MaterialCreationDto {
-    private Long idCourse;
-    private Long idProfessor;
-    private String title;
-    private String markdownText;
-    private String html;
+public class CorrectAnswerExamDto {
+  
+    private Long idQuestion;
+    private Long idAnswer;
+  
 }

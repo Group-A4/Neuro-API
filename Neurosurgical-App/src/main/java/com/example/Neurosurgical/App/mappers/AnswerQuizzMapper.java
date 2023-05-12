@@ -16,6 +16,7 @@ public class AnswerQuizzMapper {
                                         List<CorrectAnswerQuizzEntity> correctAnswerQuizzEntity){
 
         return AnswerQuizzDto.builder()
+                .id(answerQuizzEntity.getId())
                 .idQuestion(answerQuizzEntity.getQuestion().getId())
                 .answerText(answerQuizzEntity.getAnswerText())
                 .isCorrect(correctAnswerQuizzEntity != null && correctAnswerQuizzEntity.stream().anyMatch(

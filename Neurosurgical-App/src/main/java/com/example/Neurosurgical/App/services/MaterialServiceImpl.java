@@ -81,15 +81,14 @@ public class MaterialServiceImpl implements MaterialService {
         if(professorEntityOptional.isEmpty()) throw new EntityNotFoundException("professor", materialCreationDto.getIdProfessor());
 
         // de la front trebuie sa primim un markdown cu toate escape-urile necesare
-
-        List<ContentEntity> contentEntities = contentService.findByProfessorId(materialCreationDto.getIdProfessor());
-
-        MarkdownToHtmlParserService markdownParserService = new MarkdownToHtmlParserServiceImpl("neuroapi", "professor" + materialCreationDto.getIdProfessor(), contentEntities);
-        String html = markdownParserService.parse(materialCreationDto.getMarkdownText());
+//        List<ContentEntity> contentEntities = contentService.findByProfessorId(materialCreationDto.getIdProfessor());
+//
+//        MarkdownToHtmlParserService markdownParserService = new MarkdownToHtmlParserServiceImpl("neuroapi", "professor" + materialCreationDto.getIdProfessor(), contentEntities);
+//        String html = markdownParserService.parse(materialCreationDto.getMarkdownText());
 
         MaterialsMarkdownEntity materialsMarkdownEntity = MaterialsMarkdownEntity.builder()
                 .markdownText(materialCreationDto.getMarkdownText())
-                .html(html)
+                .html(materialCreationDto.getHtml())
                 .build();
 
         materialsMarkdownRepository.save(materialsMarkdownEntity);
@@ -117,15 +116,13 @@ public class MaterialServiceImpl implements MaterialService {
         MaterialEntity materialEntity = materialRepository.findById(id).get();
         MaterialsMarkdownEntity materialsMarkdownEntity = materialEntity.getMaterialMarkdown();
 
-        List<ContentEntity> contentEntities = contentService.findByProfessorId(materialCreationDto.getIdProfessor());
-
-        MarkdownToHtmlParserService markdownParserService = new MarkdownToHtmlParserServiceImpl("neuroapi", "professor" + materialCreationDto.getIdProfessor(), contentEntities);
-        String html = markdownParserService.parse(materialCreationDto.getMarkdownText());
-
+//        List<ContentEntity> contentEntities = contentService.findByProfessorId(materialCreationDto.getIdProfessor());
+//
+//        MarkdownToHtmlParserService markdownParserService = new MarkdownToHtmlParserServiceImpl("neuroapi", "professor" + materialCreationDto.getIdProfessor(), contentEntities);
+//        String html = markdownParserService.parse(materialCreationDto.getMarkdownText());
 
         materialsMarkdownEntity.setMarkdownText(materialCreationDto.getMarkdownText());
-        materialsMarkdownEntity.setHtml(html);
-
+        materialsMarkdownEntity.setHtml(materialCreationDto.getHtml());
 
         materialsMarkdownRepository.save(materialsMarkdownEntity);
 

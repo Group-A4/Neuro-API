@@ -12,9 +12,6 @@ import java.util.Optional;
 @Repository
 public interface QuestionQuizzRepository extends JpaRepository<QuestionQuizzEntity,Long>{
 
-    @Query(value = "SELECT * FROM ( SELECT *, ROW_NUMBER() OVER (ORDER BY id_course ) AS row_num FROM questions_quizz Where id_course = :courseId ) AS subquery WHERE row_num =:rowNr",nativeQuery = true)
-    Optional<QuestionQuizzEntity> findByCourseId(@Param("courseId") Long id, @Param("rowNr") int rowNr);
-
     @Query(value = "Select count('c') from questions_quizz WHERE id_course = :courseId",nativeQuery = true)
     Long countQuestionsWithCourseId(@Param("courseId") Long courseId);
 
@@ -26,4 +23,10 @@ public interface QuestionQuizzRepository extends JpaRepository<QuestionQuizzEnti
 
     @Query(value = "SELECT * FROM questions_quizz WHERE id_course = :idCourse",nativeQuery = true)
     Optional<List<QuestionQuizzEntity>> findByIdCourse(@Param("idCourse") Long id);
+
+    @Query(value = "SELECT * FROM questions_quizz WHERE id_course = :idCourse AND lecture_number = :lectureNumber",nativeQuery = true)
+    Optional<List<QuestionQuizzEntity>> findByIdCourseAndLectureNumber(@Param("idCourse") Long idCourse,@Param("lectureNumber")  Integer lectureNumber);
+
+    @Query(value = "SELECT DISTINCT lecture_number FROM questions_quizz WHERE id_course = :idCourse ORDER BY lecture_number",nativeQuery = true)
+    Optional<List<Integer>> getLecturesByIdCourse(@Param("idCourse") Long idCourse);
 }

@@ -14,6 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/questionQuizz")
+@CrossOrigin(origins = "http://localhost:3000")
 public class QuestionQuizzController {
     private final QuestionQuizzService questionQuizzService;
 
@@ -46,6 +47,17 @@ public class QuestionQuizzController {
     public Optional<List<QuestionQuizzDto>> getByIdProfessorAndIdCourse(@PathVariable @Valid @Min(0) Long idProfessor,
                                                               @PathVariable @Valid @Min(0) Long idCourse) throws EntityNotFoundException {
         return questionQuizzService.findByIdProfessorAndIdCourse(idProfessor, idCourse);
+    }
+
+    @GetMapping(value = "/course={idCourse}/lecture={lectureNumber}", produces="application/json")
+    public Optional<List<QuestionQuizzDto>> getByIdCourseAndLectureNumber(@PathVariable @Valid @Min(0) Long idCourse,
+                                                              @PathVariable @Valid @Min(0) Integer lectureNumber) throws EntityNotFoundException {
+        return questionQuizzService.findByIdCourseAndLectureNumber(idCourse, lectureNumber);
+    }
+
+    @GetMapping(value = "/course={idCourse}/lectures", produces="application/json")
+    public Optional<List<Integer>> getLecturesByIdCourse(@PathVariable @Valid @Min(0) Long idCourse) throws EntityNotFoundException {
+        return questionQuizzService.getLecturesByIdCourse(idCourse);
     }
 
     @PostMapping(value = "/create", produces="application/json")

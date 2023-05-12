@@ -14,8 +14,11 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class QuestionExamDto {
+    private Long id;
+    private Long idExam;
     private Long idCourse;
     private Long idProfessor;
     private String questionText;
-    private List<AnswerExamDto> answersQuestions;
+    private Double points;
+    private List<AnswerExamDto> answersQuestion;
 }

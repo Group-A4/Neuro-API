@@ -22,7 +22,7 @@ public class ExamEntity extends BaseEntity {
     private CourseEntity course;
 
     @ManyToOne
-    @JoinColumn(name = "id_professor")
+    @JoinColumn(name = "id_professor", nullable = false)
     private ProfessorEntity professor;
 
     @Column(name = "title")
@@ -36,7 +36,7 @@ public class ExamEntity extends BaseEntity {
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "exam")
-    private List<QuestionExamEntity> examQuestions;
+    private List<QuestionExamEntity> questionsExam;
     
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "exam")
@@ -49,8 +49,8 @@ public class ExamEntity extends BaseEntity {
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "exam")
     private List<StudentTookExamsEntity> studentTookExams;
-    
-    public ExamEntity(){
-        this.examQuestions = new ArrayList<>();
+
+    public ExamEntity() {
+        this.questionsExam = new ArrayList<>();
     }
 }

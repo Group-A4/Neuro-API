@@ -1,12 +1,9 @@
 package com.example.Neurosurgical.App.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import jakarta.persistence.*;
+import lombok.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,18 +14,18 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "answers_exam")
 public class AnswerExamEntity extends BaseEntity {
-    @Column(name = "answer_text")
-    private String answerText;
-
     @ManyToOne
     @JoinColumn(name = "id_question")
     private QuestionExamEntity question;
+  
+    @Column(name = "answer_text")
+    private String answerText;
 
     @JsonIgnore
     @OneToMany( cascade = CascadeType.ALL, mappedBy = "answer")
-    private List<CorrectAnswerExamEntity> correctExamAnswer;
+    private List<CorrectAnswerExamEntity> correctExamAnswers;
 
     public AnswerExamEntity(){
-        this.correctExamAnswer = new ArrayList<>();
+        this.correctExamAnswers = new ArrayList<>();
     }
 }

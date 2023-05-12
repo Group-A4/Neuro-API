@@ -40,6 +40,7 @@ public class MarkdownToHtmlParserServiceImpl implements MarkdownToHtmlParserServ
     private static final String linkFormatString = "\n <a href=\"%s\">%s</a>";
     private static final String ytVideoFormatString = "\n <iframe width=\"1026\" height=\"577\" src=\"https://www.youtube.com/embed/%s\" title=\"%s\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen></iframe>";
 
+    private static final Pattern linkPattern = Pattern.compile("^https?://(www.)?\\w+(.\\w+)+(/.+)*$");
 
     private final String azureAccountName;
     private final String azureContainerName;
@@ -67,10 +68,18 @@ public class MarkdownToHtmlParserServiceImpl implements MarkdownToHtmlParserServ
 
         var tags = contentMap.keySet();
         for (String tag : tags) {
-            Pattern pattern = Pattern.compile(tag + ":([\\w\\.]+)");
+            Pattern pattern = Pattern.compile(tag + ":(.+)");
             Matcher matcher = pattern.matcher(markdownText);
             while (matcher.find()) {
                 String fileName = matcher.group(1).trim();
+
+                Matcher linkMatcher = linkPattern.matcher(fileName);
+                System.out.println(fileName);
+                if(linkMatcher.find()){
+                    markdownText = markdownText.replace(tag + ":" + fileName, contentMap.get(tag).getSecond().apply(List.of(contentMap.get(tag).getFirst(), fileName, fileName)));
+                    continue;
+                }
+
                 if(!exists(fileName) && !tag.equals("!ytvideo"))
                     throw new ContentNotFound(fileName);
                 String fileUrl = String.format(AZURE_STORAGE_URL, azureAccountName, azureContainerName, fileName);

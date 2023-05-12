@@ -18,6 +18,8 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin(origins = "http://localhost:3000")
+
 public class UserController {
     private final UserService userService;
 
@@ -27,6 +29,7 @@ public class UserController {
     }
 
     @GetMapping(value = "", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public List<UserDto> getAll(){
         return userService.findAll();
     }
@@ -38,6 +41,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public Optional<UserDto> getById(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException {
         Optional<UserDto> userDto = userService.findById(id);
         if(userDto.isPresent()){
@@ -49,8 +53,7 @@ public class UserController {
 
     @DeleteMapping(value = "/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUserById(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException, CannotRemoveLastAdminException
-    {
+    public void deleteUserById(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException, CannotRemoveLastAdminException {
         userService.deleteUser(id);
     }
 
@@ -61,6 +64,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/mail/{mail}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public UserDto getByMail(@PathVariable @Valid String mail) throws UserNotFoundException {
         UserDto userDto = userService.findByFacMail(mail);
         if(userDto != null){
