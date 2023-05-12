@@ -60,6 +60,7 @@ public class ExamServiceImpl implements ExamService {
         return Optional.of(exam);
     }
 
+    @Override
     public Optional<List<ExamDto>> findByCourseId(Long id) throws EntityNotFoundException {
         List<ExamDto> exams = new ArrayList<>();
 
@@ -83,6 +84,7 @@ public class ExamServiceImpl implements ExamService {
         return Optional.of(exams);
     }
 
+    @Override
     public Optional<List<ExamDto>> findByProfessorId(Long id) throws EntityNotFoundException{
         List<ExamDto> exams = new ArrayList<>();
 
