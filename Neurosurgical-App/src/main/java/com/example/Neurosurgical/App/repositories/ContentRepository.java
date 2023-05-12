@@ -17,4 +17,7 @@ public interface ContentRepository extends JpaRepository<ContentEntity, Long>{
 
     @Query(value = "SELECT * FROM content WHERE  name = :name",nativeQuery = true)
     Optional<ContentEntity> findByName(@Param("name") String name);
+
+    @Query(value = "SELECT * FROM content WHERE link = :link",nativeQuery = true)
+    Optional<ContentEntity> findByLink(@Param("link") String link);
 }

@@ -27,39 +27,45 @@ public class ContentController {
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ContentEntity> getContentById(@PathVariable @Valid @Min(0)  Long id){
         return ResponseEntity.ok(contentService.findById(id));
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<ContentEntity>> getAllContent(){
         return ResponseEntity.ok(contentService.findAll());
     }
 
     @GetMapping("/name/{name}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ContentEntity> getContentByName(@PathVariable @Valid String name){
         return ResponseEntity.ok(contentService.findByName(name));
     }
 
     @GetMapping("/professor/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<ContentEntity>> getContentByProfessorId(@PathVariable @Valid @Min(0) Long id){
         return ResponseEntity.ok(contentService.findByProfessorId(id));
     }
 
     @GetMapping("markdown/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<ContentEntity>> getMarkdownContentById(@PathVariable @Valid @Min(0) Long id){
         return ResponseEntity.ok(contentService.findByMarkDownId(id));
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> deleteContentById(@PathVariable @Valid @Min(0) Long id){
         contentService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping(path ="/create" , consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> createContent(@ModelAttribute ContentCreationDto content) throws IOException {
-        System.out.println(content);
         contentService.createContent(content);
         return ResponseEntity.created(null).build();
     }

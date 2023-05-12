@@ -31,11 +31,13 @@ public class StudentController {
     }
 
     @GetMapping(value = "", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public List<StudentDto> getAll(){
         return studentService.findAll();
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public Optional<StudentDto> getById(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException {
         Optional<StudentDto> studentDto = studentService.findById(id);
         if(studentDto.isPresent()){
@@ -46,6 +48,7 @@ public class StudentController {
     }
 
     @GetMapping(value = "/code/{code}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public Optional<StudentDto> getByCode(@PathVariable @Valid @Min(0) String code) throws UserNotFoundException {
         Optional<StudentDto> studentDto = studentService.findByCode(code);
         if(studentDto.isPresent()){
@@ -74,6 +77,7 @@ public class StudentController {
     }
 
     @GetMapping(value = "/course={id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public List<StudentDto> getByCourseId(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException {
         List<StudentDto> studentDto = studentService.findByCourseId(id);
         if(studentDto.isEmpty()){
