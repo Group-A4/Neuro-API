@@ -23,6 +23,4 @@ public interface ExamRepository extends JpaRepository<ExamEntity, Long> {
 
     @Query(value = "SELECT * FROM exam WHERE id = :idExam", nativeQuery = true)
     Optional<ExamEntity> findById(@Param("idExam") Long id);
-
-
 }

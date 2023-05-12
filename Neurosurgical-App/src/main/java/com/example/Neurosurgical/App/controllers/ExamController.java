@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 @RestController
 @RequestMapping("/exam")
@@ -26,6 +27,11 @@ public class ExamController {
     @GetMapping(value = "/exam={id}", produces = "application/json")
     public Optional<List<ExamQuestionDto>> getExamById(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
         return examService.findById(id);
+    }
+    
+    @DeleteMapping(value = "/{id}", produces = "application/json")
+    public void deleteExamQuestionById(@PathVariable @Valid @Min(0) Long id) {
+        examService.deleteExamById(id);
     }
 
     @GetMapping(value = "/professor={id}", produces = "application/json")

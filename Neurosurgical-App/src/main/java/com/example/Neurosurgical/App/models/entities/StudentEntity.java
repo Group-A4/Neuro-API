@@ -42,6 +42,18 @@ public class StudentEntity  {
     private Timestamp birthDate;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "student")
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "student")
     private List<StudentFollowsCoursesEntity> enrollments;
+    
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
+    private List<StudentPointsEntity> studentPoints;
+    
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
+    private List<LongAnswerResponsesEntity> longAnswerResponses;
+    
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
+    private List<StudentTookExamsEntity> studentTookExams;
 }

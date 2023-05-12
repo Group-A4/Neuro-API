@@ -85,6 +85,16 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
+    public void deleteExamById(Long id) throws EntityNotFoundException {
+        checkIfExistsById(id);
+        examRepository.deleteById(id);
+    }
+    public void checkIfExistsById(Long id) throws EntityNotFoundException {
+        if(!examRepository.existsById(id))
+            throw new EntityNotFoundException("Exam", id.toString());
+    }
+
+    @Override
     public Optional<List<ExamDto>> findByProfessorId(Long id) throws EntityNotFoundException{
         List<ExamDto> exams = new ArrayList<>();
 
@@ -107,7 +117,7 @@ public class ExamServiceImpl implements ExamService {
 
         return Optional.of(exams);
     }
-
+    @Override
     public Optional<ExamDto> findByCode(String code) throws EntityNotFoundException{
 
 
@@ -119,5 +129,4 @@ public class ExamServiceImpl implements ExamService {
         ExamDto exam = ExamMapper.toDto(examEntity.get());
         return Optional.of(exam);
     }
-
 }
