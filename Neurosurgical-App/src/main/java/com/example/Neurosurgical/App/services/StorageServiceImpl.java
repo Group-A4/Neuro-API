@@ -36,6 +36,10 @@ public class StorageServiceImpl implements StorageService{
         blobServiceClient.createBlobContainer(containerName).setAccessPolicy(PublicAccessType.CONTAINER, null);
     }
 
+    public void deleteContainer(String containerName) {
+        blobServiceClient.deleteBlobContainer(containerName);
+    }
+
     public boolean verifyIfContainerExists(String containerName) {
         return blobServiceClient.getBlobContainerClient(containerName).exists();
     }
@@ -69,5 +73,4 @@ public class StorageServiceImpl implements StorageService{
         BlobClient blobClient = containerClient.getBlobClient(blobName);
         blobClient.delete();
     }
-
 }
