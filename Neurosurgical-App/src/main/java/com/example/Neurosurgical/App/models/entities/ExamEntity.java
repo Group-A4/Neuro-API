@@ -26,7 +26,7 @@ public class ExamEntity extends BaseEntity {
     private ProfessorEntity professor;
 
     @Column(name = "title")
-    private String ExamTitle;
+    private String title;
 
     @Column(name = "code")
     private String code;
@@ -36,7 +36,7 @@ public class ExamEntity extends BaseEntity {
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "exam")
-    private List<ExamQuestionEntity> examQuestions;
+    private List<QuestionExamEntity> examQuestions;
     
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "exam")

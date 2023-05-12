@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Table(name = "questions_exam")
-public class ExamQuestionEntity extends BaseEntity {
+public class QuestionExamEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "id_exam")
     private ExamEntity exam;
@@ -37,11 +37,11 @@ public class ExamQuestionEntity extends BaseEntity {
 
     @JsonIgnore
     @OneToMany( cascade = CascadeType.ALL, mappedBy = "question")
-    private List<ExamAnswerEntity> answersQuestion;
+    private List<AnswerExamEntity> answersQuestion;
 
     @JsonIgnore
     @OneToMany( cascade = CascadeType.ALL, mappedBy = "question")
-    private List<CorrectExamAnswerEntity> correctAnswersQuestion;
+    private List<CorrectAnswerExamEntity> correctAnswersQuestion;
     
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
@@ -51,7 +51,7 @@ public class ExamQuestionEntity extends BaseEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
     private List<LongAnswerResponsesEntity> longAnswerResponses;
     
-    public ExamQuestionEntity(){
+    public QuestionExamEntity(){
         this.answersQuestion = new ArrayList<>();
         this.correctAnswersQuestion = new ArrayList<>();
     }

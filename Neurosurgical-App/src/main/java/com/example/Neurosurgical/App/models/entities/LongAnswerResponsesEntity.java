@@ -1,15 +1,6 @@
 package com.example.Neurosurgical.App.models.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
-import lombok.*;
-
-import java.sql.Timestamp;
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,5 +31,5 @@ public class LongAnswerResponsesEntity {
     
     @ManyToOne
     @JoinColumn(name = "id_question")
-    private ExamQuestionEntity question;
+    private QuestionExamEntity question;
 }

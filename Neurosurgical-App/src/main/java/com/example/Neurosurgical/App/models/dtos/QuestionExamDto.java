@@ -13,9 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ExamQuestionDto {
+public class QuestionExamDto {
     private Long idCourse;
     private Long idProfessor;
     private String questionText;
-    private List<ExamAnswerDto> answersQuestions;
+    private List<AnswerExamDto> answersQuestions;
 }

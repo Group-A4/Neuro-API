@@ -16,19 +16,19 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Table(name = "answers_exam")
-public class ExamAnswerEntity extends BaseEntity {
+public class AnswerExamEntity extends BaseEntity {
     @Column(name = "answer_text")
     private String answerText;
 
     @ManyToOne
     @JoinColumn(name = "id_question")
-    private ExamQuestionEntity question;
+    private QuestionExamEntity question;
 
     @JsonIgnore
     @OneToMany( cascade = CascadeType.ALL, mappedBy = "answer")
-    private List<CorrectExamAnswerEntity> correctExamAnswer;
+    private List<CorrectAnswerExamEntity> correctExamAnswer;
 
-    public ExamAnswerEntity(){
+    public AnswerExamEntity(){
         this.correctExamAnswer = new ArrayList<>();
     }
 }

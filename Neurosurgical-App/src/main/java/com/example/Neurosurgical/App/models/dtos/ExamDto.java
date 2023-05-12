@@ -15,9 +15,8 @@ import java.util.List;
 @Builder
 public class ExamDto {
     private Long idCourse;
+    private Long idProfessor;
     private String title;
-    //TODO: Add these
-//    private String code;
-//    private Integer time;
-//    private List<ExamQuestionDto> questions;
+    private Integer time;
+    private List<QuestionExamDto> questions;
 }

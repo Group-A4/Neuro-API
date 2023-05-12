@@ -10,7 +10,7 @@ public class ExamMapper {
     public static ExamDto toDto (ExamEntity examEntity){
         return ExamDto.builder()
                 .idCourse(examEntity.getCourse().getId())
-                .title(examEntity.getExamTitle())
+                .title(examEntity.getTitle())
                 .build();
     }
 

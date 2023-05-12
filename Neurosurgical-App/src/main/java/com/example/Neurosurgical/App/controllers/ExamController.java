@@ -2,7 +2,7 @@ package com.example.Neurosurgical.App.controllers;
 
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.models.dtos.ExamDto;
-import com.example.Neurosurgical.App.models.dtos.ExamQuestionDto;
+import com.example.Neurosurgical.App.models.dtos.QuestionExamDto;
 import com.example.Neurosurgical.App.services.ExamService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -25,13 +25,8 @@ public class ExamController {
     }
 
     @GetMapping(value = "/exam={id}", produces = "application/json")
-    public Optional<List<ExamQuestionDto>> getExamById(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
+    public Optional<List<QuestionExamDto>> getExamById(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
         return examService.findById(id);
-    }
-    
-    @DeleteMapping(value = "/{id}", produces = "application/json")
-    public void deleteExamQuestionById(@PathVariable @Valid @Min(0) Long id) {
-        examService.deleteExamById(id);
     }
 
     @GetMapping(value = "/professor={id}", produces = "application/json")
@@ -39,11 +34,16 @@ public class ExamController {
         return examService.findByProfessorId(id);
     }
 
-//    @PostMapping(value = "/create", produces = "application/json")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public void createExam(@RequestBody @Valid ExamDto examDto){
-//        examService.createExam(examDto);
-//    }
+    @DeleteMapping(value = "/{id}", produces = "application/json")
+    public void deleteExamQuestionById(@PathVariable @Valid @Min(0) Long id) {
+        examService.deleteExamById(id);
+    }
+
+    @PostMapping(value = "/create", produces = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createExam(@RequestBody @Valid ExamDto examDto){
+        examService.createExam(examDto);
+    }
 
 //    @GetMapping(value = "/sumrExam={code}", produces = "application/json")
 //    public Optional<SumrExamDto> getExamSumrByCode(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException) {

@@ -11,12 +11,12 @@ import jakarta.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "correct_answers_exam")
-public class CorrectExamAnswerEntity extends BaseEntity {
+public class CorrectAnswerExamEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "id_question")
-    private ExamQuestionEntity question;
+    private QuestionExamEntity question;
 
     @ManyToOne
     @JoinColumn(name = "id_answer")
-    private ExamAnswerEntity answer;
+    private AnswerExamEntity answer;
 }
