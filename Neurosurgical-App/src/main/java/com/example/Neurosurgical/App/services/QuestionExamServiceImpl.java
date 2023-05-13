@@ -10,6 +10,7 @@ import com.example.Neurosurgical.App.models.dtos.QuestionExamCreationDto;
 import com.example.Neurosurgical.App.models.dtos.QuestionExamDto;
 import com.example.Neurosurgical.App.models.entities.*;
 import com.example.Neurosurgical.App.repositories.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,6 @@ import java.util.stream.Collectors;
 public class QuestionExamServiceImpl implements QuestionExamService{
     final private QuestionExamRepository questionExamRepository;
     final private AnswerExamRepository answerExamRepository;
-    final private CorrectAnswerExamRepository correctAnswerExamRepository;
     final private ExamRepository examRepository;
     final private ProfessorRepository  professorRepository;
     final private CourseRepository courseRepository;
@@ -30,22 +30,15 @@ public class QuestionExamServiceImpl implements QuestionExamService{
     @Autowired
     public QuestionExamServiceImpl(QuestionExamRepository questionExamRepository,
                                    AnswerExamRepository answerExamRepository,
-                                   CorrectAnswerExamRepository correctAnswerExamRepository,
                                    ExamRepository examRepository,
                                    ProfessorRepository professorRepository,
                                    CourseRepository courseRepository) {
 
         this.questionExamRepository = questionExamRepository;
         this.answerExamRepository = answerExamRepository;
-        this.correctAnswerExamRepository = correctAnswerExamRepository;
         this.examRepository = examRepository;
         this.professorRepository = professorRepository;
         this.courseRepository = courseRepository;
-    }
-
-    @Override
-    public Optional<QuestionExamDto> findById(Long id) throws EntityNotFoundException {
-        return Optional.empty();
     }
 
     @Override
@@ -55,13 +48,11 @@ public class QuestionExamServiceImpl implements QuestionExamService{
         List<QuestionExamEntity> questionExamEntities = questionExamRepository.findAll();
         if (questionExamEntities.size() > 0){
             questionExamDtos = questionExamEntities.stream()
-                    .map(questionEntity -> QuestionExamMapper.toDto(questionEntity,
-                            answerExamRepository.findByIdQuestion(questionEntity.getId()),
-                            correctAnswerExamRepository.findByIdQuestion(questionEntity.getId())))
+                    .map(QuestionExamMapper::toDto)
                     .collect(Collectors.toList());
         }
         else{
-            throw new EntityNotFoundException("No questions found");
+            throw new EntityNotFoundException("No Exam questions found");
         }
 
         return questionExamDtos;
@@ -103,32 +94,36 @@ public class QuestionExamServiceImpl implements QuestionExamService{
     }
 
     @Override
-    public void updateQuestionExam(QuestionExamDto questionExamCreationDto, Long idQuestion) throws EntityNotFoundException {
-        Optional<QuestionExamEntity> questionExamEntity = this.questionExamRepository.findById(idQuestion);
+    public void updateQuestionExam(QuestionExamDto questionExamDto, Long idQuestion) throws EntityNotFoundException {
 
-        if (questionExamEntity.isEmpty()){
-            throw new EntityNotFoundException("Question with id " + idQuestion + " not found");
+        QuestionExamEntity questionExamEntity = questionExamRepository.findById(idQuestion)
+                .orElseThrow(() -> new EntityNotFoundException("Question with ID " , idQuestion.toString()));
+
+
+
+        this.answerExamRepository.deleteAll(this.answerExamRepository.findByIdQuestion(idQuestion));
+
+        questionExamEntity.setQuestionText(questionExamDto.getQuestionText());
+
+        questionExamEntity.setProfessor(this.professorRepository.findById(questionExamDto.getIdProfessor()).get());
+        //it should also be set the exam, and the course but the professor can't change a question from an exam/course to another
+
+        questionExamEntity.setPoints(questionExamDto.getPoints());
+
+        List<AnswerExamEntity> updatedAnswers = new ArrayList<>();
+//        for(AnswerExamEntity answerExamEntity : questionExamEntity.getAnswersQuestion()){
+//            answerExamEntity.setAnswerText("text-text");
+//        }
+
+        for (AnswerExamDto answerExamDto : questionExamDto.getAnswersQuestion()) {
+            AnswerExamEntity answer = AnswerExamMapper.fromDto(answerExamDto, questionExamEntity);
+            updatedAnswers.add(answer);
         }
 
-        //firstly, we delete all existing questions
-        List<AnswerExamEntity> beforeUpdateAnswers = this.answerExamRepository.findByIdQuestion(idQuestion);
-        this.answerExamRepository.deleteAll(beforeUpdateAnswers);
+        questionExamEntity.setAnswersQuestion(updatedAnswers);
 
-        questionExamEntity.get().setQuestionText(questionExamCreationDto.getQuestionText());
-        List<AnswerExamEntity> listAnswers = new ArrayList<>();
-        List<CorrectAnswerExamEntity> listCorrectAnswers = new ArrayList<>();
+        this.questionExamRepository.save(questionExamEntity);
 
-        for (AnswerExamDto answerExamDto : questionExamCreationDto.getAnswersQuestion() ){
-            AnswerExamEntity answer = AnswerExamMapper.fromDto(answerExamDto,questionExamEntity.get());
-            listAnswers.add(answer);
-            if(answerExamDto.isCorrect()){
-                listCorrectAnswers.add(CorrectAnswerExamMapper.fromAnswerExamEntity(answer,questionExamEntity.get()));
-            }
-        }
-
-        questionExamEntity.get().setAnswersQuestion(listAnswers);
-        questionExamEntity.get().setCorrectAnswersQuestion(listCorrectAnswers);
-        this.questionExamRepository.save(questionExamEntity.get());
     }
 
     @Override

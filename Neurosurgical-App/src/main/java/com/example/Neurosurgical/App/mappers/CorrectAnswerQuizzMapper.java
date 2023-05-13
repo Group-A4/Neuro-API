@@ -1,7 +1,5 @@
 package com.example.Neurosurgical.App.mappers;
 
-import com.example.Neurosurgical.App.models.dtos.AnswerQuizzDto;
-import com.example.Neurosurgical.App.models.dtos.CorrectAnswerQuizzDto;
 import com.example.Neurosurgical.App.models.entities.AnswerQuizzEntity;
 import com.example.Neurosurgical.App.models.entities.CorrectAnswerQuizzEntity;
 import com.example.Neurosurgical.App.models.entities.QuestionQuizzEntity;
@@ -14,7 +12,6 @@ public class CorrectAnswerQuizzMapper {
                                                                  QuestionQuizzEntity questionQuizzEntity){
         return CorrectAnswerQuizzEntity.builder()
                 .answer(answerQuizzEntity)
-                .question(questionQuizzEntity)
                 .build();
     }
 }

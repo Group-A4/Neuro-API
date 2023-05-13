@@ -4,8 +4,6 @@ import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.mappers.QuestionQuizzMapper;
 import com.example.Neurosurgical.App.models.dtos.QuestionQuizzDto;
 import com.example.Neurosurgical.App.models.entities.QuestionQuizzEntity;
-import com.example.Neurosurgical.App.repositories.AnswerQuizzRepository;
-import com.example.Neurosurgical.App.repositories.CorrectAnswerQuizzRepository;
 import com.example.Neurosurgical.App.repositories.GeneralInfoRepository;
 import com.example.Neurosurgical.App.repositories.QuestionQuizzRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +15,14 @@ import java.util.*;
 public class QuizzServiceImpl implements QuizzService {
 
     final private QuestionQuizzRepository questionQuizzRepository;
-    final private AnswerQuizzRepository answerQuizzRepository;
-    final private CorrectAnswerQuizzRepository correctAnswerQuizzRepository;
 
     final private GeneralInfoRepository generalInfoRepository;
 
     @Autowired
     public QuizzServiceImpl(QuestionQuizzRepository questionQuizzRepository,
-                            AnswerQuizzRepository answerQuizzRepository,
-                            CorrectAnswerQuizzRepository correctAnswerQuizzRepository,
                             GeneralInfoRepository generalInfoRepository) {
 
         this.questionQuizzRepository = questionQuizzRepository;
-        this.answerQuizzRepository = answerQuizzRepository;
-        this.correctAnswerQuizzRepository = correctAnswerQuizzRepository;
         this.generalInfoRepository = generalInfoRepository;
     }
 
@@ -39,20 +31,22 @@ public class QuizzServiceImpl implements QuizzService {
 
         List<QuestionQuizzDto> listQuestionsQuizz = new ArrayList<>();
 
-        Optional <List<QuestionQuizzEntity>> questionsById = this.questionQuizzRepository.findByIdCourse(id);
+        Optional<List<QuestionQuizzEntity>> questionsById = this.questionQuizzRepository.findByIdCourse(id);
 
         double nrMinutesQuizz = this.generalInfoRepository.findById(1L).get().getQuizTime(); //generalInfoRepository.findById(1);
 
         if ( questionsById.isEmpty() ){
-            throw new EntityNotFoundException("Question", id);
+            throw new EntityNotFoundException("Question for course not found", id);
         }
 
         int totalQuestions = questionsById.get().size();
+        if( totalQuestions == 0 ){
+            throw new EntityNotFoundException("Questions for Course ", id);
+        }
 
-        List<Integer> lectures = new ArrayList<>();
+        List<Long> lectures = new ArrayList<>();
         List<Integer> nrQuestionsPerLecture = new ArrayList<>();
 
-        //System.out.println("\n\nTotal questions: \n" + totalQuestions + "\n");
 
         double meanDifficulty = questionsById.get().stream().mapToInt(QuestionQuizzEntity::getDifficulty).average().orElse(5); // calculate the mean difficulty
         double sdDifficulty = 5;// calculate the standard deviation of difficulty
@@ -60,12 +54,12 @@ public class QuizzServiceImpl implements QuizzService {
         double averageTimePerQuestion = 0;
 
         for( QuestionQuizzEntity question : questionsById.get()){
-            if( !lectures.contains(question.getLectureNumber())){
-                lectures.add(question.getLectureNumber());
+            if( !lectures.contains(question.getLecture().getId())){
+                lectures.add(question.getLecture().getId());
                 nrQuestionsPerLecture.add(0);
             }
 
-            int indexOfLecture = lectures.indexOf(question.getLectureNumber());
+            int indexOfLecture = lectures.indexOf(question.getLecture().getId());
             nrQuestionsPerLecture.set(indexOfLecture, nrQuestionsPerLecture.get(indexOfLecture) + 1);
 
             sdDifficulty += Math.pow(question.getDifficulty() - meanDifficulty, 2);
@@ -170,12 +164,7 @@ public class QuizzServiceImpl implements QuizzService {
 
             currentTimeQuestions += questionQuizzEntity.getTimeMinutes();
 
-            listQuestionsQuizz.add(QuestionQuizzMapper.toDto(
-                            questionQuizzEntity,
-                            this.answerQuizzRepository.findByIdQuestion(questionQuizzEntity.getId()),
-                            this.correctAnswerQuizzRepository.findByIdQuestion(questionQuizzEntity.getId())
-                    )
-            );
+            listQuestionsQuizz.add(QuestionQuizzMapper.toDto(questionQuizzEntity));
 
         }
 
@@ -191,12 +180,7 @@ public class QuizzServiceImpl implements QuizzService {
         List<QuestionQuizzDto> listQuestionsQuizz = new ArrayList<>();
 
         for( QuestionQuizzEntity questionQuizzEntity : questionQuizzEntities){
-            listQuestionsQuizz.add(QuestionQuizzMapper.toDto(
-                    questionQuizzEntity,
-                    this.answerQuizzRepository.findByIdQuestion(questionQuizzEntity.getId()),
-                    this.correctAnswerQuizzRepository.findByIdQuestion(questionQuizzEntity.getId())
-                    )
-            );
+            listQuestionsQuizz.add(QuestionQuizzMapper.toDto(questionQuizzEntity));
         }
 
         Collections.shuffle(listQuestionsQuizz);
@@ -208,14 +192,14 @@ public class QuizzServiceImpl implements QuizzService {
                                                 List<QuestionQuizzEntity> questionsById,
                                                 List<Double> percentages,
                                                 List<Double> difficulties,
-                                                List<Integer> lectures,
+                                                List<Long> lectures,
                                                 double difficultyDifference,
                                                 Map <Long, Boolean > questionsAlreadyInserted) {
 
-        int nrLecture = this.lectureGenerator(randomLecture, lectures, percentages);
+        long nrLecture = this.lectureGenerator(randomLecture, lectures, percentages);
 
         for (QuestionQuizzEntity question : questionsById) {
-            if( question.getLectureNumber() == nrLecture && !questionsAlreadyInserted.containsKey(question.getId())){
+            if( question.getLecture().getId() == nrLecture && !questionsAlreadyInserted.containsKey(question.getId())){
 
                 double minDifference = 10;
                 int indexMinDifference = -1;
@@ -242,7 +226,7 @@ public class QuizzServiceImpl implements QuizzService {
     }
 
 
-    private int lectureGenerator(Random randomLecture, List<Integer> lectures, List<Double> percentages) {
+    private long lectureGenerator(Random randomLecture, List<Long> lectures, List<Double> percentages) {
 
         double randomPercentage = randomLecture.nextDouble();
 

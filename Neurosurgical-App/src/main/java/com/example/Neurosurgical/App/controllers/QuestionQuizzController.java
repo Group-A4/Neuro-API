@@ -1,6 +1,7 @@
 package com.example.Neurosurgical.App.controllers;
 
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
+import com.example.Neurosurgical.App.models.dtos.QuestionQuizzCreationDto;
 import com.example.Neurosurgical.App.models.dtos.QuestionQuizzDto;
 import com.example.Neurosurgical.App.models.entities.QuestionQuizzEntity;
 import com.example.Neurosurgical.App.services.QuestionQuizzService;
@@ -49,19 +50,14 @@ public class QuestionQuizzController {
         return questionQuizzService.findByIdProfessorAndIdCourse(idProfessor, idCourse);
     }
 
-    @GetMapping(value = "/course={idCourse}/lecture={lectureNumber}", produces="application/json")
+    @GetMapping(value = "/course={idCourse}/lecture={idLecture}", produces="application/json")
     public Optional<List<QuestionQuizzDto>> getByIdCourseAndLectureNumber(@PathVariable @Valid @Min(0) Long idCourse,
-                                                              @PathVariable @Valid @Min(0) Integer lectureNumber) throws EntityNotFoundException {
-        return questionQuizzService.findByIdCourseAndLectureNumber(idCourse, lectureNumber);
-    }
-
-    @GetMapping(value = "/course={idCourse}/lectures", produces="application/json")
-    public Optional<List<Integer>> getLecturesByIdCourse(@PathVariable @Valid @Min(0) Long idCourse) throws EntityNotFoundException {
-        return questionQuizzService.getLecturesByIdCourse(idCourse);
+                                                              @PathVariable @Valid @Min(0) Long idLecture) throws EntityNotFoundException {
+        return questionQuizzService.findByIdCourseAndLectureNumber(idCourse, idLecture);
     }
 
     @PostMapping(value = "/create", produces="application/json")
-    public void createQuestionQuizz(@RequestBody QuestionQuizzDto questionQuizzDto) {
+    public void createQuestionQuizz(@RequestBody QuestionQuizzCreationDto questionQuizzDto) {
         questionQuizzService.createQuestionQuizz(questionQuizzDto);
     }
 
