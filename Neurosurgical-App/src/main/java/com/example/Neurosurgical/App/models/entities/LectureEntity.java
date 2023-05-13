@@ -1,6 +1,7 @@
 package com.example.Neurosurgical.App.models.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +25,8 @@ public class LectureEntity extends BaseEntity{
     @Column(name="description")
     private String description;
 
+
+    @JsonIgnore
     @OneToMany(mappedBy = "lecture")
     private List<MaterialEntity> materials;
 }
