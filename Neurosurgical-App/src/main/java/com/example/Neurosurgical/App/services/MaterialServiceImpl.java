@@ -7,10 +7,7 @@ import com.example.Neurosurgical.App.mappers.MaterialMapper;
 import com.example.Neurosurgical.App.models.dtos.MaterialCreationDto;
 import com.example.Neurosurgical.App.models.dtos.MaterialDto;
 import com.example.Neurosurgical.App.models.entities.*;
-import com.example.Neurosurgical.App.repositories.CourseRepository;
-import com.example.Neurosurgical.App.repositories.MaterialRepository;
-import com.example.Neurosurgical.App.repositories.MaterialsMarkdownRepository;
-import com.example.Neurosurgical.App.repositories.ProfessorRepository;
+import com.example.Neurosurgical.App.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,15 +21,15 @@ import java.util.stream.Collectors;
 public class MaterialServiceImpl implements MaterialService {
 
     private final MaterialRepository materialRepository;
-    private final CourseRepository courseRepository;
+    private final LectureRepository lectureRepository;
     private final ProfessorRepository professorRepository;
     private final MaterialsMarkdownRepository materialsMarkdownRepository;
     private final ContentServiceImpl contentService;
 
     @Autowired
-    public MaterialServiceImpl(MaterialRepository materialRepository, CourseRepository courseRepository, ProfessorRepository professorRepository, MaterialsMarkdownRepository materialsMarkdownRepository, ContentServiceImpl contentService) {
+    public MaterialServiceImpl(MaterialRepository materialRepository, LectureRepository lectureRepository, ProfessorRepository professorRepository, MaterialsMarkdownRepository materialsMarkdownRepository, ContentServiceImpl contentService) {
         this.materialRepository = materialRepository;
-        this.courseRepository = courseRepository;
+        this.lectureRepository = lectureRepository;
         this.professorRepository = professorRepository;
         this.materialsMarkdownRepository = materialsMarkdownRepository;
         this.contentService = contentService;
@@ -77,10 +74,10 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public void createMaterial(MaterialCreationDto materialCreationDto) throws UserAlreadyExistsException {
-        Optional<CourseEntity> courseEntityOptional = courseRepository.findById(materialCreationDto.getIdCourse());
+        Optional<LectureEntity> lectureEntityOptional = lectureRepository.findById(materialCreationDto.getIdLecture());
         Optional<ProfessorEntity> professorEntityOptional = professorRepository.findById(materialCreationDto.getIdProfessor());
 
-        if(courseEntityOptional.isEmpty()) throw new EntityNotFoundException("course", materialCreationDto.getIdCourse());
+        if(lectureEntityOptional.isEmpty()) throw new EntityNotFoundException("lecture", materialCreationDto.getIdLecture());
         if(professorEntityOptional.isEmpty()) throw new EntityNotFoundException("professor", materialCreationDto.getIdProfessor());
 
         // de la front trebuie sa primim un markdown cu toate escape-urile necesare
@@ -97,7 +94,7 @@ public class MaterialServiceImpl implements MaterialService {
         materialsMarkdownRepository.save(materialsMarkdownEntity);
 
         MaterialEntity materialEntity = MaterialEntity.builder()
-                .course(courseEntityOptional.get())
+                .lecture(lectureEntityOptional.get())
                 .professor(professorEntityOptional.get())
                 .title(materialCreationDto.getTitle())
                 .materialMarkdown(materialsMarkdownEntity)
@@ -108,11 +105,11 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public void updateMaterial(Long id, MaterialCreationDto materialCreationDto) throws UserNotFoundException {
-        Optional<CourseEntity> courseEntityOptional = courseRepository.findById(materialCreationDto.getIdCourse());
+        Optional<LectureEntity> lectureEntityOptional = lectureRepository.findById(materialCreationDto.getIdLecture());
         Optional<ProfessorEntity> professorEntityOptional = professorRepository.findById(materialCreationDto.getIdProfessor());
 
 
-        if(courseEntityOptional.isEmpty()) throw new EntityNotFoundException("course", materialCreationDto.getIdCourse());
+        if(lectureEntityOptional.isEmpty()) throw new EntityNotFoundException("lecture", materialCreationDto.getIdLecture());
         if(professorEntityOptional.isEmpty()) throw new EntityNotFoundException("professor", materialCreationDto.getIdProfessor());
 
         checkIfExists(id);
@@ -130,7 +127,7 @@ public class MaterialServiceImpl implements MaterialService {
         materialsMarkdownRepository.save(materialsMarkdownEntity);
 
         materialEntity = MaterialEntity.builder()
-                .course(courseEntityOptional.get())
+                .lecture(lectureEntityOptional.get())
                 .professor(professorEntityOptional.get())
                 .title(materialCreationDto.getTitle())
                 .materialMarkdown(materialsMarkdownEntity)
@@ -157,12 +154,12 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     @Override
-    public List<MaterialDto> findAllByCourseId(Long id) {
-        CourseEntity courseEntity = Optional.of(courseRepository.findById(id)).get()
-                .orElseThrow(() -> new EntityNotFoundException("Course",id));
+    public List<MaterialDto> findAllByLectureId(Long id) {
+        LectureEntity lectureEntity = Optional.of(lectureRepository.findById(id)).get()
+                .orElseThrow(() -> new EntityNotFoundException("Lecture",id));
 
 
-        List<MaterialDto> materialDtos = courseEntity.getMaterials()
+        List<MaterialDto> materialDtos = lectureEntity.getMaterials()
                 .stream()
                 .map(materialEntity -> MaterialDto.builder()
                         .id(materialEntity.getId())

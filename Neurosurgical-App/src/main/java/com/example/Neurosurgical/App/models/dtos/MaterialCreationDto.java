@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @Builder
 public class MaterialCreationDto {
-    private Long idCourse;
+    private Long idLecture;
     private Long idProfessor;
     private String title;
     private String markdownText;

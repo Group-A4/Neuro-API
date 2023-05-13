@@ -77,10 +77,10 @@ public class MaterialController {
         materialService.updateMaterial(id, materialCreationDto);
     }
 
-    @GetMapping(value = "/id_course={id}", produces = "application/json")
+    @GetMapping(value = "/id_lecture={id}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public List<MaterialDto> getAllByCourseId(@PathVariable @Valid @Min(0) Long id) {
-        List<MaterialDto> materialDtos = materialService.findAllByCourseId(id);
+    public List<MaterialDto> getAllByLectureId(@PathVariable @Valid @Min(0) Long id) {
+        List<MaterialDto> materialDtos = materialService.findAllByLectureId(id);
         if (materialDtos.isEmpty()) {
             throw new EntityNotFoundException("Materials for course id = " + id);
         } else {

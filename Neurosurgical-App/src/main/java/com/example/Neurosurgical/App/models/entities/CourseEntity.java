@@ -46,7 +46,7 @@ public class CourseEntity extends BaseEntity{
 
     @JsonIgnore
     @OneToMany(mappedBy = "course")
-    private List<MaterialEntity> materials;
+    private List<LectureEntity> lectures;
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
@@ -62,7 +62,7 @@ public class CourseEntity extends BaseEntity{
 
     public CourseEntity(){
         this.registrations = new ArrayList<>();
-        this.materials = new ArrayList<>();
+        this.lectures = new ArrayList<>();
         this.teachings = new ArrayList<>();
 
         this.quizzes = new ArrayList<>();
