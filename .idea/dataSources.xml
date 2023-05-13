@@ -12,5 +12,14 @@
         <property name="dialect" value=" org.hibernate.dialect.SQLServer2012Dialect" />
       </driver-properties>
     </data-source>
+    <data-source source="LOCAL" name="Neurosurgical-App/Hibernate" uuid="2a833fc1-f285-4ab5-b481-a7d44668ff97">
+      <driver-ref>azure.ms</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <remarks>Hibernate</remarks>
+      <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
+      <jdbc-url>jdbc:sqlserver://database-neuro-app.database.windows.net:1433;database=database-neuro-app</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

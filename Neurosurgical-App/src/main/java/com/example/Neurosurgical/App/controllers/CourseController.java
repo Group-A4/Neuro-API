@@ -86,10 +86,10 @@ public class CourseController {
         courseService.updateCourse(id, courseCreationDto);
     }
 
-    @GetMapping(value="/material={id}", produces = "application/json")
+    @GetMapping(value="/lecture={id}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<CourseDto> getByMaterialId(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
-        Optional<CourseDto> courseDto = courseService.findByMaterialId(id);
+    public Optional<CourseDto> getByLectureId(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
+        Optional<CourseDto> courseDto = courseService.findByLectureId(id);
         if(courseDto.isPresent()){
             return courseDto;
         } else {
