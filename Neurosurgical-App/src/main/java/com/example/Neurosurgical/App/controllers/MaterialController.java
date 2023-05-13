@@ -81,11 +81,11 @@ public class MaterialController {
     @ResponseStatus(HttpStatus.OK)
     public List<MaterialDto> getAllByLectureId(@PathVariable @Valid @Min(0) Long id) {
         List<MaterialDto> materialDtos = materialService.findAllByLectureId(id);
-        if (materialDtos.isEmpty()) {
-            throw new EntityNotFoundException("Materials for course id = " + id);
-        } else {
+//        if (materialDtos.isEmpty()) {
+//            throw new EntityNotFoundException("Materials for lecture id = " + id);
+//        } else {
             return materialDtos;
-        }
+//        }
     }
 
     @GetMapping(value = "/id_professor={id}", produces = "application/json")
