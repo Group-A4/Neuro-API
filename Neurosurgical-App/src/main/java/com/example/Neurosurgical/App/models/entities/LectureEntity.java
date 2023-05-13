@@ -29,4 +29,10 @@ public class LectureEntity extends BaseEntity{
     @JsonIgnore
     @OneToMany(mappedBy = "lecture")
     private List<MaterialEntity> materials;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "lecture")
+    private List<QuestionQuizzEntity> questionsQuizz;
+
+
 }

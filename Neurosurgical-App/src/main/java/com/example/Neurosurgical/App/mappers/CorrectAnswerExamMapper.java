@@ -7,11 +7,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CorrectAnswerExamMapper {
-    public static CorrectAnswerExamEntity fromAnswerExamEntity(AnswerExamEntity answerExamEntity,
-                                                               QuestionExamEntity questionExamEntity){
+    public static CorrectAnswerExamEntity fromAnswerExamEntity(AnswerExamEntity answerExamEntity){
         return CorrectAnswerExamEntity.builder()
                 .answer(answerExamEntity)
-                .question(questionExamEntity)
                 .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.example.Neurosurgical.App.services;
 
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
+import com.example.Neurosurgical.App.models.dtos.QuestionQuizzCreationDto;
 import com.example.Neurosurgical.App.models.dtos.QuestionQuizzDto;
 import com.example.Neurosurgical.App.models.entities.QuestionQuizzEntity;
 import org.springframework.stereotype.Service;
@@ -20,11 +21,9 @@ public interface QuestionQuizzService {
 
     Optional<List<QuestionQuizzDto>> findByIdCourse(Long id) throws EntityNotFoundException ;
 
-    Optional<List<QuestionQuizzDto>> findByIdCourseAndLectureNumber(Long idCourse, Integer lectureNumber) throws EntityNotFoundException;
+    Optional<List<QuestionQuizzDto>> findByIdCourseAndLectureNumber(Long idCourse, Long idLecture) throws EntityNotFoundException;
 
-    Optional<List<Integer>> getLecturesByIdCourse(Long idCourse) throws EntityNotFoundException;
-
-    void createQuestionQuizz(QuestionQuizzDto questionQuizzDto) throws EntityNotFoundException;
+    void createQuestionQuizz(QuestionQuizzCreationDto questionQuizzDto) throws EntityNotFoundException;
 
     void deleteQuestionQuizzById(Long id) throws EntityNotFoundException;
 

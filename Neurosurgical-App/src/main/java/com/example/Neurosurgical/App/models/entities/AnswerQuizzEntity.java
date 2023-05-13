@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "answers_quizz")
 public class AnswerQuizzEntity extends BaseEntity{
     @Column(name = "answer_text")
@@ -21,12 +22,7 @@ public class AnswerQuizzEntity extends BaseEntity{
     @JoinColumn(name = "id_question")
     private QuestionQuizzEntity question;
 
-    @JsonIgnore
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "answer")
-    private List<CorrectAnswerQuizzEntity> correctAnswerQuizz;
-
-    public AnswerQuizzEntity(){
-        this.correctAnswerQuizz = new ArrayList<>();
-    }
+    @OneToOne( cascade = CascadeType.ALL, mappedBy = "answer")
+    private CorrectAnswerQuizzEntity correctAnswerQuizz;
 
 }

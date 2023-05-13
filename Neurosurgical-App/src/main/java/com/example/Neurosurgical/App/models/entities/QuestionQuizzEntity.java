@@ -24,12 +24,9 @@ public class QuestionQuizzEntity extends BaseEntity {
     @Column(name = "time_in_minutes", nullable = false, columnDefinition = "DECIMAL(4,2) NOT NULL DEFAULT 1.00")
     private Double timeMinutes;
 
-    @Column(name = "lecture_number")
-    private Integer lectureNumber;
-
     @ManyToOne
-    @JoinColumn(name = "id_course")
-    private CourseEntity course;
+    @JoinColumn(name = "id_lecture")
+    private LectureEntity lecture;
 
     @ManyToOne
     @JoinColumn(name = "id_professor")
@@ -39,15 +36,8 @@ public class QuestionQuizzEntity extends BaseEntity {
     @OneToMany( cascade = CascadeType.ALL, mappedBy = "question")
     private List<AnswerQuizzEntity> answersQuestion;
 
-    @JsonIgnore
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "question")
-    private List<CorrectAnswerQuizzEntity> correctAnswersQuestion;
-
     public QuestionQuizzEntity(){
-
         this.answersQuestion = new ArrayList<>();
-        this.correctAnswersQuestion = new ArrayList<>();
-
     }
 
 }

@@ -10,8 +10,6 @@ import java.util.Optional;
 
 @Service
 public interface QuestionExamService {
-    Optional<QuestionExamDto> findById(Long id) throws EntityNotFoundException;
-
     List<QuestionExamDto> findAll();
 
     void createQuestionExam(QuestionExamCreationDto questionExamDto, Long idExam) throws EntityNotFoundException;

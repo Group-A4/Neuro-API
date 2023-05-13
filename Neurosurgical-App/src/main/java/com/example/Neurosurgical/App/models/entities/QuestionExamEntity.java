@@ -37,12 +37,8 @@ public class QuestionExamEntity extends BaseEntity{
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
     private List<AnswerExamEntity> answersQuestion;
 
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
-    private List<CorrectAnswerExamEntity> correctAnswersQuestion;
 
     public QuestionExamEntity() {
         this.answersQuestion = new ArrayList<>();
-        this.correctAnswersQuestion = new ArrayList<>();
     }
 }

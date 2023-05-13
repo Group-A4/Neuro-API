@@ -20,8 +20,7 @@ public class QuestionQuizzDto {
     private String questionText;
     private Integer difficulty;
     private Double timeMinutes;
-    private Integer lectureNumber;
-    private Long idCourse;
+    private Long idLecture;
     private Long idProfessor;
     private List<AnswerQuizzDto> answersQuestion;
 }
