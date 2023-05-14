@@ -19,6 +19,16 @@ public class AnswerExamMapper {
                 .build();
     }
 
+    public static AnswerExamDto toDtoForExam (AnswerExamEntity answerExamEntity){
+
+        return AnswerExamDto.builder()
+                .id(answerExamEntity.getId())
+                .idQuestion(answerExamEntity.getQuestion().getId())
+                .answerText(answerExamEntity.getAnswerText())
+                .isCorrect(false)
+                .build();
+    }
+
     public static AnswerExamEntity fromCreationDto(AnswerExamCreationDto answer, QuestionExamEntity questionExamEntity) {
         return AnswerExamEntity.builder()
                 .answerText(answer.getAnswerText())
@@ -33,4 +43,12 @@ public class AnswerExamMapper {
                 .build();
     }
 
+    public static AnswerExamCreationDto fromDtoToCreationDto(AnswerExamDto answerExamDto) {
+
+        return AnswerExamCreationDto.builder()
+                .answerText(answerExamDto.getAnswerText())
+                .isCorrect(answerExamDto.isCorrect())
+                .build();
+
+    }
 }

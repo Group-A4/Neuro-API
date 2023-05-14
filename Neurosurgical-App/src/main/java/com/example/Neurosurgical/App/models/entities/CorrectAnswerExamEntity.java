@@ -17,4 +17,6 @@ public class CorrectAnswerExamEntity {
     @JoinColumn(name = "id_answer")
     private AnswerExamEntity answer;
 
+
+
 }

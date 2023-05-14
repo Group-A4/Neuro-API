@@ -21,10 +21,6 @@ QuestionExamEntity extends BaseEntity{
     private ExamEntity exam;
 
     @ManyToOne
-    @JoinColumn(name = "id_course", nullable = false)
-    private CourseEntity course;
-
-    @ManyToOne
     @JoinColumn(name = "id_professor", nullable = false)
     private ProfessorEntity professor;
 
@@ -34,6 +30,7 @@ QuestionExamEntity extends BaseEntity{
     @Column(name = "points")
     private Double points;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "question", cascade = CascadeType.ALL)
     private QuestionLongResponseExamEntity questionLongResponseExam;
 

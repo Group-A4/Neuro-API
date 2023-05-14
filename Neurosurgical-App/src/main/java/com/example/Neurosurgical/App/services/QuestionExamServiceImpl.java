@@ -22,20 +22,17 @@ public class QuestionExamServiceImpl implements QuestionExamService{
     final private AnswerExamRepository answerExamRepository;
     final private ExamRepository examRepository;
     final private ProfessorRepository  professorRepository;
-    final private CourseRepository courseRepository;
 
     @Autowired
     public QuestionExamServiceImpl(QuestionExamRepository questionExamRepository,
                                    AnswerExamRepository answerExamRepository,
                                    ExamRepository examRepository,
-                                   ProfessorRepository professorRepository,
-                                   CourseRepository courseRepository) {
+                                   ProfessorRepository professorRepository) {
 
         this.questionExamRepository = questionExamRepository;
         this.answerExamRepository = answerExamRepository;
         this.examRepository = examRepository;
         this.professorRepository = professorRepository;
-        this.courseRepository = courseRepository;
     }
 
     @Override
@@ -74,14 +71,14 @@ public class QuestionExamServiceImpl implements QuestionExamService{
     }
 
     @Override
-    public void createMultipleChoiceQuestionExam(QuestionExamCreationDto questionExamDto, Long idExam) throws EntityNotFoundException {
+    public void createMultipleChoiceQuestionExam(QuestionMultipleChoiceExamCreationDto questionExamDto, Long idExam) throws EntityNotFoundException {
         if(!this.examRepository.existsById(idExam)){
             throw new EntityNotFoundException("Exam with id " + idExam + " not found");
         }
 
         QuestionExamEntity questionExamEntity = QuestionExamMapper.fromCreationDto(questionExamDto);
 
-        this.setExamCourseAndProfessorForQuestion(questionExamDto,questionExamEntity,idExam);
+        this.setExamAndProfessorForQuestion(questionExamDto,questionExamEntity,idExam);
 
         try{
             this.questionExamRepository.save(questionExamEntity);
@@ -100,8 +97,7 @@ public class QuestionExamServiceImpl implements QuestionExamService{
 
         QuestionExamEntity questionExamEntity = QuestionExamMapper.fromLongResponseDto(questionLongResponseDto);
 
-        this.setExamCourseAndProfessorForQuestion(QuestionExamCreationDto.builder()
-                        .idCourse(questionLongResponseDto.getIdCourse())
+        this.setExamAndProfessorForQuestion(QuestionMultipleChoiceExamCreationDto.builder()
                         .idProfessor(questionLongResponseDto.getIdProfessor())
                         .build()
                 ,questionExamEntity,idExam);
@@ -127,35 +123,37 @@ public class QuestionExamServiceImpl implements QuestionExamService{
 
     @Override
     public void updateMultipleChoiceQuestionExam(QuestionMultipleChoiceExamDto questionMultipleChoiceExamDto, Long idQuestion) throws EntityNotFoundException {
-
+        //idk why id doesn t work
         QuestionExamEntity questionExamEntity = questionExamRepository.findById(idQuestion)
                 .orElseThrow(() -> new EntityNotFoundException("Question with ID " , idQuestion.toString()));
-
-
 
         this.answerExamRepository.deleteAll(this.answerExamRepository.findByIdQuestion(idQuestion));
 
         questionExamEntity.setQuestionText(questionMultipleChoiceExamDto.getQuestionText());
 
         questionExamEntity.setProfessor(this.professorRepository.findById(questionMultipleChoiceExamDto.getIdProfessor()).get());
-        //it should also be set the exam, and the course but the professor can't change a question from an exam/course to another
 
         questionExamEntity.setPoints(questionMultipleChoiceExamDto.getPoints());
 
         List<AnswerExamEntity> updatedAnswers = new ArrayList<>();
-
 
         for (AnswerExamDto answerExamDto : questionMultipleChoiceExamDto.getAnswersQuestion()) {
             AnswerExamEntity answer = AnswerExamMapper.fromDto(answerExamDto, questionExamEntity);
             if(answerExamDto.isCorrect()){
                 answer.setCorrectAnswerExam(CorrectAnswerExamMapper.fromAnswerExamEntity(answer));
             }
+
             updatedAnswers.add(answer);
         }
 
         questionExamEntity.setAnswersQuestion(updatedAnswers);
 
+        //try {
         this.questionExamRepository.save(questionExamEntity);
+//        }
+//        catch (Exception e){
+//            throw new EntityAlreadyExistsException("Cannot update question");
+//        }
 
     }
 
@@ -190,17 +188,10 @@ public class QuestionExamServiceImpl implements QuestionExamService{
 
     }
 
-    private void setExamCourseAndProfessorForQuestion(QuestionExamCreationDto questionExamDto, QuestionExamEntity questionExamEntity, Long idExam) throws EntityNotFoundException {
+    private void setExamAndProfessorForQuestion(QuestionMultipleChoiceExamCreationDto questionExamDto, QuestionExamEntity questionExamEntity, Long idExam) throws EntityNotFoundException {
         ExamEntity examForQuestion = this.examRepository.findById(idExam).get();
 
         questionExamEntity.setExam(examForQuestion);
-
-        Optional<CourseEntity> course = this.courseRepository.findById(questionExamDto.getIdCourse());
-
-        if( course.isEmpty() ){
-            throw new EntityNotFoundException("Course with id " + questionExamDto.getIdCourse() + " not found");
-        }
-        questionExamEntity.setCourse(course.get());
 
         Optional<ProfessorEntity> professor = professorRepository.findById(questionExamDto.getIdProfessor());
 

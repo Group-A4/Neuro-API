@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @Builder
 public class QuestionLongResponseExamCreationDto {
-    private Long idCourse;
     private Long idProfessor;
     private String questionText;
     private Double points;

@@ -1,7 +1,7 @@
 package com.example.Neurosurgical.App.services;
 
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
-import com.example.Neurosurgical.App.models.dtos.QuestionExamCreationDto;
+import com.example.Neurosurgical.App.models.dtos.QuestionMultipleChoiceExamCreationDto;
 import com.example.Neurosurgical.App.models.dtos.QuestionLongResponseExamDto;
 import com.example.Neurosurgical.App.models.dtos.QuestionMultipleChoiceExamDto;
 import com.example.Neurosurgical.App.models.dtos.QuestionLongResponseExamCreationDto;
@@ -14,7 +14,7 @@ public interface QuestionExamService {
     List<QuestionMultipleChoiceExamDto> findAllMultipleChoice();
 
     List<QuestionLongResponseExamDto> findAllLongResponse();
-    void createMultipleChoiceQuestionExam(QuestionExamCreationDto questionExamDto, Long idExam) throws EntityNotFoundException;
+    void createMultipleChoiceQuestionExam(QuestionMultipleChoiceExamCreationDto questionExamDto, Long idExam) throws EntityNotFoundException;
     void createLongResponseQuestionExam(QuestionLongResponseExamCreationDto questionLongResponseDto, Long idExam) throws EntityNotFoundException;
 
     void updateMultipleChoiceQuestionExam(QuestionMultipleChoiceExamDto questionExamCreationDto, Long idQuestion) throws EntityNotFoundException;
