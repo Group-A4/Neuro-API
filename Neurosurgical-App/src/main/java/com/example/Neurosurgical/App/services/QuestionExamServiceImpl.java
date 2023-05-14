@@ -5,12 +5,9 @@ import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.mappers.AnswerExamMapper;
 import com.example.Neurosurgical.App.mappers.CorrectAnswerExamMapper;
 import com.example.Neurosurgical.App.mappers.QuestionExamMapper;
-import com.example.Neurosurgical.App.models.dtos.AnswerExamDto;
-import com.example.Neurosurgical.App.models.dtos.QuestionExamCreationDto;
-import com.example.Neurosurgical.App.models.dtos.QuestionExamDto;
+import com.example.Neurosurgical.App.models.dtos.*;
 import com.example.Neurosurgical.App.models.entities.*;
 import com.example.Neurosurgical.App.repositories.*;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,30 +39,158 @@ public class QuestionExamServiceImpl implements QuestionExamService{
     }
 
     @Override
-    public List<QuestionExamDto> findAll() {
-        List<QuestionExamDto> questionExamDtos ;
+    public List<QuestionMultipleChoiceExamDto> findAllMultipleChoice() {
+        List<QuestionMultipleChoiceExamDto> questionMultipleChoiceExamDtos;
 
-        List<QuestionExamEntity> questionExamEntities = questionExamRepository.findAll();
+        List<QuestionExamEntity> questionExamEntities = questionExamRepository.findMultipleChoiceQuestions();
         if (questionExamEntities.size() > 0){
-            questionExamDtos = questionExamEntities.stream()
+            questionMultipleChoiceExamDtos = questionExamEntities.stream()
                     .map(QuestionExamMapper::toDto)
                     .collect(Collectors.toList());
         }
         else{
-            throw new EntityNotFoundException("No Exam questions found");
+            throw new EntityNotFoundException("Exam Multiple Choice questions found");
         }
 
-        return questionExamDtos;
+        return questionMultipleChoiceExamDtos;
     }
 
     @Override
-    public void createQuestionExam(QuestionExamCreationDto questionExamDto, Long idExam) throws EntityNotFoundException {
+    public List<QuestionLongResponseExamDto> findAllLongResponse() {
+        List<QuestionLongResponseExamDto> questionMultipleChoiceExamDtos;
+
+        List<QuestionExamEntity> questionExamEntities = questionExamRepository.findLongResponseQuestions();
+        if (questionExamEntities.size() > 0){
+            questionMultipleChoiceExamDtos = questionExamEntities.stream()
+                    .map(QuestionExamMapper::toLongResponseDto)
+                    .collect(Collectors.toList());
+        }
+        else{
+            throw new EntityNotFoundException("Exam Long Response questions found");
+        }
+
+        return questionMultipleChoiceExamDtos;
+
+    }
+
+    @Override
+    public void createMultipleChoiceQuestionExam(QuestionExamCreationDto questionExamDto, Long idExam) throws EntityNotFoundException {
         if(!this.examRepository.existsById(idExam)){
             throw new EntityNotFoundException("Exam with id " + idExam + " not found");
         }
 
         QuestionExamEntity questionExamEntity = QuestionExamMapper.fromCreationDto(questionExamDto);
 
+        this.setExamCourseAndProfessorForQuestion(questionExamDto,questionExamEntity,idExam);
+
+        try{
+            this.questionExamRepository.save(questionExamEntity);
+        }
+        catch (Exception e){
+            throw new EntityAlreadyExistsException("Question already exists or invalid input");
+        }
+
+    }
+
+    @Override
+    public void createLongResponseQuestionExam(QuestionLongResponseExamCreationDto questionLongResponseDto, Long idExam) throws EntityNotFoundException {
+        if(!this.examRepository.existsById(idExam)){
+            throw new EntityNotFoundException("Exam with id " + idExam + " not found");
+        }
+
+        QuestionExamEntity questionExamEntity = QuestionExamMapper.fromLongResponseDto(questionLongResponseDto);
+
+        this.setExamCourseAndProfessorForQuestion(QuestionExamCreationDto.builder()
+                        .idCourse(questionLongResponseDto.getIdCourse())
+                        .idProfessor(questionLongResponseDto.getIdProfessor())
+                        .build()
+                ,questionExamEntity,idExam);
+
+        //we also create the LongResponseQuestionEntity
+
+        QuestionLongResponseExamEntity longResponseQuestionEntity =
+                QuestionLongResponseExamEntity.builder()
+                        .expectedResponse(questionLongResponseDto.getExpectedResponse())
+                        .question(questionExamEntity)
+                        .build();
+
+        questionExamEntity.setQuestionLongResponseExam(longResponseQuestionEntity);
+
+        try{
+            this.questionExamRepository.save(questionExamEntity);
+        }
+        catch (Exception e){
+            throw new EntityAlreadyExistsException("Question already exists or invalid input");
+        }
+
+    }
+
+    @Override
+    public void updateMultipleChoiceQuestionExam(QuestionMultipleChoiceExamDto questionMultipleChoiceExamDto, Long idQuestion) throws EntityNotFoundException {
+
+        QuestionExamEntity questionExamEntity = questionExamRepository.findById(idQuestion)
+                .orElseThrow(() -> new EntityNotFoundException("Question with ID " , idQuestion.toString()));
+
+
+
+        this.answerExamRepository.deleteAll(this.answerExamRepository.findByIdQuestion(idQuestion));
+
+        questionExamEntity.setQuestionText(questionMultipleChoiceExamDto.getQuestionText());
+
+        questionExamEntity.setProfessor(this.professorRepository.findById(questionMultipleChoiceExamDto.getIdProfessor()).get());
+        //it should also be set the exam, and the course but the professor can't change a question from an exam/course to another
+
+        questionExamEntity.setPoints(questionMultipleChoiceExamDto.getPoints());
+
+        List<AnswerExamEntity> updatedAnswers = new ArrayList<>();
+
+
+        for (AnswerExamDto answerExamDto : questionMultipleChoiceExamDto.getAnswersQuestion()) {
+            AnswerExamEntity answer = AnswerExamMapper.fromDto(answerExamDto, questionExamEntity);
+            if(answerExamDto.isCorrect()){
+                answer.setCorrectAnswerExam(CorrectAnswerExamMapper.fromAnswerExamEntity(answer));
+            }
+            updatedAnswers.add(answer);
+        }
+
+        questionExamEntity.setAnswersQuestion(updatedAnswers);
+
+        this.questionExamRepository.save(questionExamEntity);
+
+    }
+
+    @Override
+    public void updateLongResponseQUestionExam(QuestionLongResponseExamCreationDto questionExamCreationDto, Long idQuestion) {
+
+            QuestionExamEntity questionExamEntity = questionExamRepository.findById(idQuestion)
+                    .orElseThrow(() -> new EntityNotFoundException("Question with ID " , idQuestion.toString()));
+
+            questionExamEntity.setQuestionText(questionExamCreationDto.getQuestionText());
+
+            questionExamEntity.setProfessor(this.professorRepository.findById(questionExamCreationDto.getIdProfessor()).get());
+            //it should also be set the exam, and the course but the professor can't change a question from an exam/course to another
+
+            questionExamEntity.setPoints(questionExamCreationDto.getPoints());
+
+            questionExamEntity.getQuestionLongResponseExam().setExpectedResponse(questionExamCreationDto.getExpectedResponse());
+
+            this.questionExamRepository.save(questionExamEntity);
+    }
+
+    @Override
+    public void deleteQuestionExam(Long idQuestion) throws EntityNotFoundException {
+
+        Optional<QuestionExamEntity> questionExamEntity = this.questionExamRepository.findById(idQuestion);
+
+        if(questionExamEntity.isEmpty()){
+            throw new EntityNotFoundException("Question with id " + idQuestion + " not found");
+        }
+
+        this.questionExamRepository.delete(questionExamEntity.get());
+
+    }
+
+    private void setExamCourseAndProfessorForQuestion(QuestionExamCreationDto questionExamDto, QuestionExamEntity questionExamEntity, Long idExam) throws EntityNotFoundException {
         ExamEntity examForQuestion = this.examRepository.findById(idExam).get();
 
         questionExamEntity.setExam(examForQuestion);
@@ -83,60 +208,5 @@ public class QuestionExamServiceImpl implements QuestionExamService{
             throw new EntityNotFoundException("Professor with id " + questionExamDto.getIdProfessor() + " not found");
         }
         questionExamEntity.setProfessor(professor.get());
-
-        try{
-            this.questionExamRepository.save(questionExamEntity);
-        }
-        catch (Exception e){
-            throw new EntityAlreadyExistsException("Question already exists or invalid input");
-        }
-
     }
-
-    @Override
-    public void updateQuestionExam(QuestionExamDto questionExamDto, Long idQuestion) throws EntityNotFoundException {
-
-        QuestionExamEntity questionExamEntity = questionExamRepository.findById(idQuestion)
-                .orElseThrow(() -> new EntityNotFoundException("Question with ID " , idQuestion.toString()));
-
-
-
-        this.answerExamRepository.deleteAll(this.answerExamRepository.findByIdQuestion(idQuestion));
-
-        questionExamEntity.setQuestionText(questionExamDto.getQuestionText());
-
-        questionExamEntity.setProfessor(this.professorRepository.findById(questionExamDto.getIdProfessor()).get());
-        //it should also be set the exam, and the course but the professor can't change a question from an exam/course to another
-
-        questionExamEntity.setPoints(questionExamDto.getPoints());
-
-        List<AnswerExamEntity> updatedAnswers = new ArrayList<>();
-//        for(AnswerExamEntity answerExamEntity : questionExamEntity.getAnswersQuestion()){
-//            answerExamEntity.setAnswerText("text-text");
-//        }
-
-        for (AnswerExamDto answerExamDto : questionExamDto.getAnswersQuestion()) {
-            AnswerExamEntity answer = AnswerExamMapper.fromDto(answerExamDto, questionExamEntity);
-            updatedAnswers.add(answer);
-        }
-
-        questionExamEntity.setAnswersQuestion(updatedAnswers);
-
-        this.questionExamRepository.save(questionExamEntity);
-
-    }
-
-    @Override
-    public void deleteQuestionExam(Long idQuestion) throws EntityNotFoundException {
-
-        Optional<QuestionExamEntity> questionExamEntity = this.questionExamRepository.findById(idQuestion);
-
-        if(questionExamEntity.isEmpty()){
-            throw new EntityNotFoundException("Question with id " + idQuestion + " not found");
-        }
-
-        this.questionExamRepository.delete(questionExamEntity.get());
-
-    }
-
 }

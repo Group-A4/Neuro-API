@@ -2,19 +2,24 @@ package com.example.Neurosurgical.App.services;
 
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.models.dtos.QuestionExamCreationDto;
-import com.example.Neurosurgical.App.models.dtos.QuestionExamDto;
+import com.example.Neurosurgical.App.models.dtos.QuestionLongResponseExamDto;
+import com.example.Neurosurgical.App.models.dtos.QuestionMultipleChoiceExamDto;
+import com.example.Neurosurgical.App.models.dtos.QuestionLongResponseExamCreationDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public interface QuestionExamService {
-    List<QuestionExamDto> findAll();
+    List<QuestionMultipleChoiceExamDto> findAllMultipleChoice();
 
-    void createQuestionExam(QuestionExamCreationDto questionExamDto, Long idExam) throws EntityNotFoundException;
+    List<QuestionLongResponseExamDto> findAllLongResponse();
+    void createMultipleChoiceQuestionExam(QuestionExamCreationDto questionExamDto, Long idExam) throws EntityNotFoundException;
+    void createLongResponseQuestionExam(QuestionLongResponseExamCreationDto questionLongResponseDto, Long idExam) throws EntityNotFoundException;
 
-    void updateQuestionExam(QuestionExamDto questionExamCreationDto, Long idQuestion) throws EntityNotFoundException;
+    void updateMultipleChoiceQuestionExam(QuestionMultipleChoiceExamDto questionExamCreationDto, Long idQuestion) throws EntityNotFoundException;
+
+    void updateLongResponseQUestionExam(QuestionLongResponseExamCreationDto questionExamCreationDto, Long idQuestion);
 
     void deleteQuestionExam(Long idQuestion) throws EntityNotFoundException;
 }

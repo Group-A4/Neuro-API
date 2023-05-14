@@ -13,7 +13,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Table(name = "questions_exam")
-public class QuestionExamEntity extends BaseEntity{
+public class
+QuestionExamEntity extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "id_exam", nullable = false)
@@ -32,6 +33,9 @@ public class QuestionExamEntity extends BaseEntity{
 
     @Column(name = "points")
     private Double points;
+
+    @OneToOne(mappedBy = "question", cascade = CascadeType.ALL)
+    private QuestionLongResponseExamEntity questionLongResponseExam;
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
