@@ -1,7 +1,7 @@
 package com.example.Neurosurgical.App.controllers;
 
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
-import com.example.Neurosurgical.App.models.dtos.QuestionExamCreationDto;
+import com.example.Neurosurgical.App.models.dtos.QuestionMultipleChoiceExamCreationDto;
 import com.example.Neurosurgical.App.models.dtos.QuestionLongResponseExamDto;
 import com.example.Neurosurgical.App.models.dtos.QuestionMultipleChoiceExamDto;
 import com.example.Neurosurgical.App.models.dtos.QuestionLongResponseExamCreationDto;
@@ -37,8 +37,8 @@ public class QuestionExamController {
 
     @PostMapping(value = "/multipleChoice/create/idExam={idExam}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createMultipleChoiceQuestionExam (@RequestBody @Valid QuestionExamCreationDto questionExamCreationDto, @PathVariable Long idExam) throws EntityNotFoundException {
-        questionExamService.createMultipleChoiceQuestionExam(questionExamCreationDto, idExam);
+    public void createMultipleChoiceQuestionExam (@RequestBody @Valid QuestionMultipleChoiceExamCreationDto questionMultipleChoiceExamCreationDto, @PathVariable Long idExam) throws EntityNotFoundException {
+        questionExamService.createMultipleChoiceQuestionExam(questionMultipleChoiceExamCreationDto, idExam);
     }
 
     @PostMapping(value = "/longResponse/create/idExam={idExam}")
