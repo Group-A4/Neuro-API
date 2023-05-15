@@ -18,7 +18,7 @@ public class ExamMapper {
                 .title(examCreationDto.getTitle())
                 .date(examCreationDto.getDate())
                 .timeExam(examCreationDto.getTimeExam())
-                .evaluationType(examCreationDto.getEvaluationType()>0 && examCreationDto.getEvaluationType()<4? examCreationDto.getEvaluationType() : 1 )
+                .evaluationType(examCreationDto.getEvaluationType()>=0 && examCreationDto.getEvaluationType()<=2? examCreationDto.getEvaluationType() : 1 )
 //                .questionsExam( Stream.concat(
 //                        examCreationDto.getQuestionsMultipleChoice().stream().map(QuestionExamMapper::fromCreationDto)
 //                        ,examCreationDto.getQuestionsLongResponse().stream().map(QuestionExamMapper::fromLongResponseDto)   )
