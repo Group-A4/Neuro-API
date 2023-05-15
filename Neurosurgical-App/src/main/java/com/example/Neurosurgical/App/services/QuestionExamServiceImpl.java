@@ -142,18 +142,17 @@ public class QuestionExamServiceImpl implements QuestionExamService{
             if(answerExamDto.isCorrect()){
                 answer.setCorrectAnswerExam(CorrectAnswerExamMapper.fromAnswerExamEntity(answer));
             }
-
             updatedAnswers.add(answer);
         }
 
         questionExamEntity.setAnswersQuestion(updatedAnswers);
 
-        //try {
+        try {
         this.questionExamRepository.save(questionExamEntity);
-//        }
-//        catch (Exception e){
-//            throw new EntityAlreadyExistsException("Cannot update question");
-//        }
+        }
+        catch (Exception e){
+            throw new EntityAlreadyExistsException("Cannot update question");
+        }
 
     }
 

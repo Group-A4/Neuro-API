@@ -58,7 +58,7 @@ public class QuestionQuizzMapper {
             answersQuizzDtoList.forEach(answer -> {
                 AnswerQuizzEntity answerQuizzEntity = AnswerQuizzMapper.fromCreationDto(answer, questionQuizzEntity);
                 if(answer.isCorrect()) {
-                    answerQuizzEntity.setCorrectAnswerQuizz(CorrectAnswerQuizzMapper.fromAnswerQuizzEntity(answerQuizzEntity, questionQuizzEntity));
+                    answerQuizzEntity.setCorrectAnswerQuizz(CorrectAnswerQuizzMapper.fromAnswerQuizzEntity(answerQuizzEntity));
                 }
                 answersQuizzEntityList.add(answerQuizzEntity);
             });

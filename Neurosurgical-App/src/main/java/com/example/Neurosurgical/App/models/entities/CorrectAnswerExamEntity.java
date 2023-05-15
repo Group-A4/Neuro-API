@@ -10,11 +10,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "correct_answers_exam")
-public class CorrectAnswerExamEntity {
+public class CorrectAnswerExamEntity extends BaseEntity {
 
-    @Id
     @OneToOne
-    @JoinColumn(name = "id_answer")
+    @JoinColumn(name = "id_answer", nullable = false)
     private AnswerExamEntity answer;
 
 
