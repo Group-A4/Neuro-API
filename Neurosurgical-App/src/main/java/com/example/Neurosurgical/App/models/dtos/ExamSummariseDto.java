@@ -6,16 +6,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.sql.Timestamp;
+
 @Component
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class QuestionExamCreationDto {
+public class ExamSummariseDto {
+    private Long id;
     private Long idCourse;
     private Long idProfessor;
-    private String questionText;
-    private Double points;
-    private List<AnswerExamCreationDto> answersQuestion;
+    private String code;
+    private String title;
+    private Timestamp date;
+    private Integer timeExam;
+    private Integer evaluationType;
 }

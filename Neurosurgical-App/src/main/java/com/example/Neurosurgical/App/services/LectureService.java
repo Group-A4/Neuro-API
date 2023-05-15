@@ -11,7 +11,7 @@ public interface LectureService {
     List<LectureEntity> findAll();
     void deleteLecture(Long id);
     LectureEntity findById(Long id);
-    void createLecture(LectureCreationDto LectureCreationDto);
+    void createLecture(LectureCreationDto lectureCreationDto);
     void updateLecture(Long id, LectureCreationDto lectureCreationDto);
     LectureEntity findByTitle(String title);
     List<LectureEntity> findAllByCourseId(Long id);

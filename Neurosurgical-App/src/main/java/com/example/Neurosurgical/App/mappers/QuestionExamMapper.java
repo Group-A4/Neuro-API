@@ -1,8 +1,6 @@
 package com.example.Neurosurgical.App.mappers;
 
-import com.example.Neurosurgical.App.models.dtos.AnswerExamCreationDto;
-import com.example.Neurosurgical.App.models.dtos.QuestionExamCreationDto;
-import com.example.Neurosurgical.App.models.dtos.QuestionExamDto;
+import com.example.Neurosurgical.App.models.dtos.*;
 import com.example.Neurosurgical.App.models.entities.AnswerExamEntity;
 import com.example.Neurosurgical.App.models.entities.QuestionExamEntity;
 import org.springframework.stereotype.Component;
@@ -13,14 +11,13 @@ import java.util.stream.Collectors;
 
 @Component
 public class QuestionExamMapper {
-    public static QuestionExamDto toDto(QuestionExamEntity questionExamEntity){
+    public static QuestionMultipleChoiceExamDto toDto(QuestionExamEntity questionExamEntity){
 
-        return QuestionExamDto.builder()
+        return QuestionMultipleChoiceExamDto.builder()
                 .id(questionExamEntity.getId())
                 .points(questionExamEntity.getPoints())
                 .questionText(questionExamEntity.getQuestionText())
                 .idExam(questionExamEntity.getExam().getId())
-                .idCourse(questionExamEntity.getCourse().getId())
                 .idProfessor(questionExamEntity.getProfessor().getIdUser())
                 .answersQuestion(
                         questionExamEntity.getAnswersQuestion().stream().map(AnswerExamMapper::toDto)
@@ -29,7 +26,22 @@ public class QuestionExamMapper {
                 .build();
     }
 
-    public static QuestionExamEntity fromCreationDto(QuestionExamCreationDto questionExamDto) {
+    public static QuestionMultipleChoiceExamDto toDtoForExam(QuestionExamEntity questionExamEntity){
+
+        return QuestionMultipleChoiceExamDto.builder()
+                .id(questionExamEntity.getId())
+                .points(questionExamEntity.getPoints())
+                .questionText(questionExamEntity.getQuestionText())
+                .idExam(questionExamEntity.getExam().getId())
+                .idProfessor(questionExamEntity.getProfessor().getIdUser())
+                .answersQuestion(
+                        questionExamEntity.getAnswersQuestion().stream().map(AnswerExamMapper::toDtoForExam)
+                                .collect(Collectors.toList())
+                )
+                .build();
+    }
+
+    public static QuestionExamEntity fromCreationDto(QuestionMultipleChoiceExamCreationDto questionExamDto) {
 
         final List<AnswerExamCreationDto> answersExamDtoList = questionExamDto.getAnswersQuestion();
 
@@ -51,6 +63,64 @@ public class QuestionExamMapper {
         });
 
         return questionExamEntity;
+    }
+
+    public static QuestionExamEntity fromDto(QuestionMultipleChoiceExamDto questionExamDto) {
+
+        final List<AnswerExamDto> answersExamDtoList = questionExamDto.getAnswersQuestion();
+
+        final List<AnswerExamEntity> answersExamEntityList = new ArrayList<>();
+
+        QuestionExamEntity questionExamEntity =
+                QuestionExamEntity.builder()
+                        .points(questionExamDto.getPoints())
+                        .questionText(questionExamDto.getQuestionText())
+                        .answersQuestion(answersExamEntityList)
+                        .build();
+
+        answersExamDtoList.forEach(answer -> {
+            AnswerExamEntity answerExamEntity = AnswerExamMapper.fromDto(answer, questionExamEntity);
+            if(answer.isCorrect()){
+                answerExamEntity.setCorrectAnswerExam(CorrectAnswerExamMapper.fromAnswerExamEntity(answerExamEntity));
+            }
+            answersExamEntityList.add(answerExamEntity);
+        });
+
+        return questionExamEntity;
+    }
+
+
+    public static QuestionExamEntity fromLongResponseDto(QuestionLongResponseExamCreationDto questionLongResponseDto) {
+        //we know that the question doesn't have any answers
+
+        return QuestionExamEntity.builder()
+                .points(questionLongResponseDto.getPoints())
+                .questionText(questionLongResponseDto.getQuestionText())
+                .build();
+    }
+
+    public static QuestionLongResponseExamDto toLongResponseDto(QuestionExamEntity questionExamEntity) {
+        return QuestionLongResponseExamDto.builder()
+                .id(questionExamEntity.getId())
+                .idExam(questionExamEntity.getExam().getId())
+                .idProfessor(questionExamEntity.getProfessor().getIdUser())
+                .points(questionExamEntity.getPoints())
+                .questionText(questionExamEntity.getQuestionText())
+                .expectedResponse(questionExamEntity.getQuestionLongResponseExam().getExpectedResponse())
+                .build();
+    }
+
+
+    public static QuestionMultipleChoiceExamCreationDto fromDtoToCreationDto(QuestionMultipleChoiceExamDto questionExamDto) {
+
+        return QuestionMultipleChoiceExamCreationDto.builder()
+                .points(questionExamDto.getPoints())
+                .questionText(questionExamDto.getQuestionText())
+                .answersQuestion(
+                        questionExamDto.getAnswersQuestion().stream().map(AnswerExamMapper::fromDtoToCreationDto)
+                                .collect(Collectors.toList())
+                )
+                .build();
     }
 
 }

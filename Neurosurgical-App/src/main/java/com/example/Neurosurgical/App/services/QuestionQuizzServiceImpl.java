@@ -1,7 +1,9 @@
 package com.example.Neurosurgical.App.services;
 
+import com.example.Neurosurgical.App.advice.exceptions.EntityAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.mappers.AnswerQuizzMapper;
+import com.example.Neurosurgical.App.mappers.CorrectAnswerQuizzMapper;
 import com.example.Neurosurgical.App.mappers.QuestionQuizzMapper;
 import com.example.Neurosurgical.App.models.dtos.AnswerQuizzDto;
 import com.example.Neurosurgical.App.models.dtos.QuestionQuizzCreationDto;
@@ -180,12 +182,21 @@ public class QuestionQuizzServiceImpl implements QuestionQuizzService {
         List<AnswerQuizzEntity> updatedAnswers = new ArrayList<>();
         for(AnswerQuizzDto answerQuizzDto : questionQuizzDto.getAnswersQuestion()){
             AnswerQuizzEntity answerQuizzEntity = AnswerQuizzMapper.fromDto(answerQuizzDto,questionQuizzEntity);
+            if(answerQuizzDto.isCorrect()) {
+                answerQuizzEntity.setCorrectAnswerQuizz(CorrectAnswerQuizzMapper.fromAnswerQuizzEntity(answerQuizzEntity));
+            }
+            //this.answerQuizzRepository.save(answerQuizzEntity);
             updatedAnswers.add(answerQuizzEntity);
         }
 
         questionQuizzEntity.setAnswersQuestion(updatedAnswers);
 
-        questionQuizzRepository.save(questionQuizzEntity);
+        try {
+            this.questionQuizzRepository.save(questionQuizzEntity);
+        }
+        catch (Exception e){
+            throw new EntityAlreadyExistsException("Cannot update question");
+        }
     }
 
     @Override

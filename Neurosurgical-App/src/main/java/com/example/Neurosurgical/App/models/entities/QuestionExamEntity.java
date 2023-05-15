@@ -13,15 +13,12 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Table(name = "questions_exam")
-public class QuestionExamEntity extends BaseEntity{
+public class
+QuestionExamEntity extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "id_exam", nullable = false)
     private ExamEntity exam;
-
-    @ManyToOne
-    @JoinColumn(name = "id_course", nullable = false)
-    private CourseEntity course;
 
     @ManyToOne
     @JoinColumn(name = "id_professor", nullable = false)
@@ -32,6 +29,10 @@ public class QuestionExamEntity extends BaseEntity{
 
     @Column(name = "points")
     private Double points;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "question", cascade = CascadeType.ALL)
+    private QuestionLongResponseExamEntity questionLongResponseExam;
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")

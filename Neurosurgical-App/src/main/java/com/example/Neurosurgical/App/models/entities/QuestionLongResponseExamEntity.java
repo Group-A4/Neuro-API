@@ -1,21 +1,22 @@
 package com.example.Neurosurgical.App.models.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
-@Table(name = "long_response_question")
-public class LongResponseQuestionEntity {
+@NoArgsConstructor
+@Table(name = "long_response_questions")
+public class QuestionLongResponseExamEntity {
     @Id
-    private Long idQuestion;
+    @OneToOne
+    @JoinColumn(name = "id_question")
+    private QuestionExamEntity question;
 
     @Column(name = "expected_response")
     private String expectedResponse;
