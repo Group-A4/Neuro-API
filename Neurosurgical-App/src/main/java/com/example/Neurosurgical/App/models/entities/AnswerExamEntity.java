@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.util.Objects;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @Builder
@@ -25,17 +26,4 @@ public class AnswerExamEntity extends BaseEntity{
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "answer")
     private CorrectAnswerExamEntity correctAnswerExam;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        AnswerExamEntity that = (AnswerExamEntity) o;
-        return Objects.equals(question, that.question) && Objects.equals(answerText, that.answerText);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), question, answerText);
-    }
 }

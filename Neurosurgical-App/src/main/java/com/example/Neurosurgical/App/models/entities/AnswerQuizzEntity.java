@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "answers_quizz")
-public class AnswerQuizzEntity extends BaseEntity{
+public class AnswerQuizzEntity extends BaseEntity {
     @Column(name = "answer_text")
     private String answerText;
 
