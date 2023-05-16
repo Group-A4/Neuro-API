@@ -1,9 +1,7 @@
 package com.example.Neurosurgical.App.controllers;
 
-import com.example.Neurosurgical.App.models.dtos.ExamCreationDto;
-import com.example.Neurosurgical.App.models.dtos.ExamDto;
-import com.example.Neurosurgical.App.models.dtos.ExamSummariseDto;
-import com.example.Neurosurgical.App.models.dtos.LectureCreationDto;
+import com.example.Neurosurgical.App.models.dtos.*;
+import com.example.Neurosurgical.App.advice.exceptions.InvalidDateException;
 import com.example.Neurosurgical.App.services.ExamService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +25,32 @@ public class ExamController {
 
     @PostMapping(value = "/create", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> createLecture(@RequestBody @Valid ExamCreationDto examCreationDto) {
+    public ResponseEntity<Void> createExam(@RequestBody @Valid ExamCreationDto examCreationDto) throws InvalidDateException {
         examService.createExam(examCreationDto);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping(value = "/evaluate/idStudent={idStudent}", produces = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Void> evaluateExam(@RequestBody @Valid ExamDto examDto, @PathVariable @Valid Long idStudent) {
+        examService.evaluateExam(examDto, idStudent);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(value = "/evaluate/idStudent={idStudent}/idQuestion={idQuestion}", produces = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Void> evaluateLongResponseQuestion(@PathVariable @Valid Long idStudent, @PathVariable @Valid Long idQuestion, @RequestBody @Valid Double points) {
+        examService.evaluateLongResponseQuestion(idStudent, idQuestion, points);
+        return ResponseEntity.noContent().build();
+    }
+
+
+     @GetMapping(value = "viewExamResult/idExam={idExam}/idStudent={idStudent}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ExamResultDto> viewExamResult(@PathVariable @Valid Long idExam, @PathVariable @Valid Long idStudent) {
+        return ResponseEntity.ok(examService.viewExamResult(idExam, idStudent));
+    }
+
 
     @GetMapping(value = "/code={code}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)

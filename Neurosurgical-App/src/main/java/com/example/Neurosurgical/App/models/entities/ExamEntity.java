@@ -28,7 +28,6 @@ public class ExamEntity extends BaseEntity {
     private String code;
 
     @Column(name = "date")
-    @Future
     private Timestamp date;
 
     @Column(name = "time_exam")
