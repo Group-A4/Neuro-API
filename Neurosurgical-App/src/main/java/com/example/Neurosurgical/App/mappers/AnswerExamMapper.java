@@ -19,13 +19,17 @@ public class AnswerExamMapper {
                 .build();
     }
 
-    public static AnswerExamDto toDtoForExam (AnswerExamEntity answerExamEntity){
+    public static AnswerExamDto toDtoForExam (AnswerExamEntity answerExamEntity, boolean hideAnswers){
+
+        boolean isAnswerCorrect = answerExamEntity.getCorrectAnswerExam() != null;
+        if(hideAnswers)
+            isAnswerCorrect = false;
 
         return AnswerExamDto.builder()
                 .id(answerExamEntity.getId())
                 .idQuestion(answerExamEntity.getQuestion().getId())
                 .answerText(answerExamEntity.getAnswerText())
-                .isCorrect(false)
+                .isCorrect(isAnswerCorrect)
                 .build();
     }
 
@@ -43,12 +47,4 @@ public class AnswerExamMapper {
                 .build();
     }
 
-    public static AnswerExamCreationDto fromDtoToCreationDto(AnswerExamDto answerExamDto) {
-
-        return AnswerExamCreationDto.builder()
-                .answerText(answerExamDto.getAnswerText())
-                .isCorrect(answerExamDto.isCorrect())
-                .build();
-
-    }
 }

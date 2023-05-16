@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 public class ExamMapper {
@@ -27,18 +25,21 @@ public class ExamMapper {
 
     }
 
-    public static ExamDto toDto(ExamEntity examEntity) {
+    public static ExamDto toDto(ExamEntity examEntity, boolean hideAnswers) {
 
         List<QuestionMultipleChoiceExamDto> questionsMultipleChoice = new ArrayList<>();
         List<QuestionLongResponseExamDto> questionsLongResponse = new ArrayList<>();
 
         for(QuestionExamEntity questionExamEntity : examEntity.getQuestionsExam()){
             if(questionExamEntity.getQuestionLongResponseExam() == null){
-                questionsMultipleChoice.add(QuestionExamMapper.toDtoForExam(questionExamEntity));
+                questionsMultipleChoice.add(QuestionExamMapper.toDtoForExam(questionExamEntity, hideAnswers));
             }
             else{
                 QuestionLongResponseExamDto questionLongResponseExamDto = QuestionExamMapper.toLongResponseDto(questionExamEntity);
-                questionLongResponseExamDto.setExpectedResponse("");
+                if(hideAnswers)
+                    questionLongResponseExamDto.setExpectedResponse("");
+                else
+                    questionLongResponseExamDto.setExpectedResponse(questionExamEntity.getQuestionLongResponseExam().getExpectedResponse());
                 questionsLongResponse.add(questionLongResponseExamDto);
             }
         }
