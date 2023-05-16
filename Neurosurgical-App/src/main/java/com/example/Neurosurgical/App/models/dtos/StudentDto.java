@@ -15,19 +15,13 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Builder
 public class StudentDto {
+    private Long id;
     private String lastName;
-
     private String firstName;
-
     private String code;
-
     private String emailFaculty;
-
     private String emailPersonal;
-
     private int year;
-
     private int semester;
-
     private Timestamp birthDate;
 }

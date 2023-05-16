@@ -22,7 +22,6 @@ import java.util.Optional;
 @RequestMapping("/materials")
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-
 public class MaterialController {
     private final MaterialService materialService;
 

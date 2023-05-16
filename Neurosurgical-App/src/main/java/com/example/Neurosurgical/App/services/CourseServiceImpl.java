@@ -73,15 +73,6 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Optional<CourseDto> findByCode(String code) throws EntityNotFoundException {
-
-        CourseEntity courseEntity = Optional.ofNullable(courseRepository.findByCode(code))
-                .orElseThrow(() -> new EntityNotFoundException("Course", code));
-
-        return Optional.of(CourseMapper.toDto(courseEntity));
-    }
-
-    @Override
     public Optional<CourseDto> findByTitle(String title) throws EntityNotFoundException {
 
         CourseEntity courseEntity = Optional.ofNullable(courseRepository.findByTitle(title))

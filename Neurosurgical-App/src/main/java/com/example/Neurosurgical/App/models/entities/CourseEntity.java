@@ -17,10 +17,6 @@ import java.util.List;
 @Table(name = "courses")
 @Builder
 public class CourseEntity extends BaseEntity{
-    @Column(name="code", unique = true)
-    @NotNull(message = "Code cannot be null")
-    private String code;
-
     @Column(name="title")
     @NotNull(message = "Title cannot be null")
     private String title;

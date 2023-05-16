@@ -70,16 +70,6 @@ public class CourseController {
         }
     }
 
-    @GetMapping(value = "/code={code}", produces = "application/json")
-    @ResponseStatus(HttpStatus.OK)
-    public Optional<CourseDto> getByCode(@PathVariable @Valid String code) throws EntityNotFoundException {
-        Optional<CourseDto> courseDto = courseService.findByCode(code);
-        if(courseDto.isPresent()){
-            return courseDto;
-        } else {
-            throw new EntityNotFoundException("Course", code);
-        }
-    }
     @PutMapping("/update/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateCourse(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid CourseCreationDto courseCreationDto) {
