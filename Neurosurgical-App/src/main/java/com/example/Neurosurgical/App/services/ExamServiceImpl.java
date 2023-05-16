@@ -2,6 +2,7 @@ package com.example.Neurosurgical.App.services;
 
 import com.example.Neurosurgical.App.advice.exceptions.EntityAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
+import com.example.Neurosurgical.App.advice.exceptions.InvalidDateException;
 import com.example.Neurosurgical.App.mappers.ExamMapper;
 import com.example.Neurosurgical.App.mappers.QuestionExamMapper;
 import com.example.Neurosurgical.App.models.dtos.*;
@@ -10,6 +11,8 @@ import com.example.Neurosurgical.App.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -62,12 +65,19 @@ public class ExamServiceImpl implements ExamService {
 
 
     @Override
-    public void createExam(ExamCreationDto examCreationDto) {
+    public void createExam(ExamCreationDto examCreationDto) throws InvalidDateException {
         CourseEntity courseEntity = this.courseRepository.findById(examCreationDto.getIdCourse())
                 .orElseThrow(() -> new EntityNotFoundException("Course", examCreationDto.getIdCourse()));
 
         ProfessorEntity professorEntity = this.professorRepository.findById(examCreationDto.getIdProfessor())
                 .orElseThrow(() -> new EntityNotFoundException("Professor", examCreationDto.getIdProfessor()));
+
+        LocalDateTime todayDate = LocalDate.now().atStartOfDay();
+        LocalDateTime examDate = examCreationDto.getDate().toLocalDateTime();
+
+        if(examDate.isBefore(todayDate)){
+            throw new InvalidDateException("Exam date(" + examDate + ") is before today");
+        }
 
 
         ExamEntity examEntity = ExamMapper.fromCreationDto(examCreationDto);

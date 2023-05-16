@@ -1,6 +1,7 @@
 package com.example.Neurosurgical.App.controllers;
 
 import com.example.Neurosurgical.App.models.dtos.*;
+import com.example.Neurosurgical.App.advice.exceptions.InvalidDateException;
 import com.example.Neurosurgical.App.services.ExamService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class ExamController {
 
     @PostMapping(value = "/create", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> createLecture(@RequestBody @Valid ExamCreationDto examCreationDto) {
+    public ResponseEntity<Void> createExam(@RequestBody @Valid ExamCreationDto examCreationDto) throws InvalidDateException {
         examService.createExam(examCreationDto);
         return ResponseEntity.noContent().build();
     }

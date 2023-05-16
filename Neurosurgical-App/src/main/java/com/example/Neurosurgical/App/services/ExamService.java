@@ -1,5 +1,6 @@
 package com.example.Neurosurgical.App.services;
 
+import com.example.Neurosurgical.App.advice.exceptions.InvalidDateException;
 import com.example.Neurosurgical.App.models.dtos.ExamCreationDto;
 import com.example.Neurosurgical.App.models.dtos.ExamDto;
 import com.example.Neurosurgical.App.models.dtos.ExamResultDto;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Service
 public interface ExamService {
-    void createExam(ExamCreationDto examCreationDto);
+    void createExam(ExamCreationDto examCreationDto) throws InvalidDateException;
 
     ExamDto findByCode(String code);
 
