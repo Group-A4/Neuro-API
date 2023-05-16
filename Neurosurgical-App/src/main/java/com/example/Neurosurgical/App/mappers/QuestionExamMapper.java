@@ -26,7 +26,7 @@ public class QuestionExamMapper {
                 .build();
     }
 
-    public static QuestionMultipleChoiceExamDto toDtoForExam(QuestionExamEntity questionExamEntity){
+    public static QuestionMultipleChoiceExamDto toDtoForExam(QuestionExamEntity questionExamEntity, boolean hideAnswers){
 
         return QuestionMultipleChoiceExamDto.builder()
                 .id(questionExamEntity.getId())
@@ -35,7 +35,7 @@ public class QuestionExamMapper {
                 .idExam(questionExamEntity.getExam().getId())
                 .idProfessor(questionExamEntity.getProfessor().getIdUser())
                 .answersQuestion(
-                        questionExamEntity.getAnswersQuestion().stream().map(AnswerExamMapper::toDtoForExam)
+                        questionExamEntity.getAnswersQuestion().stream().map(x -> AnswerExamMapper.toDtoForExam(x, hideAnswers))
                                 .collect(Collectors.toList())
                 )
                 .build();
@@ -107,19 +107,6 @@ public class QuestionExamMapper {
                 .points(questionExamEntity.getPoints())
                 .questionText(questionExamEntity.getQuestionText())
                 .expectedResponse(questionExamEntity.getQuestionLongResponseExam().getExpectedResponse())
-                .build();
-    }
-
-
-    public static QuestionMultipleChoiceExamCreationDto fromDtoToCreationDto(QuestionMultipleChoiceExamDto questionExamDto) {
-
-        return QuestionMultipleChoiceExamCreationDto.builder()
-                .points(questionExamDto.getPoints())
-                .questionText(questionExamDto.getQuestionText())
-                .answersQuestion(
-                        questionExamDto.getAnswersQuestion().stream().map(AnswerExamMapper::fromDtoToCreationDto)
-                                .collect(Collectors.toList())
-                )
                 .build();
     }
 

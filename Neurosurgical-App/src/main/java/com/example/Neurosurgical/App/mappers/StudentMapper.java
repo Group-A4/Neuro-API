@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 public class StudentMapper {
     public static StudentDto toDto(UserEntity userEntity, StudentEntity studentEntity){
         return StudentDto.builder()
+                .id(userEntity.getId())
                 .firstName(userEntity.getFirstName())
                 .lastName(userEntity.getLastName())
                 .emailFaculty(userEntity.getEmailFaculty())
@@ -22,6 +23,7 @@ public class StudentMapper {
 
     public static StudentEntity fromDto(StudentDto studentDto){
         return StudentEntity.builder()
+                .idUser(studentDto.getId())
                 .code(studentDto.getCode())
                 .year(studentDto.getYear())
                 .semester(studentDto.getSemester())

@@ -1,27 +1,20 @@
 package com.example.Neurosurgical.App.models.dtos;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
-
 @Component
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class StudentDto {
+public class AnswerExamResultDto {
     private Long id;
-    private String lastName;
-    private String firstName;
-    private String code;
-    private String emailFaculty;
-    private String emailPersonal;
-    private int year;
-    private int semester;
-    private Timestamp birthDate;
+    private Long idQuestion;
+    private String answerText;
+    private boolean isCorrect;
+    private boolean isChosenByStudent;
 }
