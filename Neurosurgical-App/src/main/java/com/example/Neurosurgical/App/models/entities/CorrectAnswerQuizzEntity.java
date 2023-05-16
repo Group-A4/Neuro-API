@@ -3,7 +3,6 @@ package com.example.Neurosurgical.App.models.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @Builder
@@ -11,11 +10,9 @@ import lombok.*;
 @NoArgsConstructor
 @Table(name = "correct_answers_quizz")
 public class CorrectAnswerQuizzEntity extends BaseEntity{
-    @ManyToOne
-    @JoinColumn(name = "id_question")
-    private QuestionQuizzEntity question;
 
-    @ManyToOne
-    @JoinColumn(name = "id_answer")
+    @OneToOne
+    @JoinColumn(name = "id_answer", nullable = false)
     private AnswerQuizzEntity answer;
+
 }

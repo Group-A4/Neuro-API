@@ -1,9 +1,9 @@
 package com.example.Neurosurgical.App.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @Builder
@@ -11,13 +11,11 @@ import lombok.*;
 @NoArgsConstructor
 @Table(name = "correct_answers_exam")
 public class CorrectAnswerExamEntity extends BaseEntity {
-    @ManyToOne
-    @JoinColumn(name = "id_question")
-    private QuestionExamEntity question;
 
-    @ManyToOne
-    @JoinColumn(name = "id_answer")
-  
+    @OneToOne
+    @JoinColumn(name = "id_answer", nullable = false)
     private AnswerExamEntity answer;
+
+
 
 }

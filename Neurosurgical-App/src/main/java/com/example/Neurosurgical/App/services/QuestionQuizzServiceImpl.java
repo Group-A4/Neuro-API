@@ -1,14 +1,19 @@
 package com.example.Neurosurgical.App.services;
 
+import com.example.Neurosurgical.App.advice.exceptions.EntityAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
+import com.example.Neurosurgical.App.mappers.AnswerQuizzMapper;
+import com.example.Neurosurgical.App.mappers.CorrectAnswerQuizzMapper;
 import com.example.Neurosurgical.App.mappers.QuestionQuizzMapper;
 import com.example.Neurosurgical.App.models.dtos.AnswerQuizzDto;
+import com.example.Neurosurgical.App.models.dtos.QuestionQuizzCreationDto;
 import com.example.Neurosurgical.App.models.dtos.QuestionQuizzDto;
 import com.example.Neurosurgical.App.models.entities.*;
 import com.example.Neurosurgical.App.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,48 +22,52 @@ import java.util.stream.Collectors;
 public class QuestionQuizzServiceImpl implements QuestionQuizzService {
     final private QuestionQuizzRepository questionQuizzRepository;
     final private AnswerQuizzRepository answerQuizzRepository;
-    final private CorrectAnswerQuizzRepository correctAnswerQuizzRepository;
     final private CourseRepository courseRepository;
     final private ProfessorRepository professorRepository;
+    final private LectureRepository lectureRepository;
 
     @Autowired
     public QuestionQuizzServiceImpl(QuestionQuizzRepository questionQuizzRepository,
                                     CourseRepository courseRepository,
                                     ProfessorRepository professorRepository,
                                     AnswerQuizzRepository answerQuizzRepository,
-                                    CorrectAnswerQuizzRepository correctAnswerQuizzRepository) {
+                                    LectureRepository lectureRepository){
 
         this.questionQuizzRepository = questionQuizzRepository;
         this.courseRepository = courseRepository;
         this.professorRepository = professorRepository;
         this.answerQuizzRepository = answerQuizzRepository;
-        this.correctAnswerQuizzRepository = correctAnswerQuizzRepository;
+        this.lectureRepository = lectureRepository;
 
     }
 
     @Override
     public Optional<QuestionQuizzDto> findById(Long id) throws EntityNotFoundException {
-        Optional<QuestionQuizzEntity> list = questionQuizzRepository.findById(id);
+        Optional<QuestionQuizzEntity> questionQuizz = questionQuizzRepository.findById(id);
 
-        if(list.isEmpty()){
-            throw new EntityNotFoundException("QuestionQuizz", id.toString());
+        if(questionQuizz.isEmpty()){
+            throw new EntityNotFoundException("QuestionQuizz with id=", id.toString());
         }
 
-        return Optional.of(QuestionQuizzMapper.toDto(list.get(),
-                this.answerQuizzRepository.findByIdQuestion(id),
-                this.correctAnswerQuizzRepository.findByIdQuestion(id))
-        );
+        return Optional.of(QuestionQuizzMapper.toDto(questionQuizz.get()));
 
     }
 
     @Override
     public List<QuestionQuizzDto> findAll() {
+        List<QuestionQuizzDto> questionQuizzDtos ;
 
-        return questionQuizzRepository.findAll().stream()
-                        .map( questionEntity -> QuestionQuizzMapper.toDto(questionEntity,
-                                this.answerQuizzRepository.findByIdQuestion(questionEntity.getId()),
-                                this.correctAnswerQuizzRepository.findByIdQuestion(questionEntity.getId())) )
-                        .collect(Collectors.toList());
+        List<QuestionQuizzEntity> questionQuizzEntities = questionQuizzRepository.findAll();
+        if (questionQuizzEntities.size() > 0){
+            questionQuizzDtos = questionQuizzEntities.stream()
+                    .map(QuestionQuizzMapper::toDto)
+                    .collect(Collectors.toList());
+        }
+        else{
+            throw new EntityNotFoundException("No Quizz questions found");
+        }
+
+        return questionQuizzDtos;
 
     }
 
@@ -67,15 +76,14 @@ public class QuestionQuizzServiceImpl implements QuestionQuizzService {
         Optional<List<QuestionQuizzEntity>> list
                 = questionQuizzRepository.findByIdProfessorAndIdCourse(idProfessor, idCourse);
 
-        if(list.isEmpty())
-            throw new EntityNotFoundException("QuestionQuizz", idProfessor.toString());
+        if(list.get().isEmpty()){
+            throw new EntityNotFoundException(" questions idProf="+ idProfessor + " and courseId=", idCourse.toString());
+        }
 
         return Optional.of(
                 list.get()
                         .stream()
-                        .map( questionEntity -> QuestionQuizzMapper.toDto(questionEntity,
-                                this.answerQuizzRepository.findByIdQuestion(questionEntity.getId()),
-                                this.correctAnswerQuizzRepository.findByIdQuestion(questionEntity.getId())) )
+                        .map(QuestionQuizzMapper::toDto)
                         .collect(Collectors.toList())
         );
     }
@@ -84,15 +92,14 @@ public class QuestionQuizzServiceImpl implements QuestionQuizzService {
     public Optional<List<QuestionQuizzDto>> findByIdProfessor(Long id) throws EntityNotFoundException {
         Optional<List<QuestionQuizzEntity>> list
                 = questionQuizzRepository.findByIdProfessor(id);
-        if(list.isEmpty())
-            throw new EntityNotFoundException("QuestionQuizz", id.toString());
 
+        if(list.get().isEmpty()){
+            throw new EntityNotFoundException("question whith idProf = ", id.toString());
+        }
         return Optional.of(
                 list.get()
                         .stream()
-                        .map( questionEntity -> QuestionQuizzMapper.toDto(questionEntity,
-                                this.answerQuizzRepository.findByIdQuestion(questionEntity.getId()),
-                                this.correctAnswerQuizzRepository.findByIdQuestion(questionEntity.getId())) )
+                        .map(QuestionQuizzMapper::toDto)
                         .collect(Collectors.toList())
         );
     }
@@ -101,61 +108,49 @@ public class QuestionQuizzServiceImpl implements QuestionQuizzService {
     public Optional<List<QuestionQuizzDto>> findByIdCourse(Long id) throws EntityNotFoundException {
         Optional<List<QuestionQuizzEntity>> list
                 = questionQuizzRepository.findByIdCourse(id);
-        if(list.isEmpty())
-            throw new EntityNotFoundException("QuestionQuizz", id.toString());
+
+        if(list.get().isEmpty()){
+            throw new EntityNotFoundException("questions with idCourse=", id.toString());
+        }
 
         return Optional.of(
                 list.get()
                         .stream()
-                        .map( questionEntity -> QuestionQuizzMapper.toDto(questionEntity,
-                                this.answerQuizzRepository.findByIdQuestion(questionEntity.getId()),
-                                this.correctAnswerQuizzRepository.findByIdQuestion(questionEntity.getId())) )
+                        .map(QuestionQuizzMapper::toDto)
                         .collect(Collectors.toList())
         );
     }
 
     @Override
-    public Optional<List<QuestionQuizzDto>> findByIdCourseAndLectureNumber(Long idCourse, Integer lectureNumber) throws EntityNotFoundException {
+    public Optional<List<QuestionQuizzDto>> findByIdCourseAndLectureNumber(Long idCourse, Long idLecture) throws EntityNotFoundException {
         Optional<List<QuestionQuizzEntity>> list
-                = questionQuizzRepository.findByIdCourseAndLectureNumber(idCourse, lectureNumber);
+                = questionQuizzRepository.findByIdCourseAndLectureNumber(idCourse, idLecture);
         if(list.isEmpty())
-            throw new EntityNotFoundException("QuestionQuizz", idCourse.toString());
+            throw new EntityNotFoundException("questions with idCourse=", idCourse + " and lectureNumber=" + idLecture);
 
         return Optional.of(
                 list.get()
                         .stream()
-                        .map( questionEntity -> QuestionQuizzMapper.toDto(questionEntity,
-                                this.answerQuizzRepository.findByIdQuestion(questionEntity.getId()),
-                                this.correctAnswerQuizzRepository.findByIdQuestion(questionEntity.getId())) )
+                        .map(QuestionQuizzMapper::toDto)
                         .collect(Collectors.toList())
         );
     }
 
     @Override
-    public Optional<List<Integer>> getLecturesByIdCourse(Long idCourse) throws EntityNotFoundException{
-        Optional<List<Integer>> list = questionQuizzRepository.getLecturesByIdCourse(idCourse);
-        if(list.isEmpty())
-            throw new EntityNotFoundException("QuestionQuizz", idCourse.toString());
+    public void createQuestionQuizz(QuestionQuizzCreationDto questionQuizzDto) throws EntityNotFoundException {
 
-        return list;
-    }
-
-
-    @Override
-    public void createQuestionQuizz(QuestionQuizzDto questionQuizzDto) throws EntityNotFoundException {
-
-        long courseId = questionQuizzDto.getIdCourse();
+        long lectureId = questionQuizzDto.getIdLecture();
         long professorId = questionQuizzDto.getIdProfessor();
 
-        Optional<CourseEntity> courseEntityOptional = courseRepository.findById(courseId);
+        Optional<LectureEntity> lectureEntityOptional = lectureRepository.findById(lectureId);
         Optional<ProfessorEntity> professorEntityOptional = professorRepository.findById(professorId);
 
-        if(courseEntityOptional.isEmpty()) throw new EntityNotFoundException("course", courseId);
+        if(lectureEntityOptional.isEmpty()) throw new EntityNotFoundException("lecture", lectureId);
         if(professorEntityOptional.isEmpty()) throw new EntityNotFoundException("professor", professorId);
 
-        QuestionQuizzEntity questionQuizzEntity = QuestionQuizzMapper.fromDto(questionQuizzDto);
+        QuestionQuizzEntity questionQuizzEntity = QuestionQuizzMapper.fromCreationDto(questionQuizzDto);
 
-        questionQuizzEntity.setCourse(courseEntityOptional.get());
+        questionQuizzEntity.setLecture(lectureEntityOptional.get());
         questionQuizzEntity.setProfessor(professorEntityOptional.get());
 
         questionQuizzRepository.save(questionQuizzEntity);
@@ -171,65 +166,37 @@ public class QuestionQuizzServiceImpl implements QuestionQuizzService {
     @Override
     public void updateQuestionQuizz(Long id, QuestionQuizzDto questionQuizzDto) throws EntityNotFoundException {
 
-        checkIfExistsById(id);
+        QuestionQuizzEntity questionQuizzEntity = questionQuizzRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Question with ID " , id.toString()));
 
-        long courseId = questionQuizzDto.getIdCourse();
-        long professorId = questionQuizzDto.getIdProfessor();
 
-        Optional<CourseEntity> courseEntityOptional = courseRepository.findById(courseId);
-        Optional<ProfessorEntity> professorEntityOptional = professorRepository.findById(professorId);
+        this.answerQuizzRepository.deleteAll(this.answerQuizzRepository.findByIdQuestion(id));
 
-        if (courseEntityOptional.isEmpty()) throw new EntityNotFoundException("course", courseId);
-        if (professorEntityOptional.isEmpty()) throw new EntityNotFoundException("professor", professorId);
+        questionQuizzEntity.setDifficulty(questionQuizzDto.getDifficulty());
+        questionQuizzEntity.setQuestionText(questionQuizzDto.getQuestionText());
+        questionQuizzEntity.setTimeMinutes(questionQuizzDto.getTimeMinutes());
 
-        Optional<QuestionQuizzEntity> questionQuizzEntityOptional = this.questionQuizzRepository.findById(id);
+        questionQuizzEntity.setLecture(this.lectureRepository.findById(questionQuizzDto.getIdLecture()).get());
+        questionQuizzEntity.setProfessor(this.professorRepository.findById(questionQuizzDto.getIdProfessor()).get());
 
-        if (questionQuizzEntityOptional.isEmpty())
-            throw new EntityNotFoundException("question", id);
-
-        //find answers
-        List<AnswerQuizzEntity> answerQuizzEntity = this.answerQuizzRepository.findByIdQuestion(id);
-        List<CorrectAnswerQuizzEntity> correctAnswerQuizzEntity = this.correctAnswerQuizzRepository.findByIdQuestion(id);
-
-        questionQuizzEntityOptional.get().setCourse(courseEntityOptional.get());
-        questionQuizzEntityOptional.get().setProfessor(professorEntityOptional.get());
-        questionQuizzEntityOptional.get().setQuestionText(questionQuizzDto.getQuestionText());
-        if(questionQuizzDto.getTimeMinutes() != null) {
-            questionQuizzEntityOptional.get().setTimeMinutes(questionQuizzDto.getTimeMinutes());
-        }
-        if(questionQuizzDto.getDifficulty() != null){
-            questionQuizzEntityOptional.get().setDifficulty(questionQuizzDto.getDifficulty());
-        }
-
-        questionQuizzEntityOptional.get().setLectureNumber(questionQuizzDto.getLectureNumber());
-        questionQuizzEntityOptional.get().setId(id);
-
-        //save updated question
-        questionQuizzRepository.save(questionQuizzEntityOptional.get());
-
-        //delete all existing answers
-        this.answerQuizzRepository.deleteAll(answerQuizzEntity);
-        this.correctAnswerQuizzRepository.deleteAll(correctAnswerQuizzEntity);
-
-        //create new answers based on the dto
-        for (AnswerQuizzDto answer : questionQuizzDto.getAnswersQuestion()) {
-            AnswerQuizzEntity answerQuizzEntity1 = AnswerQuizzEntity.builder()
-                    .answerText(answer.getAnswerText())
-                    .question(questionQuizzEntityOptional.get())
-                    .build();
-
-            this.answerQuizzRepository.save(answerQuizzEntity1);
-
-            if (answer.isCorrect()) {
-                CorrectAnswerQuizzEntity correctAnswerQuizzEntity1 = CorrectAnswerQuizzEntity.builder()
-                        .answer(answerQuizzEntity1)
-                        .question(questionQuizzEntityOptional.get())
-                        .build();
-
-                this.correctAnswerQuizzRepository.save(correctAnswerQuizzEntity1);
+        List<AnswerQuizzEntity> updatedAnswers = new ArrayList<>();
+        for(AnswerQuizzDto answerQuizzDto : questionQuizzDto.getAnswersQuestion()){
+            AnswerQuizzEntity answerQuizzEntity = AnswerQuizzMapper.fromDto(answerQuizzDto,questionQuizzEntity);
+            if(answerQuizzDto.isCorrect()) {
+                answerQuizzEntity.setCorrectAnswerQuizz(CorrectAnswerQuizzMapper.fromAnswerQuizzEntity(answerQuizzEntity));
             }
+            //this.answerQuizzRepository.save(answerQuizzEntity);
+            updatedAnswers.add(answerQuizzEntity);
         }
 
+        questionQuizzEntity.setAnswersQuestion(updatedAnswers);
+
+        try {
+            this.questionQuizzRepository.save(questionQuizzEntity);
+        }
+        catch (Exception e){
+            throw new EntityAlreadyExistsException("Cannot update question");
+        }
     }
 
     @Override
@@ -245,6 +212,6 @@ public class QuestionQuizzServiceImpl implements QuestionQuizzService {
 
     public void checkIfExistsById(Long id) throws EntityNotFoundException {
         if(!questionQuizzRepository.existsById(id))
-            throw new EntityNotFoundException("QuestionQuizz", id.toString());
+            throw new EntityNotFoundException("QuestionQuizz with id=", id.toString());
     }
 }

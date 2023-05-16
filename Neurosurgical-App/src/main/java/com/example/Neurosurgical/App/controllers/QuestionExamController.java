@@ -1,18 +1,17 @@
 package com.example.Neurosurgical.App.controllers;
 
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
-import com.example.Neurosurgical.App.models.dtos.QuestionExamCreationDto;
-import com.example.Neurosurgical.App.models.dtos.QuestionExamDto;
-import com.example.Neurosurgical.App.models.dtos.QuestionQuizzDto;
+import com.example.Neurosurgical.App.models.dtos.QuestionMultipleChoiceExamCreationDto;
+import com.example.Neurosurgical.App.models.dtos.QuestionLongResponseExamDto;
+import com.example.Neurosurgical.App.models.dtos.QuestionMultipleChoiceExamDto;
+import com.example.Neurosurgical.App.models.dtos.QuestionLongResponseExamCreationDto;
 import com.example.Neurosurgical.App.services.QuestionExamService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController
@@ -26,21 +25,38 @@ public class QuestionExamController {
         this.questionExamService = questionExamService;
     }
 
-    @GetMapping(value = "", produces="application/json")
-    public List<QuestionExamDto> getAll() {
-        return questionExamService.findAll();
+    @GetMapping(value = "/multipleChoice", produces="application/json")
+    public List<QuestionMultipleChoiceExamDto> getAllMultipleChoice() {
+        return questionExamService.findAllMultipleChoice();
     }
 
-    @PostMapping(value = "/create/idExam={idExam}")
+    @GetMapping(value = "/longResponse", produces="application/json")
+    public List<QuestionLongResponseExamDto> getAllLongResponse() {
+        return questionExamService.findAllLongResponse();
+    }
+
+    @PostMapping(value = "/multipleChoice/create/idExam={idExam}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createQuestionExam (@RequestBody @Valid QuestionExamCreationDto questionExamCreationDto, @PathVariable Long idExam) throws EntityNotFoundException {
-        questionExamService.createQuestionExam(questionExamCreationDto, idExam);
+    public void createMultipleChoiceQuestionExam (@RequestBody @Valid QuestionMultipleChoiceExamCreationDto questionMultipleChoiceExamCreationDto, @PathVariable Long idExam) throws EntityNotFoundException {
+        questionExamService.createMultipleChoiceQuestionExam(questionMultipleChoiceExamCreationDto, idExam);
     }
 
-    @PutMapping(value = "/update/idQuestion={idQuestion}")
+    @PostMapping(value = "/longResponse/create/idExam={idExam}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createLongResponseQuestionExam (@RequestBody @Valid QuestionLongResponseExamCreationDto questionLongResponseDto, @PathVariable Long idExam) throws EntityNotFoundException {
+        questionExamService.createLongResponseQuestionExam(questionLongResponseDto, idExam);
+    }
+
+    @PutMapping(value = "/multipleChoice/update/idQuestion={idQuestion}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateQuestionExam(@RequestBody @Valid QuestionExamDto questionExamCreationDto, @PathVariable Long idQuestion) throws EntityNotFoundException {
-        questionExamService.updateQuestionExam(questionExamCreationDto, idQuestion);
+    public void updateQuestionExam(@RequestBody @Valid QuestionMultipleChoiceExamDto questionExamCreationDto, @PathVariable Long idQuestion) throws EntityNotFoundException {
+        questionExamService.updateMultipleChoiceQuestionExam(questionExamCreationDto, idQuestion);
+    }
+
+    @PutMapping(value = "/longResponse/update/idQuestion={idQuestion}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateQuestionExam(@RequestBody @Valid QuestionLongResponseExamCreationDto questionExamCreationDto, @PathVariable Long idQuestion) throws EntityNotFoundException {
+        questionExamService.updateLongResponseQUestionExam(questionExamCreationDto, idQuestion);
     }
 
     @DeleteMapping(value = "/delete/idQuestion={idQuestion}")

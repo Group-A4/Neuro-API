@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Component
@@ -13,12 +14,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class QuestionExamDto {
+public class ExamDto {
     private Long id;
-    private Long idExam;
     private Long idCourse;
     private Long idProfessor;
-    private String questionText;
-    private Double points;
-    private List<AnswerExamDto> answersQuestion;
+    private String title;
+    private Timestamp date;
+    private Integer timeExam;
+    private Integer evaluationType;
+    private List<QuestionMultipleChoiceExamDto> questionsMultipleChoice;
+    private List<QuestionLongResponseExamDto> questionsLongResponse;
 }

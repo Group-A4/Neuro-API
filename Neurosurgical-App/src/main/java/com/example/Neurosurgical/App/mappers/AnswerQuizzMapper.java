@@ -1,5 +1,6 @@
 package com.example.Neurosurgical.App.mappers;
 
+import com.example.Neurosurgical.App.models.dtos.AnswerQuizzCreationDto;
 import com.example.Neurosurgical.App.models.dtos.AnswerQuizzDto;
 import com.example.Neurosurgical.App.models.entities.AnswerQuizzEntity;
 import com.example.Neurosurgical.App.models.entities.CorrectAnswerQuizzEntity;
@@ -12,20 +13,24 @@ import java.util.Objects;
 @Component
 public class AnswerQuizzMapper {
 
-    public static AnswerQuizzDto toDto (AnswerQuizzEntity answerQuizzEntity,
-                                        List<CorrectAnswerQuizzEntity> correctAnswerQuizzEntity){
+    public static AnswerQuizzDto toDto (AnswerQuizzEntity answerQuizzEntity){
 
         return AnswerQuizzDto.builder()
                 .id(answerQuizzEntity.getId())
                 .idQuestion(answerQuizzEntity.getQuestion().getId())
                 .answerText(answerQuizzEntity.getAnswerText())
-                .isCorrect(correctAnswerQuizzEntity != null && correctAnswerQuizzEntity.stream().anyMatch(
-                        correctAnswerQuizz -> Objects.equals(correctAnswerQuizz.getAnswer().getId(), answerQuizzEntity.getId())
-                ))
+                .isCorrect(answerQuizzEntity.getCorrectAnswerQuizz() != null)
                 .build();
     }
 
-    public static AnswerQuizzEntity fromDto(AnswerQuizzDto answer, QuestionQuizzEntity questionQuizzEntity) {
+    public static AnswerQuizzEntity fromDto (AnswerQuizzDto answer, QuestionQuizzEntity questionQuizzEntity) {
+        return AnswerQuizzEntity.builder()
+                .answerText(answer.getAnswerText())
+                .question(questionQuizzEntity)
+                .build();
+    }
+
+    public static AnswerQuizzEntity fromCreationDto (AnswerQuizzCreationDto answer, QuestionQuizzEntity questionQuizzEntity) {
         return AnswerQuizzEntity.builder()
                 .answerText(answer.getAnswerText())
                 .question(questionQuizzEntity)

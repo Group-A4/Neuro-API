@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +13,9 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "answers_quizz")
-public class AnswerQuizzEntity extends BaseEntity{
+public class AnswerQuizzEntity extends BaseEntity {
     @Column(name = "answer_text")
     private String answerText;
 
@@ -21,12 +23,7 @@ public class AnswerQuizzEntity extends BaseEntity{
     @JoinColumn(name = "id_question")
     private QuestionQuizzEntity question;
 
-    @JsonIgnore
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "answer")
-    private List<CorrectAnswerQuizzEntity> correctAnswerQuizz;
-
-    public AnswerQuizzEntity(){
-        this.correctAnswerQuizz = new ArrayList<>();
-    }
+    @OneToOne( cascade = CascadeType.ALL, mappedBy = "answer")
+    private CorrectAnswerQuizzEntity correctAnswerQuizz;
 
 }
