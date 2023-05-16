@@ -12,8 +12,6 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @Builder
 public class CourseCreationDto {
-    private String code;
-
     private String title;
 
     private Integer year;
