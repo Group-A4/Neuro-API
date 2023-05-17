@@ -1,19 +1,14 @@
 package com.example.Neurosurgical.App.services;
 
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
-import com.example.Neurosurgical.App.mappers.ProfessorMapper;
-import com.example.Neurosurgical.App.models.dtos.ProfessorDto;
+import com.example.Neurosurgical.App.mappers.ExamMapper;
+import com.example.Neurosurgical.App.models.dtos.*;
 import com.example.Neurosurgical.App.models.entities.*;
-import com.example.Neurosurgical.App.repositories.CourseRepository;
-import com.example.Neurosurgical.App.repositories.StudentRepository;
-import com.example.Neurosurgical.App.repositories.UserRepository;
+import com.example.Neurosurgical.App.repositories.*;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.mappers.StudentMapper;
 import com.example.Neurosurgical.App.mappers.UserMapper;
-import com.example.Neurosurgical.App.models.dtos.StudentCreationDto;
-import com.example.Neurosurgical.App.models.dtos.StudentDto;
-import com.example.Neurosurgical.App.models.dtos.UserDto;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,11 +22,19 @@ public class StudentServiceImpl implements StudentService{
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
 
+    private final ExamRepository examRepository;
+
+    private final StudentTookExamsRepository studentTookExamsRepository;
+    private final StudentQuestionPointsRepository studentQuestionPointsRepository;
+
     @Autowired
-    public StudentServiceImpl(StudentRepository studentDao, UserRepository userDao, CourseRepository courseRepository) {
+    public StudentServiceImpl(StudentRepository studentDao, UserRepository userDao, CourseRepository courseRepository, ExamRepository examRepository, StudentTookExamsRepository studentTookExamsRepository, StudentQuestionPointsRepository studentQuestionPointsRepository) {
         this.studentRepository = studentDao;
         this.userRepository = userDao;
         this.courseRepository = courseRepository;
+        this.examRepository = examRepository;
+        this.studentTookExamsRepository = studentTookExamsRepository;
+        this.studentQuestionPointsRepository = studentQuestionPointsRepository;
     }
 
     @Override
@@ -152,6 +155,45 @@ public class StudentServiceImpl implements StudentService{
         } else {
             throw new UserNotFoundException();
         }
+    }
+
+    @Override
+    public List<StudentExamDto> getStudentExamPoints(Long idStudent) {
+
+        StudentEntity student = studentRepository.findById(idStudent)
+                .orElseThrow(() -> new EntityNotFoundException("Student", idStudent));
+
+        List<ExamEntity> exams = this.examRepository.findByIdStudent(idStudent);
+
+        List<StudentExamDto> studentExamDtoList = new ArrayList<>();
+
+        for (ExamEntity exam : exams) {
+
+            ExamDto examDto = ExamMapper.toDto(exam, false);
+
+            List<QuestionMultipleChoiceExamDto> questionsMultipleChoice = examDto.getQuestionsMultipleChoice();
+            List<QuestionLongResponseExamDto> questionsLongResponse = examDto.getQuestionsLongResponse();
+
+            double totalPoints = 0.0;
+            for(QuestionMultipleChoiceExamDto questionDto : questionsMultipleChoice) {
+                double studentPoints = this.studentQuestionPointsRepository.findByIdStudentAndIdQuestion(idStudent, questionDto.getId()).get().getPointsGiven();
+                totalPoints += studentPoints;
+            }
+
+            for(QuestionLongResponseExamDto longQuestionDto : questionsLongResponse) {
+                double studentPoints = this.studentQuestionPointsRepository.findByIdStudentAndIdQuestion(idStudent, longQuestionDto.getId()).get().getPointsGiven();
+                totalPoints += studentPoints;
+            }
+
+            StudentExamDto studentExamDto = StudentExamDto.builder()
+                    .idStudent(idStudent)
+                    .idExam(exam.getId())
+                    .studentPoints(totalPoints)
+                    .build();
+
+            studentExamDtoList.add(studentExamDto);
+        }
+        return studentExamDtoList;
     }
 
 

@@ -4,6 +4,7 @@ import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsExceptio
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.models.dtos.StudentCreationDto;
 import com.example.Neurosurgical.App.models.dtos.StudentDto;
+import com.example.Neurosurgical.App.models.dtos.StudentExamDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,4 +19,6 @@ public interface StudentService {
     void updateStudent(Long id, StudentDto studentDto);
     Optional<StudentDto> findByCode(String code) throws UserNotFoundException;
     List<StudentDto> findByCourseId(Long id);
+
+    List<StudentExamDto> getStudentExamPoints(Long idStudent);
 }

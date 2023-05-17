@@ -4,6 +4,7 @@ import com.example.Neurosurgical.App.models.dtos.*;
 import com.example.Neurosurgical.App.advice.exceptions.InvalidDateException;
 import com.example.Neurosurgical.App.services.ExamService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,5 +71,16 @@ public class ExamController {
         return ResponseEntity.ok(examService.findByIdCourse(idCourse));
     }
 
+    @PostMapping(value = "activate/{idExam}", produces = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void activateExam(@PathVariable @Valid @Min(0) Long idExam) {
+        examService.activateExam(idExam);
+    }
+
+    @DeleteMapping(value = "deactivate/{idExam}", produces = "application/json")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deactivateExam(@PathVariable @Valid @Min(0) Long idExam) {
+        examService.deactivateExam(idExam);
+    }
 
 }

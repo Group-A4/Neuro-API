@@ -1,16 +1,19 @@
 package com.example.Neurosurgical.App.controllers;
 
 
+import com.azure.core.annotation.Get;
 import com.example.Neurosurgical.App.advice.ErrorResponse;
 import com.example.Neurosurgical.App.advice.exceptions.UserAlreadyExistsException;
 import com.example.Neurosurgical.App.advice.exceptions.UserNotFoundException;
 import com.example.Neurosurgical.App.models.dtos.ProfessorDto;
 import com.example.Neurosurgical.App.models.dtos.StudentCreationDto;
 import com.example.Neurosurgical.App.models.dtos.StudentDto;
+import com.example.Neurosurgical.App.models.dtos.StudentExamDto;
 import com.example.Neurosurgical.App.models.entities.CourseEntity;
 import com.example.Neurosurgical.App.services.StudentService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -86,6 +89,13 @@ public class StudentController {
             return studentDto;
         }
     }
+
+    @GetMapping(value = "studentExams/{id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public List<StudentExamDto> getStudentExamPoints(@PathVariable @Valid @Min(0)  Long id) throws UserNotFoundException {
+        return studentService.getStudentExamPoints(id);
+    }
+
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(RuntimeException ex)

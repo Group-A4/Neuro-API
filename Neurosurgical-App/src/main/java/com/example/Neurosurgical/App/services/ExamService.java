@@ -24,4 +24,8 @@ public interface ExamService {
     void evaluateLongResponseQuestion(Long idStudent, Long idQuestion, Double points);
 
     ExamResultDto viewExamResult(Long idExam, Long idStudent);
+
+    void activateExam(Long idExam);
+
+    void deactivateExam(Long idExam);
 }

@@ -38,6 +38,8 @@ public class ExamServiceImpl implements ExamService {
 
     final private CorrectAnswerExamRepository correctAnswerExamRepository;
 
+    final private ActiveExamRepository activeExamRepository;
+
 
     @Autowired
     public ExamServiceImpl(ExamRepository examRepository,
@@ -49,7 +51,8 @@ public class ExamServiceImpl implements ExamService {
                            StudentQuestionPointsRepository studentQuestionPointsRepository,
                            StudentMultipleChoiceResponsesRepository studentMultipleChoiceResponsesRepository,
                            StudentLongResponsesRepository studentLongResponsesRepository,
-                           CorrectAnswerExamRepository correctAnswerExamRepository) {
+                           CorrectAnswerExamRepository correctAnswerExamRepository,
+                           ActiveExamRepository activeExamRepository) {
 
         this.examRepository = examRepository;
         this.questionExamRepository = questionExamRepository;
@@ -61,6 +64,7 @@ public class ExamServiceImpl implements ExamService {
         this.studentMultipleChoiceResponsesRepository = studentMultipleChoiceResponsesRepository;
         this.studentLongResponsesRepository = studentLongResponsesRepository;
         this.correctAnswerExamRepository = correctAnswerExamRepository;
+        this.activeExamRepository = activeExamRepository;
     }
 
 
@@ -455,6 +459,27 @@ public class ExamServiceImpl implements ExamService {
 
         return sb.toString();
 
+    }
+
+    @Override
+    public void activateExam(Long idExam) {
+        ExamEntity exam = examRepository.findById(idExam)
+                .orElseThrow(() -> new EntityNotFoundException("Exam", idExam));
+
+        ActiveExamEntity activeExamEntity = ActiveExamEntity.builder()
+                .idExam(idExam)
+                .build();
+
+        activeExamRepository.save(activeExamEntity);
+    }
+
+    @Override
+    public void deactivateExam(Long idExam) throws EntityNotFoundException{
+        if (!activeExamRepository.existsById(idExam)) {
+            throw new EntityNotFoundException("Active Exam", idExam);
+        }
+
+        activeExamRepository.deleteById(idExam);
     }
 
 
