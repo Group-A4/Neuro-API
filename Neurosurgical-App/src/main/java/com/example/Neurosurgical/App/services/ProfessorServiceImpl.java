@@ -30,7 +30,7 @@ public class ProfessorServiceImpl implements ProfessorService {
     private final PasswordEncoder encoder;
 
     @Autowired
-    public ProfessorServiceImpl(StorageService storageService, ProfessorRepository professorDao, UserRepository userDao, CourseRepository courseRepository, MaterialRepository materialRepository) {
+    public ProfessorServiceImpl(StorageService storageService, ProfessorRepository professorDao, UserRepository userDao, CourseRepository courseRepository, MaterialRepository materialRepository, PasswordEncoder encoder) {
         this.storageService = storageService;
         this.professorRepository = professorDao;
         this.userRepository = userDao;
