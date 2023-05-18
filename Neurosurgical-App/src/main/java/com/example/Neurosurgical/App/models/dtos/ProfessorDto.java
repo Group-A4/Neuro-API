@@ -13,15 +13,11 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @Builder
 public class ProfessorDto {
+    private Long id;
     private String lastName;
-
     private String firstName;
-
     private String code;
-
     private String emailFaculty;
-
     private String emailPersonal;
-
     private String degree;
 }

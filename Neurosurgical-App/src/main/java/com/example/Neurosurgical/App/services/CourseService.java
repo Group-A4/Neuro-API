@@ -19,9 +19,8 @@ public interface CourseService {
     Optional<CourseDto> findById(Long id) throws EntityNotFoundException;
     void createCourse(CourseCreationDto courseCreationDto) throws UserAlreadyExistsException;
     void updateCourse(Long id, CourseCreationDto courseCreationDto);
-    Optional<CourseDto> findByCode(String code) throws EntityNotFoundException;
     Optional<CourseDto> findByTitle(String code) throws EntityNotFoundException;
-    Optional<CourseDto> findByMaterialId(Long id) throws EntityNotFoundException;
+    Optional<CourseDto> findByLectureId(Long id) throws EntityNotFoundException;
     List<CourseDto> findAllByProfessorId(Long id);
     List<CourseDto> findAllByStudentId(Long id);
 }

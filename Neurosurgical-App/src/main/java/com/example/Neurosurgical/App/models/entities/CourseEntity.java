@@ -17,10 +17,6 @@ import java.util.List;
 @Table(name = "courses")
 @Builder
 public class CourseEntity extends BaseEntity{
-    @Column(name="code", unique = true)
-    @NotNull(message = "Code cannot be null")
-    private String code;
-
     @Column(name="title")
     @NotNull(message = "Title cannot be null")
     private String title;
@@ -46,13 +42,15 @@ public class CourseEntity extends BaseEntity{
 
     @JsonIgnore
     @OneToMany(mappedBy = "course")
-    private List<MaterialEntity> materials;
+    private List<LectureEntity> lectures;
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "course")
     private List<DidacticEntity> teachings;
 
     public CourseEntity(){
+        this.registrations = new ArrayList<>();
+        this.lectures = new ArrayList<>();
         this.teachings = new ArrayList<>();
     }
 }

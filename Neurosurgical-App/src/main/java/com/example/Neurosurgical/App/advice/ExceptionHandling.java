@@ -18,7 +18,7 @@ public class ExceptionHandling {
 
     @ExceptionHandler({EntityNotFoundException.class})
     public ResponseEntity<ErrorResponse> handle(EntityNotFoundException exception){
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.badRequest().body(new ErrorResponse(exception.getMessage()));
     }
 
     @ExceptionHandler({EntityAlreadyExistsException.class})
@@ -35,6 +35,11 @@ public class ExceptionHandling {
 
     @ExceptionHandler(value = CannotRemoveLastAdminException.class)
     public ResponseEntity<ErrorResponse> handleCannotRemoveLastAdminException(CannotRemoveLastAdminException e){
+        return ResponseEntity.status(403).body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(value = ContentNotFound.class)
+    public ResponseEntity<ErrorResponse> handleContentNotFound(ContentNotFound e){
         return ResponseEntity.status(403).body(new ErrorResponse(e.getMessage()));
     }
 

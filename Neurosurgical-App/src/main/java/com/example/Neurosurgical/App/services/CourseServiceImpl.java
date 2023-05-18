@@ -8,10 +8,7 @@ import com.example.Neurosurgical.App.mappers.CourseMapper;
 import com.example.Neurosurgical.App.models.dtos.CourseCreationDto;
 import com.example.Neurosurgical.App.models.dtos.CourseDto;
 import com.example.Neurosurgical.App.models.entities.*;
-import com.example.Neurosurgical.App.repositories.CourseRepository;
-import com.example.Neurosurgical.App.repositories.MaterialRepository;
-import com.example.Neurosurgical.App.repositories.ProfessorRepository;
-import com.example.Neurosurgical.App.repositories.StudentRepository;
+import com.example.Neurosurgical.App.repositories.*;
 import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,14 +22,14 @@ import java.util.stream.Collectors;
 public class CourseServiceImpl implements CourseService {
 
     public final CourseRepository courseRepository;
-    public final MaterialRepository materialRepository;
+    public final LectureRepository lectureRepository;
     public final ProfessorRepository professorRepository;
     public final StudentRepository studentRepository;
 
     @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository, MaterialRepository materialRepository, ProfessorRepository professorRepository, StudentRepository studentRepository) {
+    public CourseServiceImpl(CourseRepository courseRepository, LectureRepository lectureRepository, ProfessorRepository professorRepository, StudentRepository studentRepository) {
         this.courseRepository = courseRepository;
-        this.materialRepository = materialRepository;
+        this.lectureRepository = lectureRepository;
         this.professorRepository = professorRepository;
         this.studentRepository = studentRepository;
     }
@@ -76,15 +73,6 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Optional<CourseDto> findByCode(String code) throws EntityNotFoundException {
-
-        CourseEntity courseEntity = Optional.ofNullable(courseRepository.findByCode(code))
-                .orElseThrow(() -> new EntityNotFoundException("Course", code));
-
-        return Optional.of(CourseMapper.toDto(courseEntity));
-    }
-
-    @Override
     public Optional<CourseDto> findByTitle(String title) throws EntityNotFoundException {
 
         CourseEntity courseEntity = Optional.ofNullable(courseRepository.findByTitle(title))
@@ -99,13 +87,13 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Optional<CourseDto> findByMaterialId(Long id) throws EntityNotFoundException {
+    public Optional<CourseDto> findByLectureId(Long id) throws EntityNotFoundException {
 
-        MaterialEntity materialEntity = Optional.of(materialRepository.findById(id))
-                .orElseThrow(() -> new EntityNotFoundException("Material",id )).get();
+        LectureEntity lectureEntity = Optional.of(lectureRepository.findById(id))
+                .orElseThrow(() -> new EntityNotFoundException("Lecture",id )).get();
 
-        CourseEntity courseEntity = Optional.ofNullable(materialEntity.getCourse())
-                .orElseThrow(() -> new EntityNotFoundException("Course with material: ", materialEntity.getTitle()));
+        CourseEntity courseEntity = Optional.ofNullable(lectureEntity.getCourse())
+                .orElseThrow(() -> new EntityNotFoundException("Course with lecture: ", lectureEntity.getTitle()));
 
         return Optional.of(CourseMapper.toDto(courseEntity));
     }

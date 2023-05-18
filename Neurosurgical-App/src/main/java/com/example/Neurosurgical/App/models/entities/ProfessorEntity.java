@@ -32,9 +32,17 @@ public class ProfessorEntity {
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "professor")
     private List<DidacticEntity> teachings;
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "professor")
+    private List<QuestionQuizzEntity> questionsQuizzes;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "professor")
+    private List<ContentEntity> contents;
 
     public ProfessorEntity(){
         this.materials = new ArrayList<>();
         this.teachings = new ArrayList<>();
+        this.questionsQuizzes = new ArrayList<>();
     }
 }

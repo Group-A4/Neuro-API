@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Data
 @MappedSuperclass
-
 public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

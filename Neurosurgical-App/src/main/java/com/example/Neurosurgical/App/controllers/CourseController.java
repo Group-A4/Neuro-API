@@ -10,6 +10,7 @@ import com.example.Neurosurgical.App.services.CourseService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 @RequestMapping("/courses")
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class CourseController {
 
     private final CourseService courseService;
@@ -29,50 +31,80 @@ public class CourseController {
     }
 
     @GetMapping(value = "", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public List<CourseDto> getAll(){
         return courseService.findAll();
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public Optional<CourseDto> getById(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
-        return courseService.findById(id);
+        Optional<CourseDto> courseDto = courseService.findById(id);
+        if(courseDto.isPresent()){
+            return courseDto;
+        } else {
+            throw new EntityNotFoundException("Course", id);
+        }
     }
 
     @DeleteMapping(value = "/{id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCourseById(@PathVariable @Valid @Min(0) Long id){
         courseService.deleteCourse(id);
     }
 
     @PostMapping(value = "/create", produces = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
     public void createCourse(@RequestBody @Valid CourseCreationDto courseCreationDto){
         courseService.createCourse(courseCreationDto);
     }
 
     @GetMapping(value = "/title={title}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public Optional<CourseDto> getByTitle(@PathVariable @Valid String title) throws EntityNotFoundException {
-        return courseService.findByTitle(title);
+        Optional<CourseDto> courseDto = courseService.findByTitle(title);
+        if(courseDto.isPresent()){
+            return courseDto;
+        } else {
+            throw new EntityNotFoundException("Course", title);
+        }
     }
 
-    @GetMapping(value = "/code={code}", produces = "application/json")
-    public Optional<CourseDto> getByCode(@PathVariable @Valid String code) throws EntityNotFoundException {
-        return courseService.findByCode(code);
-    }
     @PutMapping("/update/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateCourse(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid CourseCreationDto courseCreationDto) {
         courseService.updateCourse(id, courseCreationDto);
     }
 
-    @GetMapping(value="/material={id}", produces = "application/json")
-    public Optional<CourseDto> getByMaterialId(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
-        return courseService.findByMaterialId(id);
+    @GetMapping(value="/lecture={id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public Optional<CourseDto> getByLectureId(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
+        Optional<CourseDto> courseDto = courseService.findByLectureId(id);
+        if(courseDto.isPresent()){
+            return courseDto;
+        } else {
+            throw new EntityNotFoundException("Course with material id= ", id);
+        }
     }
     @GetMapping(value="/professor={id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public List<CourseDto> getAllByProfessorId(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
-        return courseService.findAllByProfessorId(id);
+        List<CourseDto> courseDto = courseService.findAllByProfessorId(id);
+        if(courseDto.isEmpty()){
+            throw new EntityNotFoundException("Courses with professor id= ", id);
+        } else {
+            return courseDto;
+        }
     }
 
     @GetMapping(value="/student={id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public List<CourseDto> getAllByStudentId(@PathVariable @Valid @Min(0) Long id) throws EntityNotFoundException {
-        return courseService.findAllByStudentId(id);
+        List<CourseDto> courseDto = courseService.findAllByStudentId(id);
+        if(courseDto.isEmpty()){
+            throw new EntityNotFoundException("Courses with student id= ", id);
+        } else {
+            return courseDto;
+        }
     }
 }

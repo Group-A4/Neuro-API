@@ -22,6 +22,7 @@ import java.util.*;
 
 @Service
 public class ProfessorServiceImpl implements ProfessorService {
+    private final StorageService storageService;
     private final ProfessorRepository professorRepository;
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
@@ -29,7 +30,8 @@ public class ProfessorServiceImpl implements ProfessorService {
     private final PasswordEncoder encoder;
 
     @Autowired
-    public ProfessorServiceImpl(ProfessorRepository professorDao, UserRepository userDao, CourseRepository courseRepository, MaterialRepository materialRepository, PasswordEncoder encoder) {
+    public ProfessorServiceImpl(StorageService storageService, ProfessorRepository professorDao, UserRepository userDao, CourseRepository courseRepository, MaterialRepository materialRepository) {
+        this.storageService = storageService;
         this.professorRepository = professorDao;
         this.userRepository = userDao;
         this.courseRepository = courseRepository;
@@ -60,6 +62,8 @@ public class ProfessorServiceImpl implements ProfessorService {
         checkIfExists(id);
         professorRepository.deleteById(id);
         userRepository.deleteById(id);
+        if(storageService.verifyIfContainerExists("professor" + id))
+            storageService.deleteContainer("professor" + id);
     }
 
     @Override
@@ -99,6 +103,8 @@ public class ProfessorServiceImpl implements ProfessorService {
             userRepository.deleteById(user.getId());
             throw new UserAlreadyExistsException("User already exists or the input is invalid!");
         }
+        String containerName = "professor" + user.getId();
+        storageService.createContainer(containerName);
     }
 
     @Override
