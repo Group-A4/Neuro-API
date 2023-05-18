@@ -50,13 +50,11 @@ public class UserController {
             throw new UserNotFoundException();
         }
     }
-
     @DeleteMapping(value = "/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserById(@PathVariable @Valid @Min(0) Long id) throws UserNotFoundException, CannotRemoveLastAdminException {
         userService.deleteUser(id);
     }
-
     @PostMapping(value = "/create", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public void createUser(@RequestBody @Valid UserEntity user) throws UserAlreadyExistsException {
@@ -73,7 +71,6 @@ public class UserController {
             throw new UserNotFoundException();
         }
     }
-
     @PutMapping("update/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateUser(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid UserDto userDto) {
@@ -86,4 +83,5 @@ public class UserController {
     {
         return new ErrorResponse(ex.getMessage());
     }
+
 }

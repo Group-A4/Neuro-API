@@ -1,8 +1,6 @@
 package com.example.Neurosurgical.App.services;
 
 import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
-import com.example.Neurosurgical.App.mappers.ProfessorMapper;
-import com.example.Neurosurgical.App.models.dtos.ProfessorDto;
 import com.example.Neurosurgical.App.models.entities.*;
 import com.example.Neurosurgical.App.repositories.CourseRepository;
 import com.example.Neurosurgical.App.repositories.StudentRepository;
@@ -16,6 +14,7 @@ import com.example.Neurosurgical.App.models.dtos.StudentDto;
 import com.example.Neurosurgical.App.models.dtos.UserDto;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -26,12 +25,14 @@ public class StudentServiceImpl implements StudentService{
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
+    private final PasswordEncoder encoder;
 
     @Autowired
-    public StudentServiceImpl(StudentRepository studentDao, UserRepository userDao, CourseRepository courseRepository) {
+    public StudentServiceImpl(StudentRepository studentDao, UserRepository userDao, CourseRepository courseRepository, PasswordEncoder encoder) {
         this.studentRepository = studentDao;
         this.userRepository = userDao;
         this.courseRepository = courseRepository;
+        this.encoder = encoder;
     }
 
     @Override
@@ -84,6 +85,7 @@ public class StudentServiceImpl implements StudentService{
         UserEntity user;
         try {
             user = UserMapper.fromStudentCreationDtoToUserEntity(studentCreationDto);
+            user.setPassword(encoder.encode(studentCreationDto.getPassword()));
             userRepository.save(user);
         } catch (Exception e) {
             throw new UserAlreadyExistsException("User already exists or the input is invalid!");
@@ -113,7 +115,7 @@ public class StudentServiceImpl implements StudentService{
         studentRepository.save(studentToUpdate);
 
         UserDto userToUpdate = UserMapper.fromStudentDtoToUserDto(studentDto);
-        new UserServiceImpl(userRepository).updateUser(id, userToUpdate);
+        new UserServiceImpl(userRepository, encoder).updateUser(id, userToUpdate);
     }
 
     public void checkIfExists(Long id) {
