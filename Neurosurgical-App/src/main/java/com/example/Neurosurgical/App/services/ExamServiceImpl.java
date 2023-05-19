@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -37,6 +38,7 @@ public class ExamServiceImpl implements ExamService {
     final private StudentLongResponsesRepository studentLongResponsesRepository;
 
     final private CorrectAnswerExamRepository correctAnswerExamRepository;
+    final private ActiveExamRepository activeExamRepository;
 
 
     @Autowired
@@ -49,7 +51,8 @@ public class ExamServiceImpl implements ExamService {
                            StudentQuestionPointsRepository studentQuestionPointsRepository,
                            StudentMultipleChoiceResponsesRepository studentMultipleChoiceResponsesRepository,
                            StudentLongResponsesRepository studentLongResponsesRepository,
-                           CorrectAnswerExamRepository correctAnswerExamRepository) {
+                           CorrectAnswerExamRepository correctAnswerExamRepository,
+                           ActiveExamRepository activeExamRepository) {
 
         this.examRepository = examRepository;
         this.questionExamRepository = questionExamRepository;
@@ -61,6 +64,7 @@ public class ExamServiceImpl implements ExamService {
         this.studentMultipleChoiceResponsesRepository = studentMultipleChoiceResponsesRepository;
         this.studentLongResponsesRepository = studentLongResponsesRepository;
         this.correctAnswerExamRepository = correctAnswerExamRepository;
+        this.activeExamRepository = activeExamRepository;
     }
 
 
@@ -126,6 +130,26 @@ public class ExamServiceImpl implements ExamService {
 
         return ExamMapper.toDto(examEntity, true);
 
+    }
+
+    @Override
+    public ExamDto findByCodeForStudent(String code, Long idStudent) {
+
+        this.studentRepository.findById(idStudent)
+                .orElseThrow(() -> new EntityNotFoundException("Student",idStudent));
+
+        ExamEntity examEntity = this.examRepository.findByCode(code)
+                .orElseThrow(() -> new EntityNotFoundException("Exam", code));
+
+        if ( this.activeExamRepository.findById(examEntity.getId()).isEmpty()){
+            throw new EntityNotFoundException("Active exam ", code);
+        }
+
+        if(this.studentTookExamsRepository.findByIdStudentAndIdExam(idStudent, examEntity.getId()).isPresent()){
+            throw new EntityAlreadyExistsException("Student already took exam");
+        }
+
+        return ExamMapper.toDto(examEntity,true);
     }
 
     @Override
@@ -242,6 +266,51 @@ public class ExamServiceImpl implements ExamService {
         examResultDto.setTotalPoints(totalPoints);
 
         return examResultDto;
+    }
+
+    @Override
+    public List<ExamPointsDto> getPoints(Long idStudent) {
+
+        if ( this.studentRepository.findById(idStudent).isEmpty() ){
+            throw new EntityNotFoundException("Student", idStudent);
+        }
+
+        List<StudentTookExamsEntity> studentTookExamsEntities = this.studentTookExamsRepository.findByIdStudent(idStudent);
+
+        if (studentTookExamsEntities.size() == 0 ){
+            throw new EntityNotFoundException("Exams for student ", idStudent);
+        }
+
+        List<ExamPointsDto> examPointsDtos = new ArrayList<>();
+        for( StudentTookExamsEntity studentTookExams : studentTookExamsEntities){
+            examPointsDtos.add(ExamPointsDto.builder()
+                    .idExam(studentTookExams.getIdExam())
+                    .pointsExam(studentTookExams.getPointsPerExam())
+                    .build());
+        }
+
+        return examPointsDtos;
+
+    }
+
+    @Override
+    public void activateExam(Long idExam) {
+
+        this.examRepository.findById(idExam)
+                .orElseThrow(() -> new EntityNotFoundException("Exam", idExam));
+
+        this.activeExamRepository.save(ActiveExamEntity.builder()
+                        .idExam(idExam)
+                        .build());
+    }
+
+    @Override
+    public void deactivateExam(Long idExam) {
+
+        ActiveExamEntity activeExamEntity = this.activeExamRepository.findById(idExam)
+                .orElseThrow(() -> new EntityNotFoundException("Active exam", idExam));
+
+        this.activeExamRepository.delete(activeExamEntity);
     }
 
     @Override
