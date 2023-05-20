@@ -58,6 +58,12 @@ public class ExamController {
         return ResponseEntity.ok(examService.findByCode(code));
     }
 
+    @GetMapping(value = "/code={code}/idStudent={idStudent}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ExamDto> findByCodeForStudent(@PathVariable @Valid String code, @PathVariable @Valid Long idStudent) {
+        return ResponseEntity.ok(examService.findByCodeForStudent(code,idStudent));
+    }
+
     @GetMapping(value = "/summarise/idStudent={idStudent}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<ExamSummariseDto>> findByIdStudent(@PathVariable @Valid Long idStudent) {
@@ -68,6 +74,26 @@ public class ExamController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<ExamSummariseDto>> findByIdCourse(@PathVariable @Valid Long idCourse) {
         return ResponseEntity.ok(examService.findByIdCourse(idCourse));
+    }
+
+    @GetMapping(value = "points/idStudent={idStudent}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<ExamPointsDto>> getPoints(@PathVariable @Valid Long idStudent) {
+        return ResponseEntity.ok(examService.getPoints(idStudent));
+    }
+
+    @PostMapping(value = "activate/idExam={idExam}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Void> activateExam(@PathVariable @Valid Long idExam) {
+        examService.activateExam(idExam);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping(value = "deactivate/idExam={idExam}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Void> deactivateExam(@PathVariable @Valid Long idExam) {
+        examService.deactivateExam(idExam);
+        return ResponseEntity.noContent().build();
     }
 
 
