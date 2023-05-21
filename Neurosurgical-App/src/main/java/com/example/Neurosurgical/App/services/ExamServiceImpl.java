@@ -314,6 +314,15 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
+    public void deleteExam(Long idExam) {
+
+            ExamEntity examEntity = this.examRepository.findById(idExam)
+                    .orElseThrow(() -> new EntityNotFoundException("Exam", idExam));
+
+            this.examRepository.delete(examEntity);
+    }
+
+    @Override
     public void evaluateExam(ExamDto examDto, Long idStudent) {
         Long idExam = examDto.getId();
         ExamEntity examEntity = this.examRepository.findById(idExam)
