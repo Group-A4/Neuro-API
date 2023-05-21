@@ -90,10 +90,15 @@ public class ExamController {
     }
 
     @DeleteMapping(value = "deactivate/idExam={idExam}", produces = "application/json")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Void> deactivateExam(@PathVariable @Valid Long idExam) {
         examService.deactivateExam(idExam);
         return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping(value = "/idExam={idExam}", produces = "application/json")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteExam(@PathVariable @Valid Long idExam) {
+        examService.deleteExam(idExam);
     }
 
 

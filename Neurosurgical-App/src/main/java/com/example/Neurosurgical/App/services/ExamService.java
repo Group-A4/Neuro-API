@@ -29,4 +29,6 @@ public interface ExamService {
     void activateExam(Long idExam);
 
     void deactivateExam(Long idExam);
+
+    void deleteExam(Long idExam);
 }
