@@ -54,6 +54,7 @@ public class ExamMapper {
                 .title(examEntity.getTitle())
                 .date(examEntity.getDate())
                 .timeExam(examEntity.getTimeExam())
+                .examPoints(examEntity.getPoints())
                 .evaluationType(examEntity.getEvaluationType())
                 .questionsMultipleChoice(questionsMultipleChoice)
                 .questionsLongResponse(questionsLongResponse)
@@ -70,6 +71,7 @@ public class ExamMapper {
                 .title(examEntity.getTitle())
                 .date(examEntity.getDate())
                 .timeExam(examEntity.getTimeExam())
+                .examPoints(examEntity.getPoints())
                 .evaluationType(examEntity.getEvaluationType())
                 .build();
 

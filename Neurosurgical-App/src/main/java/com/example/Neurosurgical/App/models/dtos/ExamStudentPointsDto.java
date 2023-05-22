@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ExamPointsDto {
+public class ExamStudentPointsDto {
     private Long idExam;
-    private Double pointsExam;
+    private Double studentPoints;
 }

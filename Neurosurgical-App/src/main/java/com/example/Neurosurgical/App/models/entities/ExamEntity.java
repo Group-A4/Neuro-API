@@ -36,6 +36,9 @@ public class ExamEntity extends BaseEntity {
     @Column(name = "evaluation_type")
     private Integer evaluationType;
 
+    @Column(name = "points")
+    private Double points;
+
     @ManyToOne
     @JoinColumn(name = "id_course", nullable = false)
     private CourseEntity course;
