@@ -72,9 +72,9 @@ public class QuestionExamServiceImpl implements QuestionExamService{
 
     @Override
     public void createMultipleChoiceQuestionExam(QuestionMultipleChoiceExamCreationDto questionExamDto, Long idExam) throws EntityNotFoundException {
-        if(!this.examRepository.existsById(idExam)){
-            throw new EntityNotFoundException("Exam with id " + idExam + " not found");
-        }
+
+        ExamEntity examEntity = this.examRepository.findById(idExam)
+                .orElseThrow(() -> new EntityNotFoundException("Exam with id " + idExam + " not found"));
 
         QuestionExamEntity questionExamEntity = QuestionExamMapper.fromCreationDto(questionExamDto);
 
@@ -87,13 +87,16 @@ public class QuestionExamServiceImpl implements QuestionExamService{
             throw new EntityAlreadyExistsException("Question already exists or invalid input");
         }
 
+        examEntity.setPoints(examEntity.getPoints() + questionExamDto.getPoints());
+
+        this.examRepository.save(examEntity);
     }
 
     @Override
     public void createLongResponseQuestionExam(QuestionLongResponseExamCreationDto questionLongResponseDto, Long idExam) throws EntityNotFoundException {
-        if(!this.examRepository.existsById(idExam)){
-            throw new EntityNotFoundException("Exam with id " + idExam + " not found");
-        }
+
+        ExamEntity examEntity = this.examRepository.findById(idExam)
+                .orElseThrow(() -> new EntityNotFoundException("Exam with id " + idExam + " not found"));
 
         QuestionExamEntity questionExamEntity = QuestionExamMapper.fromLongResponseDto(questionLongResponseDto);
 
@@ -119,6 +122,10 @@ public class QuestionExamServiceImpl implements QuestionExamService{
             throw new EntityAlreadyExistsException("Question already exists or invalid input");
         }
 
+        examEntity.setPoints(examEntity.getPoints() + questionLongResponseDto.getPoints());
+        this.examRepository.save(examEntity);
+
+
     }
 
     @Override
@@ -132,6 +139,8 @@ public class QuestionExamServiceImpl implements QuestionExamService{
         questionExamEntity.setQuestionText(questionMultipleChoiceExamDto.getQuestionText());
 
         questionExamEntity.setProfessor(this.professorRepository.findById(questionMultipleChoiceExamDto.getIdProfessor()).get());
+
+        double beforePoints = questionExamEntity.getPoints();
 
         questionExamEntity.setPoints(questionMultipleChoiceExamDto.getPoints());
 
@@ -154,6 +163,9 @@ public class QuestionExamServiceImpl implements QuestionExamService{
             throw new EntityAlreadyExistsException("Cannot update question");
         }
 
+        questionExamEntity.getExam().setPoints(questionExamEntity.getExam().getPoints() - beforePoints + questionMultipleChoiceExamDto.getPoints());
+        this.examRepository.save(questionExamEntity.getExam());
+
     }
 
     @Override
@@ -167,11 +179,16 @@ public class QuestionExamServiceImpl implements QuestionExamService{
             questionExamEntity.setProfessor(this.professorRepository.findById(questionExamCreationDto.getIdProfessor()).get());
             //it should also be set the exam, and the course but the professor can't change a question from an exam/course to another
 
+            double beforePoints = questionExamEntity.getPoints();
+
             questionExamEntity.setPoints(questionExamCreationDto.getPoints());
 
             questionExamEntity.getQuestionLongResponseExam().setExpectedResponse(questionExamCreationDto.getExpectedResponse());
 
             this.questionExamRepository.save(questionExamEntity);
+
+            questionExamEntity.getExam().setPoints(questionExamEntity.getExam().getPoints() - beforePoints + questionExamCreationDto.getPoints());
+            this.examRepository.save(questionExamEntity.getExam());
     }
 
     @Override
@@ -183,7 +200,13 @@ public class QuestionExamServiceImpl implements QuestionExamService{
             throw new EntityNotFoundException("Question with id " + idQuestion + " not found");
         }
 
+        double questionPoints = questionExamEntity.get().getPoints();
+        ExamEntity exam = questionExamEntity.get().getExam();
+
         this.questionExamRepository.delete(questionExamEntity.get());
+
+        exam.setPoints(exam.getPoints() - questionPoints);
+        this.examRepository.save(exam);
 
     }
 
