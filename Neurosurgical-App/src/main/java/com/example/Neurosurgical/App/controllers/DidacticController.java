@@ -35,5 +35,4 @@ public class DidacticController {
     public void createDidactic(@PathVariable @Valid @Min(0) Long courseId, @PathVariable @Valid @Min(0) Long professorId){
         didacticService.createDidactic(courseId, professorId);
     }
-
 }
