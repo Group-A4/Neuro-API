@@ -1,5 +1,7 @@
 package com.example.Neurosurgical.App.controllers;
 
+import com.example.Neurosurgical.App.advice.exceptions.EntityAlreadyExistsException;
+import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.models.dtos.*;
 import com.example.Neurosurgical.App.advice.exceptions.InvalidDateException;
 import com.example.Neurosurgical.App.services.ExamService;
@@ -81,7 +83,13 @@ public class ExamController {
     @GetMapping(value = "/code={code}/idStudent={idStudent}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ExamDto> findByCodeForStudent(@PathVariable @Valid String code, @PathVariable @Valid Long idStudent) {
-        return ResponseEntity.ok(examService.findByCodeForStudent(code,idStudent));
+        try{
+            return ResponseEntity.ok(examService.findByCodeForStudent(code,idStudent));
+        }catch (EntityAlreadyExistsException e){
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+        }catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @GetMapping(value = "/summarise/idStudent={idStudent}", produces = "application/json")

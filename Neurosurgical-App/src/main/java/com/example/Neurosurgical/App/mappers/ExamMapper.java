@@ -44,8 +44,10 @@ public class ExamMapper {
             }
         }
 
-        Collections.shuffle(questionsMultipleChoice);
-        Collections.shuffle(questionsLongResponse);
+        if(hideAnswers){
+            Collections.shuffle(questionsMultipleChoice);
+            Collections.shuffle(questionsLongResponse);
+        }
 
         return ExamDto.builder()
                 .id(examEntity.getId())
