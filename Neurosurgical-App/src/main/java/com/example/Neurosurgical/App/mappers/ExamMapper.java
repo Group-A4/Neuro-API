@@ -44,8 +44,10 @@ public class ExamMapper {
             }
         }
 
-        Collections.shuffle(questionsMultipleChoice);
-        Collections.shuffle(questionsLongResponse);
+        if(hideAnswers){
+            Collections.shuffle(questionsMultipleChoice);
+            Collections.shuffle(questionsLongResponse);
+        }
 
         return ExamDto.builder()
                 .id(examEntity.getId())
@@ -54,6 +56,7 @@ public class ExamMapper {
                 .title(examEntity.getTitle())
                 .date(examEntity.getDate())
                 .timeExam(examEntity.getTimeExam())
+                .examPoints(examEntity.getPoints())
                 .evaluationType(examEntity.getEvaluationType())
                 .questionsMultipleChoice(questionsMultipleChoice)
                 .questionsLongResponse(questionsLongResponse)
@@ -70,6 +73,7 @@ public class ExamMapper {
                 .title(examEntity.getTitle())
                 .date(examEntity.getDate())
                 .timeExam(examEntity.getTimeExam())
+                .examPoints(examEntity.getPoints())
                 .evaluationType(examEntity.getEvaluationType())
                 .build();
 

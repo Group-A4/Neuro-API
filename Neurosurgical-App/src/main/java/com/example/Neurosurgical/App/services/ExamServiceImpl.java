@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -90,6 +89,7 @@ public class ExamServiceImpl implements ExamService {
         examEntity.setProfessor(professorEntity);
         examEntity.setCode(this.generateCode());
 
+        double pointsExam = 0 ;
 
         List<QuestionExamEntity> questionsExam = new ArrayList<>();
         for(QuestionMultipleChoiceExamCreationDto questionMultipleChoiceExamCreationDto : examCreationDto.getQuestionsMultipleChoice()){
@@ -97,7 +97,11 @@ public class ExamServiceImpl implements ExamService {
             questionExamEntity.setProfessor(professorEntity);
             questionExamEntity.setExam(examEntity);
             questionsExam.add(questionExamEntity);
+
+            pointsExam += questionMultipleChoiceExamCreationDto.getPoints();
+
         }
+
 
         for(QuestionLongResponseExamCreationDto questionLongResponseExamCreationDto : examCreationDto.getQuestionsLongResponse()){
             QuestionExamEntity questionExamEntity = QuestionExamMapper.fromLongResponseDto(questionLongResponseExamCreationDto);
@@ -110,7 +114,11 @@ public class ExamServiceImpl implements ExamService {
                                     .build();
             questionExamEntity.setQuestionLongResponseExam(questionLongResponseExamEntity);
             questionsExam.add(questionExamEntity);
+
+            pointsExam += questionLongResponseExamCreationDto.getPoints();
         }
+
+        examEntity.setPoints(pointsExam);
 
         examEntity.setQuestionsExam(questionsExam);
 
@@ -128,7 +136,7 @@ public class ExamServiceImpl implements ExamService {
         ExamEntity examEntity = this.examRepository.findByCode(code)
                 .orElseThrow(() -> new EntityNotFoundException("Exam", code));
 
-        return ExamMapper.toDto(examEntity, true);
+        return ExamMapper.toDto(examEntity, false);
 
     }
 
@@ -192,6 +200,7 @@ public class ExamServiceImpl implements ExamService {
                 .title(examEntity.getTitle())
                 .date(examEntity.getDate())
                 .timeExam(examEntity.getTimeExam())
+                .examPoints(examEntity.getPoints())
                 .evaluationType(examEntity.getEvaluationType())
                 .build();
         // for every question in examEntity, add to examResulDto(then add points, student's answer, correct answer)
@@ -261,15 +270,16 @@ public class ExamServiceImpl implements ExamService {
                     .build();
             questionsLongResponseResult.add(resultDto);
         }
+
         examResultDto.setQuestionsLongResponseResult(questionsLongResponseResult);
 
-        examResultDto.setTotalPoints(totalPoints);
+        examResultDto.setStudentPoints(totalPoints);
 
         return examResultDto;
     }
 
     @Override
-    public List<ExamPointsDto> getPoints(Long idStudent) {
+    public List<ExamStudentPointsDto> getPoints(Long idStudent) {
 
         if ( this.studentRepository.findById(idStudent).isEmpty() ){
             throw new EntityNotFoundException("Student", idStudent);
@@ -281,15 +291,15 @@ public class ExamServiceImpl implements ExamService {
             throw new EntityNotFoundException("Exams for student ", idStudent);
         }
 
-        List<ExamPointsDto> examPointsDtos = new ArrayList<>();
+        List<ExamStudentPointsDto> examStudentPointsDtos = new ArrayList<>();
         for( StudentTookExamsEntity studentTookExams : studentTookExamsEntities){
-            examPointsDtos.add(ExamPointsDto.builder()
+            examStudentPointsDtos.add(ExamStudentPointsDto.builder()
                     .idExam(studentTookExams.getIdExam())
-                    .pointsExam(studentTookExams.getPointsPerExam())
+                    .studentPoints(studentTookExams.getPointsPerExam())
                     .build());
         }
 
-        return examPointsDtos;
+        return examStudentPointsDtos;
 
     }
 
@@ -311,6 +321,41 @@ public class ExamServiceImpl implements ExamService {
                 .orElseThrow(() -> new EntityNotFoundException("Active exam", idExam));
 
         this.activeExamRepository.delete(activeExamEntity);
+    }
+
+    @Override
+    public void deleteExam(Long idExam) {
+
+            ExamEntity examEntity = this.examRepository.findById(idExam)
+                    .orElseThrow(() -> new EntityNotFoundException("Exam", idExam));
+
+            this.examRepository.delete(examEntity);
+    }
+
+    @Override
+    public List<ExamStudentSummariseDto> viewStudentExamSummarise(Long idExam) {
+
+        ExamEntity examEntity = this.examRepository.findById(idExam)
+                .orElseThrow(() -> new EntityNotFoundException("Exam", idExam));
+
+        List<StudentTookExamsEntity> studentTookExamsEntities = this.studentTookExamsRepository.findByIdExam(idExam);
+
+        List<ExamStudentSummariseDto> examStudentSummariseDtos = new ArrayList<>();
+
+        double pointsExam = examEntity.getPoints();
+
+        for(StudentTookExamsEntity studentTookExamsEntity : studentTookExamsEntities){
+            examStudentSummariseDtos.add(ExamStudentSummariseDto.builder()
+                    .idStudent(studentTookExamsEntity.getIdStudent())
+                    .code(studentRepository.findById(studentTookExamsEntity.getIdStudent()).get().getCode())
+                    .pointsStudent(examEntity.getPoints())
+                    .pointsExam(pointsExam)
+                    .build());
+        }
+
+
+        return examStudentSummariseDtos;
+
     }
 
     @Override

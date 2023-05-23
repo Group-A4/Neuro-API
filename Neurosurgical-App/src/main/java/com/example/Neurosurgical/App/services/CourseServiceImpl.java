@@ -89,8 +89,8 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Optional<CourseDto> findByLectureId(Long id) throws EntityNotFoundException {
 
-        LectureEntity lectureEntity = Optional.of(lectureRepository.findById(id))
-                .orElseThrow(() -> new EntityNotFoundException("Lecture",id )).get();
+        LectureEntity lectureEntity = lectureRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Lecture",id ));
 
         CourseEntity courseEntity = Optional.ofNullable(lectureEntity.getCourse())
                 .orElseThrow(() -> new EntityNotFoundException("Course with lecture: ", lectureEntity.getTitle()));
@@ -101,8 +101,8 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<CourseDto> findAllByProfessorId(Long id) {
 
-        ProfessorEntity professorEntity = Optional.of(professorRepository.findById(id))
-                .orElseThrow(() -> new EntityNotFoundException("Material",id)).get() ;
+        ProfessorEntity professorEntity = professorRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Material",id)) ;
 
         //check if professor has teachings
         if(professorEntity.getTeachings().isEmpty()){
@@ -118,8 +118,8 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<CourseDto> findAllByStudentId(Long id) {
 
-        StudentEntity studentEntity = Optional.of(studentRepository.findById(id))
-                .orElseThrow(() -> new EntityNotFoundException("Student",id)).get() ;
+        StudentEntity studentEntity = studentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Student",id)) ;
 
         //check if student has enrollments
         if(studentEntity.getEnrollments().isEmpty()){

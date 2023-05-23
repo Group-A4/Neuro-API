@@ -1,5 +1,7 @@
 package com.example.Neurosurgical.App.controllers;
 
+import com.example.Neurosurgical.App.advice.exceptions.EntityAlreadyExistsException;
+import com.example.Neurosurgical.App.advice.exceptions.EntityNotFoundException;
 import com.example.Neurosurgical.App.models.dtos.*;
 import com.example.Neurosurgical.App.advice.exceptions.InvalidDateException;
 import com.example.Neurosurgical.App.services.ExamService;
@@ -30,6 +32,13 @@ public class ExamController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * This endpoints will be called after a student has finished an exam.
+     *
+     * @param examDto
+     * @param idStudent
+     * @return HttpStatus.CREATED if successful
+     */
     @PostMapping(value = "/evaluate/idStudent={idStudent}", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> evaluateExam(@RequestBody @Valid ExamDto examDto, @PathVariable @Valid Long idStudent) {
@@ -37,6 +46,14 @@ public class ExamController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * This endpoint will be called by the professor to evaluate a long response question from a student's exam.
+     *
+     * @param idStudent
+     * @param idQuestion
+     * @param points
+     * @return
+     */
     @PostMapping(value = "/evaluate/idStudent={idStudent}/idQuestion={idQuestion}", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> evaluateLongResponseQuestion(@PathVariable @Valid Long idStudent, @PathVariable @Valid Long idQuestion, @RequestBody @Valid Double points) {
@@ -51,6 +68,11 @@ public class ExamController {
         return ResponseEntity.ok(examService.viewExamResult(idExam, idStudent));
     }
 
+    @GetMapping(value = "/students/idExam={idExam}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<ExamStudentSummariseDto>> viewStudentExamSummarise(@PathVariable @Valid Long idExam) {
+        return ResponseEntity.ok(examService.viewStudentExamSummarise(idExam));
+    }
 
     @GetMapping(value = "/code={code}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
@@ -61,7 +83,13 @@ public class ExamController {
     @GetMapping(value = "/code={code}/idStudent={idStudent}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ExamDto> findByCodeForStudent(@PathVariable @Valid String code, @PathVariable @Valid Long idStudent) {
-        return ResponseEntity.ok(examService.findByCodeForStudent(code,idStudent));
+        try{
+            return ResponseEntity.ok(examService.findByCodeForStudent(code,idStudent));
+        }catch (EntityAlreadyExistsException e){
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+        }catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @GetMapping(value = "/summarise/idStudent={idStudent}", produces = "application/json")
@@ -78,7 +106,7 @@ public class ExamController {
 
     @GetMapping(value = "points/idStudent={idStudent}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<ExamPointsDto>> getPoints(@PathVariable @Valid Long idStudent) {
+    public ResponseEntity<List<ExamStudentPointsDto>> getPoints(@PathVariable @Valid Long idStudent) {
         return ResponseEntity.ok(examService.getPoints(idStudent));
     }
 
@@ -90,10 +118,15 @@ public class ExamController {
     }
 
     @DeleteMapping(value = "deactivate/idExam={idExam}", produces = "application/json")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Void> deactivateExam(@PathVariable @Valid Long idExam) {
         examService.deactivateExam(idExam);
         return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping(value = "/idExam={idExam}", produces = "application/json")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteExam(@PathVariable @Valid Long idExam) {
+        examService.deleteExam(idExam);
     }
 
 

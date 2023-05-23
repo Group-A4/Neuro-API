@@ -16,4 +16,7 @@ public interface StudentTookExamsRepository extends JpaRepository<StudentTookExa
 
     @Query(value = "SELECT * FROM student_took_exams WHERE id_student = :idStudent", nativeQuery = true)
     List<StudentTookExamsEntity> findByIdStudent(@Param("idStudent") Long  idStudent);
+
+    @Query(value = "SELECT * FROM student_took_exams WHERE id_exam = :idExam", nativeQuery = true)
+    List<StudentTookExamsEntity> findByIdExam(@Param("idExam") Long  idExam);
 }

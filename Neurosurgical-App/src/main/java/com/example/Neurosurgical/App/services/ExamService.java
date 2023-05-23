@@ -24,9 +24,13 @@ public interface ExamService {
 
     ExamResultDto viewExamResult(Long idExam, Long idStudent);
 
-    List<ExamPointsDto> getPoints(Long idStudent);
+    List<ExamStudentPointsDto> getPoints(Long idStudent);
 
     void activateExam(Long idExam);
 
     void deactivateExam(Long idExam);
+
+    void deleteExam(Long idExam);
+
+    List<ExamStudentSummariseDto> viewStudentExamSummarise(Long idExam);
 }

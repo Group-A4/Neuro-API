@@ -21,7 +21,8 @@ public class ExamResultDto {
     private Timestamp date;
     private Integer timeExam;
     private Integer evaluationType;
-    private Double totalPoints;
+    private Double studentPoints;
+    private Double examPoints;
 
     private List<QuestionMultipleChoiceExamResultDto> questionsMultipleChoiceResult;
 
