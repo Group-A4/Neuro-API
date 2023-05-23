@@ -22,6 +22,7 @@ public class ExamDto {
     private Timestamp date;
     private Integer timeExam;
     private Integer evaluationType;
+    private Double examPoints;
     private List<QuestionMultipleChoiceExamDto> questionsMultipleChoice;
     private List<QuestionLongResponseExamDto> questionsLongResponse;
 }
