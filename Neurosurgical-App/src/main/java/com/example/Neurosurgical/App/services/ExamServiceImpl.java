@@ -342,14 +342,12 @@ public class ExamServiceImpl implements ExamService {
 
         List<ExamStudentSummariseDto> examStudentSummariseDtos = new ArrayList<>();
 
-        double pointsExam = examEntity.getPoints();
-
         for(StudentTookExamsEntity studentTookExamsEntity : studentTookExamsEntities){
             examStudentSummariseDtos.add(ExamStudentSummariseDto.builder()
                     .idStudent(studentTookExamsEntity.getIdStudent())
                     .code(studentRepository.findById(studentTookExamsEntity.getIdStudent()).get().getCode())
-                    .pointsStudent(examEntity.getPoints())
-                    .pointsExam(pointsExam)
+                    .pointsStudent(studentTookExamsEntity.getPointsPerExam())
+                    .pointsExam(examEntity.getPoints())
                     .build());
         }
 
