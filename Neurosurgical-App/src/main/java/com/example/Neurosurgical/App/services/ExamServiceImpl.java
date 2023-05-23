@@ -136,7 +136,7 @@ public class ExamServiceImpl implements ExamService {
         ExamEntity examEntity = this.examRepository.findByCode(code)
                 .orElseThrow(() -> new EntityNotFoundException("Exam", code));
 
-        return ExamMapper.toDto(examEntity, true);
+        return ExamMapper.toDto(examEntity, false);
 
     }
 
@@ -270,6 +270,7 @@ public class ExamServiceImpl implements ExamService {
                     .build();
             questionsLongResponseResult.add(resultDto);
         }
+
         examResultDto.setQuestionsLongResponseResult(questionsLongResponseResult);
 
         examResultDto.setStudentPoints(totalPoints);
