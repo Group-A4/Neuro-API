@@ -357,6 +357,29 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
+    public void updateExam(Long idExam, ExamSummariseUpdateDto examSummariseUpdateDto) throws InvalidDateException {
+
+        ExamEntity examEntity = this.examRepository.findById(idExam)
+                .orElseThrow(() -> new EntityNotFoundException("Exam", idExam));
+
+        LocalDateTime todayDate = LocalDate.now().atStartOfDay();
+        LocalDateTime examDate = examSummariseUpdateDto.getDate().toLocalDateTime();
+
+        if(examDate.isBefore(todayDate)){
+            throw new InvalidDateException("Exam date(" + examDate + ") is before today");
+        }
+
+        examEntity.setDate(examSummariseUpdateDto.getDate());
+        examEntity.setTimeExam(examSummariseUpdateDto.getTimeExam());
+        examEntity.setTitle(examSummariseUpdateDto.getTitle());
+        examEntity.setEvaluationType(examSummariseUpdateDto.getEvaluationType());
+
+        this.examRepository.save(examEntity);
+
+
+    }
+
+    @Override
     public void evaluateExam(ExamDto examDto, Long idStudent) {
         Long idExam = examDto.getId();
         ExamEntity examEntity = this.examRepository.findById(idExam)
