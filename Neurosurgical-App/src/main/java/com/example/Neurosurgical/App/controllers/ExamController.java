@@ -27,7 +27,7 @@ public class ExamController {
 
     @PostMapping(value = "/create", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> createExam(@RequestBody @Valid ExamCreationDto examCreationDto) throws InvalidDateException {
+    public ResponseEntity<Void> createExam(@RequestBody @Valid ExamCreationDto examCreationDto) throws InvalidDateException, EntityAlreadyExistsException {
         examService.createExam(examCreationDto);
         return ResponseEntity.noContent().build();
     }
@@ -127,6 +127,12 @@ public class ExamController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteExam(@PathVariable @Valid Long idExam) {
         examService.deleteExam(idExam);
+    }
+
+    @PutMapping(value = "/update/idExam={idExam}", consumes = "application/json")
+    public ResponseEntity<Void> updateExam(@PathVariable @Valid Long idExam, @RequestBody @Valid ExamSummariseUpdateDto examSummariseUpdateDto) throws InvalidDateException {
+        examService.updateExam(idExam, examSummariseUpdateDto);
+        return ResponseEntity.noContent().build();
     }
 
 

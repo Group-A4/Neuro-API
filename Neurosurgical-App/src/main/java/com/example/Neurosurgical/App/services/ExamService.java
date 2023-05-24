@@ -33,4 +33,6 @@ public interface ExamService {
     void deleteExam(Long idExam);
 
     List<ExamStudentSummariseDto> viewStudentExamSummarise(Long idExam);
+
+    void updateExam(Long idExam, ExamSummariseUpdateDto examSummariseUpdateDto) throws InvalidDateException  ;
 }
