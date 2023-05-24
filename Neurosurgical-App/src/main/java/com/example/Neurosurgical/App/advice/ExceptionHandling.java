@@ -43,5 +43,10 @@ public class ExceptionHandling {
         return ResponseEntity.status(403).body(new ErrorResponse(e.getMessage()));
     }
 
+    @ExceptionHandler(value = InvalidDateException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidDateException(InvalidDateException e){
+        return ResponseEntity.status(403).body(new ErrorResponse(e.getMessage()));
+    }
+
 
 }
