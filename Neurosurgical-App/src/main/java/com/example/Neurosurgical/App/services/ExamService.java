@@ -35,4 +35,6 @@ public interface ExamService {
     List<ExamStudentSummariseDto> viewStudentExamSummarise(Long idExam);
 
     void updateExam(Long idExam, ExamSummariseUpdateDto examSummariseUpdateDto) throws InvalidDateException  ;
+
+    Boolean isExamEditable(Long idExam);
 }

@@ -79,6 +79,10 @@ public class ExamController {
     public ResponseEntity<ExamDto> findByCode(@PathVariable @Valid String code) {
         return ResponseEntity.ok(examService.findByCode(code));
     }
+    @GetMapping(value = "/isEditable/idExam={idExam}")
+    public ResponseEntity<Boolean> isExamEditable(@PathVariable @Valid Long idExam) {
+        return ResponseEntity.ok(examService.isExamEditable(idExam));
+    }
 
     @GetMapping(value = "/code={code}/idStudent={idStudent}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)

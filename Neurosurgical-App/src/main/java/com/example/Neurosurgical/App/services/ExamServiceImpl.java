@@ -380,7 +380,26 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
+    public Boolean isExamEditable(Long idExam) {
+
+        //check if exam exists
+        if(this.examRepository.findById(idExam).isEmpty()){
+            throw new EntityNotFoundException("Exam", idExam);
+        }
+
+        //can't edit exam if it is active
+        if(this.activeExamRepository.findById(idExam).isPresent()){
+            return false;
+        }
+
+        //can't edit exam if it has at least 1 student that took it
+        return this.studentTookExamsRepository.findByIdExam(idExam).size() == 0;
+
+    }
+
+    @Override
     public void evaluateExam(ExamDto examDto, Long idStudent) {
+
         Long idExam = examDto.getId();
         ExamEntity examEntity = this.examRepository.findById(idExam)
                 .orElseThrow(() -> new EntityNotFoundException("Exam", idExam));
