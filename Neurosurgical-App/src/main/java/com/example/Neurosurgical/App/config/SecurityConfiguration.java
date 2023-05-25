@@ -29,6 +29,7 @@ public class SecurityConfiguration {
                 .disable()
                 .authorizeHttpRequests()
                 .requestMatchers(req -> HttpMethod.OPTIONS.toString().equals(req.getMethod()))
+//                .requestMatchers("**")
                 .permitAll()
                 .requestMatchers(req -> req.getRequestURI().startsWith("/api/v1/"))
                 .permitAll()

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/general_info")
+@RequestMapping("/general-info")
 public class GeneralInfoController {
     private final GeneralInfoService generalInfoService;
 
