@@ -63,6 +63,7 @@ public class CourseServiceImpl implements CourseService {
             while(courseRepository.findByCode(code) != null){
                 code = RecoveryService.generateCode(5);
             }
+            courseCreationDto.setCode(code);
             courseRepository.save(CourseMapper.fromCreationDto(courseCreationDto));
 
             return code;

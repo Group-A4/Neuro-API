@@ -69,7 +69,7 @@ public class RecoveryService {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder code = new StringBuilder();
         Random rnd = new Random();
-        while (code.length() <= length) { // length of the random string.
+        while (code.length() < length) { // length of the random string.
             int index = (int) (rnd.nextFloat() * chars.length());
             code.append(chars.charAt(index));
         }
