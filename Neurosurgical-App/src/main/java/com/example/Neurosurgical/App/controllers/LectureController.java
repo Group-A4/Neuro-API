@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,6 +56,7 @@ public class LectureController {
 
     @PutMapping(value = "/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PROFESSOR')")
     public ResponseEntity<Void> updateLecture(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid LectureCreationDto lectureCreationDto) {
         lectureService.updateLecture(id, lectureCreationDto);
         return ResponseEntity.noContent().build();
@@ -62,6 +64,7 @@ public class LectureController {
 
     @PostMapping(value = "/create", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PROFESSOR')")
     public ResponseEntity<Void> createLecture(@RequestBody @Valid LectureCreationDto lectureCreationDto) {
         lectureService.createLecture(lectureCreationDto);
         return ResponseEntity.noContent().build();
@@ -69,6 +72,7 @@ public class LectureController {
 
     @DeleteMapping(value = "/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PROFESSOR')")
     public ResponseEntity<Void> deleteLecture(@PathVariable @Valid @Min(0) Long id) {
         lectureService.deleteLecture(id);
         return ResponseEntity.noContent().build();

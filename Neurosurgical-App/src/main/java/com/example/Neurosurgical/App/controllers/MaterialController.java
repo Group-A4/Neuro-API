@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,12 +50,14 @@ public class MaterialController {
 
     @DeleteMapping(value = "/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PROFESSOR')")
     public void deleteMaterialById(@PathVariable @Valid @Min(0) Long id){
         materialService.deleteMaterial(id);
     }
 
     @PostMapping(value = "/create", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PROFESSOR')")
     public void createMaterial(@RequestBody @Valid MaterialCreationDto materialCreationDto){
         materialService.createMaterial(materialCreationDto);
     }
@@ -72,6 +75,7 @@ public class MaterialController {
 
     @PutMapping("update/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PROFESSOR')")
     public void updateMaterial(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid MaterialCreationDto materialCreationDto) {
         materialService.updateMaterial(id, materialCreationDto);
     }

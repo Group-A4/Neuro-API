@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class ExamController {
 
     @PostMapping(value = "/create", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('PROFESSOR')")
     public ResponseEntity<Void> createExam(@RequestBody @Valid ExamCreationDto examCreationDto) throws InvalidDateException, EntityAlreadyExistsException {
         examService.createExam(examCreationDto);
         return ResponseEntity.noContent().build();
@@ -76,6 +78,7 @@ public class ExamController {
 
     @GetMapping(value = "/code={code}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyAuthority('PROFESSOR')")
     public ResponseEntity<ExamDto> findByCode(@PathVariable @Valid String code) {
         return ResponseEntity.ok(examService.findByCode(code));
     }
@@ -116,12 +119,14 @@ public class ExamController {
 
     @PostMapping(value = "activate/idExam={idExam}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyAuthority('PROFESSOR')")
     public ResponseEntity<Void> activateExam(@PathVariable @Valid Long idExam) {
         examService.activateExam(idExam);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping(value = "deactivate/idExam={idExam}", produces = "application/json")
+    @PreAuthorize("hasAnyAuthority('PROFESSOR')")
     public ResponseEntity<Void> deactivateExam(@PathVariable @Valid Long idExam) {
         examService.deactivateExam(idExam);
         return ResponseEntity.noContent().build();
@@ -129,11 +134,13 @@ public class ExamController {
 
     @DeleteMapping(value = "/idExam={idExam}", produces = "application/json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('PROFESSOR')")
     public void deleteExam(@PathVariable @Valid Long idExam) {
         examService.deleteExam(idExam);
     }
 
     @PutMapping(value = "/update/idExam={idExam}", consumes = "application/json")
+    @PreAuthorize("hasAnyAuthority('PROFESSOR')")
     public ResponseEntity<Void> updateExam(@PathVariable @Valid Long idExam, @RequestBody @Valid ExamSummariseUpdateDto examSummariseUpdateDto) throws InvalidDateException {
         examService.updateExam(idExam, examSummariseUpdateDto);
         return ResponseEntity.noContent().build();

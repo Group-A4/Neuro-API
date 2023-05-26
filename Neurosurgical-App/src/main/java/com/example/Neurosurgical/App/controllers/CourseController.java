@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,12 +50,14 @@ public class CourseController {
 
     @DeleteMapping(value = "/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteCourseById(@PathVariable @Valid @Min(0) Long id){
         courseService.deleteCourse(id);
     }
 
     @PostMapping(value = "/create", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String createCourse(@RequestBody @Valid CourseCreationDto courseCreationDto){
         return courseService.createCourse(courseCreationDto);
     }
@@ -72,6 +75,7 @@ public class CourseController {
 
     @PutMapping("/update/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void updateCourse(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid CourseCreationDto courseCreationDto) {
         courseService.updateCourse(id, courseCreationDto);
     }

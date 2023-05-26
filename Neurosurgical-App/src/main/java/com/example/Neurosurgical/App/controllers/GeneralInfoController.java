@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -28,6 +29,7 @@ public class GeneralInfoController {
 
     @PutMapping("update/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void updateGeneralInfo(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid GeneralInfoDto generalInfoDto) {
         generalInfoService.updateGeneralInfo(id, generalInfoDto);
     }

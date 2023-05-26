@@ -9,6 +9,7 @@ import com.example.Neurosurgical.App.services.QuestionExamService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,41 +27,48 @@ public class QuestionExamController {
     }
 
     @GetMapping(value = "/multipleChoice", produces="application/json")
+    @PreAuthorize("hasAnyAuthority('PROFESSOR')")
     public List<QuestionMultipleChoiceExamDto> getAllMultipleChoice() {
         return questionExamService.findAllMultipleChoice();
     }
 
     @GetMapping(value = "/longResponse", produces="application/json")
+    @PreAuthorize("hasAnyAuthority('PROFESSOR')")
     public List<QuestionLongResponseExamDto> getAllLongResponse() {
         return questionExamService.findAllLongResponse();
     }
 
     @PostMapping(value = "/multipleChoice/create/idExam={idExam}")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('PROFESSOR')")
     public void createMultipleChoiceQuestionExam (@RequestBody @Valid QuestionMultipleChoiceExamCreationDto questionMultipleChoiceExamCreationDto, @PathVariable Long idExam) throws EntityNotFoundException {
         questionExamService.createMultipleChoiceQuestionExam(questionMultipleChoiceExamCreationDto, idExam);
     }
 
     @PostMapping(value = "/longResponse/create/idExam={idExam}")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('PROFESSOR')")
     public void createLongResponseQuestionExam (@RequestBody @Valid QuestionLongResponseExamCreationDto questionLongResponseDto, @PathVariable Long idExam) throws EntityNotFoundException {
         questionExamService.createLongResponseQuestionExam(questionLongResponseDto, idExam);
     }
 
     @PutMapping(value = "/multipleChoice/update/idQuestion={idQuestion}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('PROFESSOR')")
     public void updateQuestionExam(@RequestBody @Valid QuestionMultipleChoiceExamDto questionExamCreationDto, @PathVariable Long idQuestion) throws EntityNotFoundException {
         questionExamService.updateMultipleChoiceQuestionExam(questionExamCreationDto, idQuestion);
     }
 
     @PutMapping(value = "/longResponse/update/idQuestion={idQuestion}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('PROFESSOR')")
     public void updateQuestionExam(@RequestBody @Valid QuestionLongResponseExamCreationDto questionExamCreationDto, @PathVariable Long idQuestion) throws EntityNotFoundException {
         questionExamService.updateLongResponseQUestionExam(questionExamCreationDto, idQuestion);
     }
 
     @DeleteMapping(value = "/delete/idQuestion={idQuestion}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('PROFESSOR')")
     public void deleteQuestionExam(@PathVariable Long idQuestion) throws EntityNotFoundException {
         questionExamService.deleteQuestionExam(idQuestion);
     }

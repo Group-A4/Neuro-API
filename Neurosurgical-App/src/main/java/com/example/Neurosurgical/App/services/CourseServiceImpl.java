@@ -75,7 +75,9 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void updateCourse(Long id, CourseCreationDto courseCreationDto) {
         checkIfExists(id);
+        String code = courseRepository.findById(id).get().getCode();
         CourseEntity courseEntity = CourseMapper.fromCreationDto(courseCreationDto);
+        courseEntity.setCode(code);
         courseEntity.setId(id);
         courseRepository.save(courseEntity);
     }

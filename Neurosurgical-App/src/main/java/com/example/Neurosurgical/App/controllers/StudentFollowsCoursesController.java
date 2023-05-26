@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/studentFollowsCourses")
@@ -20,18 +21,21 @@ public class StudentFollowsCoursesController {
 
     @DeleteMapping("/delete/{Id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public void deleteStudentFollowsCourse(@PathVariable @Valid @Min(0) Long Id){
         studentFollowsCoursesService.deleteStudentFollowsCourses(Id);
     }
 
     @DeleteMapping("/delete/course={courseId}/student={studentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public void deleteStudentFollowsCourse(@PathVariable @Valid @Min(0) Long courseId, @PathVariable @Valid @Min(0) Long studentId){
         studentFollowsCoursesService.deleteStudentFollowsCourses(courseId, studentId);
     }
 
     @PostMapping("/create/course={courseId}/student={studentId}")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT')")
     public void createStudentFollowsCourse(@PathVariable @Valid @Min(0) Long courseId, @PathVariable @Valid @Min(0) Long studentId){
         studentFollowsCoursesService.createStudentFollowsCourses(courseId, studentId);
     }

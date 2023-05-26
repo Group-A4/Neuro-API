@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -28,36 +29,42 @@ public class ContentController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('PROFESSOR')")
     public ResponseEntity<ContentEntity> getContentById(@PathVariable @Valid @Min(0)  Long id){
         return ResponseEntity.ok(contentService.findById(id));
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('PROFESSOR')")
     public ResponseEntity<List<ContentEntity>> getAllContent(){
         return ResponseEntity.ok(contentService.findAll());
     }
 
     @GetMapping("/name/{name}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('PROFESSOR')")
     public ResponseEntity<ContentEntity> getContentByName(@PathVariable @Valid String name){
         return ResponseEntity.ok(contentService.findByName(name));
     }
 
     @GetMapping("/professor/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('PROFESSOR')")
     public ResponseEntity<List<ContentEntity>> getContentByProfessorId(@PathVariable @Valid @Min(0) Long id){
         return ResponseEntity.ok(contentService.findByProfessorId(id));
     }
 
     @GetMapping("markdown/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('PROFESSOR')")
     public ResponseEntity<List<ContentEntity>> getMarkdownContentById(@PathVariable @Valid @Min(0) Long id){
         return ResponseEntity.ok(contentService.findByMarkDownId(id));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('PROFESSOR')")
     public ResponseEntity<Void> deleteContentById(@PathVariable @Valid @Min(0) Long id){
         contentService.deleteById(id);
         return ResponseEntity.noContent().build();
@@ -65,6 +72,7 @@ public class ContentController {
 
     @PostMapping(path ="/create" , consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('PROFESSOR')")
     public ResponseEntity<Void> createContent(@ModelAttribute ContentCreationDto content) throws IOException {
         contentService.createContent(content);
         return ResponseEntity.created(null).build();

@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -63,18 +64,21 @@ public class ProfessorController {
 
     @DeleteMapping(value = "delete/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public void deleteUserById(@PathVariable @Valid @Min(0) Long id){
         professorService.deleteProfessor(id);
     }
 
     @PostMapping(value = "/create", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public void createProfessor(@RequestBody @Valid ProfessorCreationDto professorCreationDto) throws UserAlreadyExistsException {
         professorService.createProfessor(professorCreationDto);
     }
 
     @PutMapping("update/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public void updateProfessor(@PathVariable @Valid @Min(0) Long id, @RequestBody @Valid ProfessorDto professorDto) {
         professorService.updateProfessor(id, professorDto);
     }
