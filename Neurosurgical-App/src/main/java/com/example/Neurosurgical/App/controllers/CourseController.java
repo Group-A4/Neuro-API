@@ -55,8 +55,8 @@ public class CourseController {
 
     @PostMapping(value = "/create", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createCourse(@RequestBody @Valid CourseCreationDto courseCreationDto){
-        courseService.createCourse(courseCreationDto);
+    public String createCourse(@RequestBody @Valid CourseCreationDto courseCreationDto){
+        return courseService.createCourse(courseCreationDto);
     }
 
     @GetMapping(value = "/title={title}", produces = "application/json")

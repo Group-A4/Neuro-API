@@ -37,7 +37,7 @@ public class RecoveryService {
 
 
         // generate the reset code
-        String resetCode = generateCode();
+        String resetCode = generateCode(18);
 
         // send it to the user through an email
         var recovery =  Recovery.builder()
@@ -65,11 +65,11 @@ public class RecoveryService {
         return resetCode;
     }
 
-    protected String generateCode() {
+    public static String generateCode(int length) {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder code = new StringBuilder();
         Random rnd = new Random();
-        while (code.length() < 18) { // length of the random string.
+        while (code.length() <= length) { // length of the random string.
             int index = (int) (rnd.nextFloat() * chars.length());
             code.append(chars.charAt(index));
         }

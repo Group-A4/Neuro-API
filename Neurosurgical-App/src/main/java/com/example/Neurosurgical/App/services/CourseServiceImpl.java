@@ -8,6 +8,7 @@ import com.example.Neurosurgical.App.mappers.CourseMapper;
 import com.example.Neurosurgical.App.models.dtos.CourseCreationDto;
 import com.example.Neurosurgical.App.models.dtos.CourseDto;
 import com.example.Neurosurgical.App.models.entities.*;
+import com.example.Neurosurgical.App.recovery.RecoveryService;
 import com.example.Neurosurgical.App.repositories.*;
 import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,13 +56,19 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void createCourse(CourseCreationDto courseCreationDto) {
+    public String createCourse(CourseCreationDto courseCreationDto) {
         try{
+            String code = RecoveryService.generateCode(5);
+
+            while(courseRepository.findByCode(code) != null){
+                code = RecoveryService.generateCode(5);
+            }
             courseRepository.save(CourseMapper.fromCreationDto(courseCreationDto));
+
+            return code;
         }catch (Exception e){
             throw new EntityAlreadyExistsException("Course",courseCreationDto.getTitle());
         }
-
     }
 
     @Override
