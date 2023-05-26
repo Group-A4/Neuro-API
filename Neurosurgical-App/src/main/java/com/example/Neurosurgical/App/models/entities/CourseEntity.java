@@ -21,6 +21,10 @@ public class CourseEntity extends BaseEntity{
     @NotNull(message = "Title cannot be null")
     private String title;
 
+    @Column(name="code")
+    @NotNull(message = "Code cannot be null")
+    private String code;
+
     @Column(name="year")
     @Min(value = 1, message = "Year should not be less than 1")
     @Max(value = 10, message = "Year should not be greater than 10")
