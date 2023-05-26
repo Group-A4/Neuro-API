@@ -35,16 +35,16 @@ public class StudentFollowsCoursesServiceImpl implements StudentFollowsCoursesSe
     }
 
     @Override
-    public void createStudentFollowsCourses(Long courseId, Long studentId) {
+    public void createStudentFollowsCourses(String code, Long studentId) {
         Optional<StudentEntity> studentEntityOptional = studentRepository.findById(studentId);
-        Optional<CourseEntity> courseEntityOptional = courseRepository.findById(courseId);
+        CourseEntity courseEntityOptional = courseRepository.findByCode(code);
 
-        if (studentEntityOptional.isEmpty() || courseEntityOptional.isEmpty()) {
+        if (studentEntityOptional.isEmpty() || courseEntityOptional == null) {
             throw new EntityNotFoundException("Student or course not found");
         }
 
         try {
-            studentFollowsCoursesRepository.save(new StudentFollowsCoursesEntity(studentEntityOptional.get(), courseEntityOptional.get()));
+            studentFollowsCoursesRepository.save(new StudentFollowsCoursesEntity(studentEntityOptional.get(), courseEntityOptional));
         } catch (Exception e) {
             throw new EntityAlreadyExistsException("studentFollowsCourses", "studentFollowsCourses");
         }

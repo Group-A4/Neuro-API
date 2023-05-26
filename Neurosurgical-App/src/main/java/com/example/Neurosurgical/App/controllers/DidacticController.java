@@ -33,10 +33,10 @@ public class DidacticController {
         didacticService.deleteDidactic(courseId, professorId);
     }
 
-    @PostMapping("/create/course={courseId}/professor={professorId}")
+    @PostMapping("/create/course={courseCode}/professor={professorId}")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'PROFESSOR')")
-    public void createDidactic(@PathVariable @Valid @Min(0) Long courseId, @PathVariable @Valid @Min(0) Long professorId){
-        didacticService.createDidactic(courseId, professorId);
+    public void createDidactic(@PathVariable @Valid String courseCode, @PathVariable @Valid @Min(0) Long professorId){
+        didacticService.createDidactic(courseCode, professorId);
     }
 }

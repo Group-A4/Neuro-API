@@ -34,15 +34,16 @@ public class DidacticServiceImpl implements DidacticService{
     }
 
     @Override
-    public void createDidactic(Long courseId, Long professorId){
-        Optional<CourseEntity> courseEntityOptional = courseRepository.findById(courseId);
+    public void createDidactic(String code, Long professorId){
+
+        CourseEntity courseEntityOptional = courseRepository.findByCode(code);
         Optional<ProfessorEntity> professorEntityOptional = professorRepository.findById(professorId);
 
-        if (courseEntityOptional.isEmpty() || professorEntityOptional.isEmpty()) {
+        if (courseEntityOptional == null || professorEntityOptional.isEmpty()) {
             throw new EntityNotFoundException("Course or professor not found");
         }
 
-        DidacticEntity didacticEntity = new DidacticEntity( professorEntityOptional.get(), courseEntityOptional.get());
+        DidacticEntity didacticEntity = new DidacticEntity( professorEntityOptional.get(), courseEntityOptional);
         try{
             didacticRepository.save(didacticEntity);
         }catch (Exception e){

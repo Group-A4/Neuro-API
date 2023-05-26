@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @Builder
 public class CourseDto {
-
+    private String code;
     private Long id;
 
     private String title;

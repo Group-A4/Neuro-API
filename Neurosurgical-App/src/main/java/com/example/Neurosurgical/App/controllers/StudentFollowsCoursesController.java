@@ -33,11 +33,11 @@ public class StudentFollowsCoursesController {
         studentFollowsCoursesService.deleteStudentFollowsCourses(courseId, studentId);
     }
 
-    @PostMapping("/create/course={courseId}/student={studentId}")
+    @PostMapping("/create/course={code}/student={studentId}")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT')")
-    public void createStudentFollowsCourse(@PathVariable @Valid @Min(0) Long courseId, @PathVariable @Valid @Min(0) Long studentId){
-        studentFollowsCoursesService.createStudentFollowsCourses(courseId, studentId);
+    public void createStudentFollowsCourse(@PathVariable @Valid String code, @PathVariable @Valid @Min(0) Long studentId){
+        studentFollowsCoursesService.createStudentFollowsCourses(code, studentId);
     }
 
 }
