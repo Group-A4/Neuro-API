@@ -29,6 +29,7 @@ public class CourseMapper {
     public static CourseCreationDto toCreationDto(CourseEntity courseEntity){
         return CourseCreationDto.builder()
                 .title(courseEntity.getTitle())
+                .code(courseEntity.getCode())
                 .credits(courseEntity.getCredits())
                 .semester(courseEntity.getSemester())
                 .year(courseEntity.getYear())
@@ -38,6 +39,7 @@ public class CourseMapper {
     public static CourseEntity fromCreationDto(CourseCreationDto courseCreationDto){
         return CourseEntity.builder()
                 .title(courseCreationDto.getTitle())
+                .code(courseCreationDto.getCode())
                 .credits(courseCreationDto.getCredits())
                 .semester(courseCreationDto.getSemester())
                 .year(courseCreationDto.getYear())

@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 public class CourseCreationDto {
     private String title;
 
+    private String code;
+
     private Integer year;
 
     private Integer semester;
